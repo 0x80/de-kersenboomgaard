@@ -8,7 +8,7 @@ import { type Artist } from "./page";
 
 export function ArtistCard({ artist }: { artist: Artist }) {
   const [currentImage, setCurrentImage] = useState(
-    artist.flipImage ?? artist.image,
+    artist.flipImage || artist.image,
   );
 
   const handleMouseEnter = () => {
@@ -18,10 +18,8 @@ export function ArtistCard({ artist }: { artist: Artist }) {
   };
 
   const handleMouseLeave = () => {
-    setCurrentImage(artist.flipImage ?? artist.image);
+    setCurrentImage(artist.flipImage || artist.image);
   };
-
-  console.log(artist.houseNumber);
 
   return (
     <div
@@ -39,25 +37,25 @@ export function ArtistCard({ artist }: { artist: Artist }) {
         />
       </div>
       <div className="min-w-0 flex-1">
-        <h3 className="mb-1 text-xl font-medium text-gray-900">
+        <h3 className="mb-1 text-lg font-medium text-gray-900">
           {artist.name}
         </h3>
         {artist.description && (
-          <p className="text-m mb-2 leading-relaxed text-gray-600">
+          <p className="mb-2 text-sm leading-relaxed text-gray-600">
             {artist.description}
           </p>
         )}
         {artist.website && (
           <Link
             href={`https://${artist.website}`}
-            className="text-sm text-gray-400 transition-colors hover:text-gray-600"
+            className="text-xs text-gray-400 transition-colors hover:text-gray-600"
           >
             {artist.website}
           </Link>
         )}
       </div>
       {artist.houseNumber && (
-        <div className="text-hotpink absolute top-0 right-0 origin-bottom-left rotate-90 text-8xl font-bold">
+        <div className="absolute top-0 right-0 origin-bottom-left rotate-90 font-mono text-8xl font-bold text-transparent [-webkit-text-stroke:1px_#d1d5db]">
           {artist.houseNumber}
         </div>
       )}
