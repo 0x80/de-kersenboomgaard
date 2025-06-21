@@ -1,15 +1,17 @@
 import { glob } from "glob";
 import matter from "gray-matter";
-import Image from "next/image";
-import Link from "next/link";
 import fs from "node:fs/promises";
 import path from "node:path";
 
-interface Artist {
+import { ArtistCard } from "./artist-card";
+
+export interface Artist {
   name: string;
   description: string;
   website: string;
   image: string;
+  flipImage: string;
+  houseNumber: number;
 }
 
 async function getArtists(): Promise<Artist[]> {
@@ -27,11 +29,13 @@ async function getArtists(): Promise<Artist[]> {
         description: data.profession,
         website: data.link,
         image: data.image,
+        flipImage: data.flipImage,
+        houseNumber: data.houseNumber,
       };
     }),
   );
 
-  return artists;
+  return artists.toSorted((a, b) => a.houseNumber - b.houseNumber);
 }
 
 export default async function Component() {
@@ -59,43 +63,12 @@ export default async function Component() {
           <h2 className="mb-4 text-3xl font-light text-gray-900">
             Kunstenaars
           </h2>
-          <p className="text-gray-500 italic">
-            Deze lijst is momenteel nog onvolledig
-          </p>
         </div>
 
         {/* Artists Grid */}
         <div className="mx-auto grid max-w-4xl grid-cols-1 gap-8 md:grid-cols-2">
           {artists.map((artist, index) => (
-            <div key={index} className="flex items-start space-x-4">
-              <div className="flex-shrink-0">
-                <Image
-                  src={artist.image || "/placeholder.svg"}
-                  alt={artist.name}
-                  width={80}
-                  height={80}
-                  className="rounded-full object-cover"
-                />
-              </div>
-              <div className="min-w-0 flex-1">
-                <h3 className="mb-1 text-lg font-medium text-gray-900">
-                  {artist.name}
-                </h3>
-                {artist.description && (
-                  <p className="mb-2 text-sm leading-relaxed text-gray-600">
-                    {artist.description}
-                  </p>
-                )}
-                {artist.website && (
-                  <Link
-                    href={`https://${artist.website}`}
-                    className="text-xs text-gray-400 transition-colors hover:text-gray-600"
-                  >
-                    {artist.website}
-                  </Link>
-                )}
-              </div>
-            </div>
+            <ArtistCard key={index} artist={artist} />
           ))}
         </div>
       </main>
