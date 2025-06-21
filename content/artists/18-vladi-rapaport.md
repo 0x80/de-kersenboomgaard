@@ -1,6 +1,6 @@
 ---
 name: Vladi Rapaport
-link: http://vladirapaport.nl/
+link: vladirapaport.nl
 buildingNumber: 3
 houseNumber: 18
 profession: Product ontwerper en meubelmaker
