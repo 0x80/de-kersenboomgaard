@@ -11,6 +11,8 @@
   "dependencies": {
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "glob": "^11.0.3",
+    "gray-matter": "^4.0.3",
     "lucide-react": "^0.522.0",
     "next": "15.3.4",
     "react": "^19.0.0",
