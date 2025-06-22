@@ -95,6 +95,9 @@ async function getCourses(): Promise<Course[]> {
       const { data, content } = matter(fileContent);
 
       const artist = artistsMap.get(data.artist_id);
+      const additionalArtist = data.additional_artist_id
+        ? artistsMap.get(data.additional_artist_id)
+        : undefined;
 
       return {
         artist_id: data.artist_id,
@@ -105,6 +108,8 @@ async function getCourses(): Promise<Course[]> {
         content: content.trim(),
         artist_name: artist?.name || "",
         house_number: artist?.house_number || 0,
+        additional_artist_id: data.additional_artist_id,
+        additional_artist_name: additionalArtist?.name,
       };
     }),
   );
@@ -132,7 +137,7 @@ export default async function Component() {
                 href="#artists"
                 className="transition-colors hover:text-gray-900"
               >
-                KUNSTENAARS
+                BEWONERS
               </a>
               <a
                 href="#courses"
@@ -149,7 +154,7 @@ export default async function Component() {
       <main className="mx-auto max-w-6xl px-6 py-12">
         <div className="mb-16 text-center">
           <h2 id="artists" className="mb-4 text-3xl font-light text-gray-900">
-            Kunstenaars
+            Kunstenaars, Makers & Creatievelingen
           </h2>
         </div>
 

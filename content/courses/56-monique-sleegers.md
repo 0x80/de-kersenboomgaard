@@ -1,7 +1,5 @@
 ---
 artist_id: monique-sleegers
-name: Sculpturen & Workshops
+name: Sculpturen
 link: www.ateliermoniquesleegers.nl
 ---
-
-Sculpturen & Workshops

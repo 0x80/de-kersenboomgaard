@@ -23,6 +23,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
 
   return (
     <div
+      id={`artist-${artist.id}`}
       className="relative flex items-start space-x-4"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

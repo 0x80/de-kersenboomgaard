@@ -1,7 +1,5 @@
 ---
 artist_id: bea-van-frankenhuyzen
-name: Leer zeefdrukken
+name: Zeefdrukken
 link: studiobea.nl/workshops
 ---
-
-Leer zeefdrukken

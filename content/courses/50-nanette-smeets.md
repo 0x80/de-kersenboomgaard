@@ -1,7 +1,5 @@
 ---
 artist_id: nanette-smeets
-name: Tekenles voor tieners
+name: Tekenles voor Tieners
 link: inktvogel.nl/lesgeven/index.html
 ---
-
-Tekenles voor tieners

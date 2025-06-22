@@ -1,7 +1,6 @@
 ---
 artist_id: margot-westermann
-name: Cursussen Illustratie & Druktechnieken
+additional_artist_id: bert-de-groot
+name: Illustratie & Druktechnieken
 link: www.instagram.com/maak.aap
 ---
-
-Cursussen Illustratie & Druktechnieken door Margot Westermann & Bert de Groot

@@ -11,6 +11,8 @@ export interface Course {
   content: string;
   artist_name: string;
   house_number: number;
+  additional_artist_id?: string;
+  additional_artist_name?: string;
 }
 
 const DUTCH_MONTHS = [
@@ -39,6 +41,15 @@ function formatMonthRange(startMonth?: number, endMonth?: number): string {
 export function CourseCard({ course }: { course: Course }) {
   const monthRange = formatMonthRange(course.start_month, course.end_month);
 
+  const handleArtistClick = (e: React.MouseEvent, artistId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const element = document.getElementById(`artist-${artistId}`);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <Link
       href={`https://${course.link}`}
@@ -48,6 +59,30 @@ export function CourseCard({ course }: { course: Course }) {
     >
       <div className="space-y-3">
         <h3 className="text-xl font-medium text-gray-900">{course.name}</h3>
+
+        {/* Artist names */}
+        <p className="text-sm text-gray-600">
+          door{" "}
+          <button
+            onClick={(e) => handleArtistClick(e, course.artist_id)}
+            className="text-gray-700 underline underline-offset-2 transition-colors hover:text-gray-900"
+          >
+            {course.artist_name}
+          </button>
+          {course.additional_artist_name && course.additional_artist_id && (
+            <>
+              {" & "}
+              <button
+                onClick={(e) =>
+                  handleArtistClick(e, course.additional_artist_id!)
+                }
+                className="text-gray-700 underline underline-offset-2 transition-colors hover:text-gray-900"
+              >
+                {course.additional_artist_name}
+              </button>
+            </>
+          )}
+        </p>
 
         {monthRange && (
           <p className="text-sm font-medium text-gray-500">{monthRange}</p>
