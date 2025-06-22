@@ -1,6 +1,17 @@
 "use client";
 
-import { type Course } from "./course-card";
+export interface Course {
+  artist_id: string;
+  name: string;
+  link: string;
+  start_month?: number;
+  end_month?: number;
+  content: string;
+  artist_name: string;
+  house_number: number;
+  additional_artist_id?: string;
+  additional_artist_name?: string;
+}
 
 export function CourseList({ courses }: { courses: Course[] }) {
   const handleArtistClick = (e: React.MouseEvent, artistId: string) => {
@@ -17,7 +28,7 @@ export function CourseList({ courses }: { courses: Course[] }) {
         <div key={index} className="space-y-3">
           <h3 className="text-xl font-medium text-gray-900">{course.name}</h3>
           <p className="text-sm text-gray-600">
-            door{" "}
+            docent{" "}
             <button
               onClick={(e) => handleArtistClick(e, course.artist_id)}
               className="bg-gray-100 px-1 py-0.5 text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"

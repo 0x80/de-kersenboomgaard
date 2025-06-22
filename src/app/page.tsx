@@ -4,8 +4,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 import { got } from "get-or-throw";
-import { ArtistCard } from "./artist-card";
-import { type Course } from "./course-card";
+import { ArtistCard } from "./components/artist-card";
+import { CourseList, type Course } from "./components/course-list";
 
 export interface AgendaItem {
   title: string;
@@ -267,50 +267,7 @@ export default async function Component() {
               </h2>
             </div>
 
-            {/* Courses List */}
-            <div className="mx-auto max-w-4xl space-y-8">
-              {courses.map((course, index) => (
-                <div key={index} className="space-y-3">
-                  <h3 className="text-xl font-medium text-gray-900">
-                    {course.name}
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    door{" "}
-                    <a
-                      href={`#artist-${course.artist_id}`}
-                      className="bg-gray-100 px-1 py-0.5 text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
-                    >
-                      {course.artist_name}
-                    </a>
-                    {course.additional_artist_name &&
-                      course.additional_artist_id && (
-                        <>
-                          {" & "}
-                          <a
-                            href={`#artist-${course.additional_artist_id}`}
-                            className="bg-gray-100 px-1 py-0.5 text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
-                          >
-                            {course.additional_artist_name}
-                          </a>
-                        </>
-                      )}
-                  </p>
-                  {course.content && (
-                    <p className="leading-relaxed text-gray-600">
-                      {course.content}
-                    </p>
-                  )}
-                  <a
-                    href={course.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block bg-gray-100 px-1 py-0.5 text-sm text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
-                  >
-                    Meer info →
-                  </a>
-                </div>
-              ))}
-            </div>
+            <CourseList courses={courses} />
           </>
         )}
 

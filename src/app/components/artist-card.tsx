@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
-import { type Artist } from "./page";
+import { type Artist } from "../page";
 
 function formatWebsiteDisplay(website: string): string {
   return website.replace(/^https?:\/\//, "").replace(/^www\./, "");
