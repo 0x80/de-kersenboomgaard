@@ -29,7 +29,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
     >
       {artist.houseNumber && (
         <div
-          className="absolute -top-22 right-0 w-28 origin-bottom-left rotate-90 text-left text-8xl font-bold text-gray-100"
+          className="absolute -top-24 right-0 w-28 origin-bottom-left rotate-90 text-left text-8xl font-bold text-gray-200"
           style={{
             fontFamily:
               'Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
