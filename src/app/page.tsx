@@ -239,51 +239,8 @@ export default async function Component() {
 
   return (
     <div className="min-h-screen bg-white" style={{ scrollBehavior: "smooth" }}>
-      {/* Header */}
-      <header className="border-b border-gray-200">
-        <div className="mx-auto max-w-6xl px-6 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-lg font-medium text-gray-900">
-              Ateliers Kersenboomgaard
-            </h1>
-            <nav className="flex space-x-6 text-sm tracking-wide text-gray-600 uppercase">
-              <a
-                href="#artists"
-                className="transition-colors hover:text-gray-900"
-              >
-                BEWONERS
-              </a>
-              <a
-                href="#courses"
-                className="transition-colors hover:text-gray-900"
-              >
-                CURSUSSEN
-              </a>
-              <a
-                href="#agenda"
-                className="transition-colors hover:text-gray-900"
-              >
-                AGENDA
-              </a>
-              <a
-                href="#over-ons"
-                className="transition-colors hover:text-gray-900"
-              >
-                OVER ONS
-              </a>
-              <a
-                href="#contact"
-                className="transition-colors hover:text-gray-900"
-              >
-                CONTACT
-              </a>
-            </nav>
-          </div>
-        </div>
-      </header>
-
       {/* Main Content */}
-      <main className="mx-auto max-w-6xl px-6 py-12">
+      <main className="mx-auto max-w-6xl px-6 py-12 pt-24">
         <div className="mb-16 text-center">
           <h2 id="artists" className="mb-4 text-3xl font-light text-gray-900">
             Kunstenaars, Makers & Creatievelingen
