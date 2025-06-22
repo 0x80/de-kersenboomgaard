@@ -18,7 +18,7 @@ function generateSlug(name: string): string {
 
 async function getArtistImages(
   artistId: string,
-): Promise<{ image: string; flip_image: string }> {
+): Promise<{ image: string; flip_image: string; all_images: string[] }> {
   const assetsDir = path.join(process.cwd(), "public/assets", artistId);
 
   try {
@@ -27,19 +27,21 @@ async function getArtistImages(
       .filter(
         (file) =>
           file.toLowerCase().endsWith(".jpg") ||
-          file.toLowerCase().endsWith(".jpeg"),
+          file.toLowerCase().endsWith(".jpeg") ||
+          file.toLowerCase().endsWith(".png"),
       )
       .sort();
 
+    const all_images = jpgFiles.map((file) => `/assets/${artistId}/${file}`);
     const image = jpgFiles[0] ? `/assets/${artistId}/${jpgFiles[0]}` : "";
     const flip_image = jpgFiles[1]
       ? `/assets/${artistId}/${jpgFiles[1]}`
       : image;
 
-    return { image, flip_image };
+    return { image, flip_image, all_images };
   } catch {
     // If folder doesn't exist or no images found, return empty strings
-    return { image: "", flip_image: "" };
+    return { image: "", flip_image: "", all_images: [] };
   }
 }
 
@@ -50,6 +52,7 @@ export interface Artist {
   website: string;
   image: string;
   flip_image: string;
+  all_images: string[];
   house_number: number;
 }
 
@@ -64,7 +67,7 @@ async function getArtists(): Promise<Artist[]> {
       const { data } = matter(fileContent);
 
       const id = data.id || generateSlug(data.name);
-      const { image, flip_image } = await getArtistImages(id);
+      const { image, flip_image, all_images } = await getArtistImages(id);
 
       return {
         id,
@@ -73,6 +76,7 @@ async function getArtists(): Promise<Artist[]> {
         website: data.link,
         image,
         flip_image,
+        all_images,
         house_number: data.house_number,
       };
     }),

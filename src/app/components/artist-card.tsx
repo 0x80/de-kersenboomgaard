@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
+import { useScrollBasedImages } from "../../hooks/use-scroll-based-images";
 import { type Artist } from "../page";
 
 function formatWebsiteDisplay(website: string): string {
@@ -11,25 +12,28 @@ function formatWebsiteDisplay(website: string): string {
 }
 
 export function ArtistCard({ artist }: { artist: Artist }) {
-  const [currentImage, setCurrentImage] = useState(
-    artist.flip_image || artist.image,
-  );
   const [isHovered, setIsHovered] = useState(false);
 
+  // Use scroll-based images for all devices
+  const { currentImage, elementRef } = useScrollBasedImages({
+    images:
+      artist.all_images.length > 0
+        ? artist.all_images
+        : [artist.image, artist.flip_image].filter(Boolean),
+    enabled: true,
+  });
+
   const handleMouseEnter = () => {
-    if (artist.image) {
-      setCurrentImage(artist.image);
-    }
     setIsHovered(true);
   };
 
   const handleMouseLeave = () => {
-    setCurrentImage(artist.flip_image || artist.image);
     setIsHovered(false);
   };
 
   return (
     <div
+      ref={elementRef}
       id={`artist-${artist.id}`}
       className="relative flex items-start space-x-4"
       onMouseEnter={handleMouseEnter}
@@ -52,7 +56,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
           alt={artist.name}
           width={120}
           height={120}
-          className="h-[120px] w-[120px] rounded-full border-4 border-white object-cover shadow-lg"
+          className="h-[120px] w-[120px] rounded-full border-4 border-white object-cover shadow-lg transition-opacity duration-300 ease-in-out"
         />
       </div>
       <div className="relative z-10 min-w-0 flex-1">
