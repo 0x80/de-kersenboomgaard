@@ -6,6 +6,10 @@ import { useState } from "react";
 
 import { type Artist } from "./page";
 
+function formatWebsiteDisplay(website: string): string {
+  return website.replace(/^www\./, "");
+}
+
 export function ArtistCard({ artist }: { artist: Artist }) {
   const [currentImage, setCurrentImage] = useState(
     artist.flip_image || artist.image,
@@ -62,7 +66,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
             href={`https://${artist.website}`}
             className="text-sm text-gray-400 transition-colors hover:text-gray-600"
           >
-            {artist.website}
+            {formatWebsiteDisplay(artist.website)}
           </Link>
         )}
       </div>
