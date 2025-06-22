@@ -45,6 +45,9 @@ importers:
         specifier: ^3.3.1
         version: 3.3.1
     devDependencies:
+      '@codecompose/typescript-config':
+        specifier: ^1.2.0
+        version: 1.2.0
       '@eslint/eslintrc':
         specifier: ^3
         version: 3.3.1
@@ -91,6 +94,9 @@ packages:
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
+
+  '@codecompose/typescript-config@1.2.0':
+    resolution: {integrity: sha512-QsAHWxNnXXm7UdkEf25N1OBpPaH0bGz0NZhMKBnxjFTVBctxEST+VcWjlI0AVpI/bVIoJgMtLw1hzz8n7huXCA==}
 
   '@emnapi/core@1.4.3':
     resolution: {integrity: sha512-4m62DuCE07lw01soJwPiBGC0nAww0Q+RY70VZ+n49yDIO13yyinhbWCeNnaob0lakDtWQzSdtNWzJeOJt2ma+g==}
@@ -2351,6 +2357,8 @@ snapshots:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.8
       '@jridgewell/trace-mapping': 0.3.25
+
+  '@codecompose/typescript-config@1.2.0': {}
 
   '@emnapi/core@1.4.3':
     dependencies:
