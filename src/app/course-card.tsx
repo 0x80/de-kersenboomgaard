@@ -51,7 +51,7 @@ export function CourseCard({ course }: { course: Course }) {
   };
 
   return (
-    <div className="rounded-lg border border-gray-100 bg-white p-6 shadow-sm">
+    <div className="rounded-sm border border-gray-100 bg-white p-6 shadow-sm">
       <div className="space-y-3">
         <h3 className="text-xl font-medium text-gray-900">{course.name}</h3>
 

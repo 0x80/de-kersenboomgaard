@@ -6,6 +6,16 @@ import path from "node:path";
 import { ArtistCard } from "./artist-card";
 import { CourseCard, type Course } from "./course-card";
 
+export interface AgendaItem {
+  title: string;
+  start_date: string;
+  start_time?: string;
+  end_date?: string;
+  end_time?: string;
+  event_link: string;
+  content: string;
+}
+
 function generateSlug(name: string): string {
   return name
     .toLowerCase()
@@ -13,6 +23,74 @@ function generateSlug(name: string): string {
     .replace(/\s+/g, "-") // Replace spaces with hyphens
     .replace(/-+/g, "-") // Replace multiple hyphens with single hyphen
     .trim();
+}
+
+const DUTCH_MONTHS = [
+  "januari",
+  "februari",
+  "maart",
+  "april",
+  "mei",
+  "juni",
+  "juli",
+  "augustus",
+  "september",
+  "oktober",
+  "november",
+  "december",
+];
+
+function formatDutchDate(dateString: string): string {
+  const date = new Date(dateString);
+  const day = date.getDate();
+  const month = DUTCH_MONTHS[date.getMonth()];
+  const year = date.getFullYear();
+  return `${day} ${month} ${year}`;
+}
+
+function parseTimeFormat(timeStr: string): string {
+  // Convert h12m00 format to 12:00
+  const match = timeStr.match(/h(\d{1,2})m(\d{2})/);
+  if (match) {
+    const hours = match[1].padStart(2, "0");
+    const minutes = match[2];
+    return `${hours}:${minutes}`;
+  }
+  // If it's already in HH:MM format or other format, return as is
+  return timeStr;
+}
+
+function formatEventDate(item: AgendaItem): string {
+  const startDate = new Date(item.start_date);
+  const endDate = item.end_date ? new Date(item.end_date) : null;
+
+  let dateStr = formatDutchDate(item.start_date);
+
+  if (endDate && endDate.getTime() !== startDate.getTime()) {
+    const startDay = startDate.getDate();
+    const endDay = endDate.getDate();
+    const startMonth = DUTCH_MONTHS[startDate.getMonth()];
+    const endMonth = DUTCH_MONTHS[endDate.getMonth()];
+    const startYear = startDate.getFullYear();
+    const endYear = endDate.getFullYear();
+
+    if (startYear === endYear && startMonth === endMonth) {
+      dateStr = `${startDay} - ${endDay} ${startMonth} ${startYear}`;
+    } else {
+      dateStr = `${formatDutchDate(item.start_date)} - ${formatDutchDate(item.end_date!)}`;
+    }
+  }
+
+  if (item.start_time) {
+    const startTime = parseTimeFormat(String(item.start_time));
+    dateStr += ` • ${startTime}`;
+    if (item.end_time && item.end_time !== item.start_time) {
+      const endTime = parseTimeFormat(String(item.end_time));
+      dateStr += ` - ${endTime}`;
+    }
+  }
+
+  return dateStr;
 }
 
 async function getArtistImages(
@@ -119,9 +197,45 @@ async function getCourses(): Promise<Course[]> {
     .toSorted((a, b) => a.house_number - b.house_number);
 }
 
+async function getAgendaItems(): Promise<AgendaItem[]> {
+  const contentDir = path.join(process.cwd(), "content/agenda");
+
+  try {
+    const files = await glob("*.md", { cwd: contentDir });
+
+    const agendaItems = await Promise.all(
+      files.map(async (file) => {
+        const filePath = path.join(contentDir, file);
+        const fileContent = await fs.readFile(filePath, "utf-8");
+        const { data, content } = matter(fileContent);
+
+        return {
+          title: data.title,
+          start_date: data.start_date,
+          start_time: data.start_time,
+          end_date: data.end_date,
+          end_time: data.end_time,
+          event_link: data.event_link,
+          content: content.trim(),
+        };
+      }),
+    );
+
+    // Sort by start_date descending (upcoming events first)
+    return agendaItems.toSorted(
+      (a, b) =>
+        new Date(b.start_date).getTime() - new Date(a.start_date).getTime(),
+    );
+  } catch {
+    // If agenda folder doesn't exist, return empty array
+    return [];
+  }
+}
+
 export default async function Component() {
   const artists = await getArtists();
   const courses = await getCourses();
+  const agendaItems = await getAgendaItems();
 
   return (
     <div className="min-h-screen bg-white" style={{ scrollBehavior: "smooth" }}>
@@ -144,6 +258,12 @@ export default async function Component() {
                 className="transition-colors hover:text-gray-900"
               >
                 CURSUSSEN
+              </a>
+              <a
+                href="#agenda"
+                className="transition-colors hover:text-gray-900"
+              >
+                AGENDA
               </a>
               <a
                 href="#over-ons"
@@ -193,6 +313,47 @@ export default async function Component() {
             <div className="mx-auto grid max-w-4xl grid-cols-1 gap-6 md:grid-cols-2">
               {courses.map((course, index) => (
                 <CourseCard key={index} course={course} />
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* Agenda Section */}
+        {agendaItems.length > 0 && (
+          <>
+            <div className="mt-24 mb-16 text-center">
+              <h2
+                id="agenda"
+                className="mb-4 text-3xl font-light text-gray-900"
+              >
+                Agenda
+              </h2>
+            </div>
+
+            {/* Agenda Items */}
+            <div className="mx-auto max-w-4xl space-y-8">
+              {agendaItems.map((item, index) => (
+                <div key={index} className="space-y-3">
+                  <h3 className="text-xl font-medium text-gray-900">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm font-medium text-gray-500">
+                    {formatEventDate(item)}
+                  </p>
+                  {item.content && (
+                    <p className="leading-relaxed text-gray-600">
+                      {item.content}
+                    </p>
+                  )}
+                  <a
+                    href={item.event_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block bg-gray-100 px-1 py-0.5 text-sm text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
+                  >
+                    Meer info →
+                  </a>
+                </div>
               ))}
             </div>
           </>

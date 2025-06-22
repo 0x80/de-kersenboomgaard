@@ -14,15 +14,18 @@ export function ArtistCard({ artist }: { artist: Artist }) {
   const [currentImage, setCurrentImage] = useState(
     artist.flip_image || artist.image,
   );
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleMouseEnter = () => {
     if (artist.image) {
       setCurrentImage(artist.image);
     }
+    setIsHovered(true);
   };
 
   const handleMouseLeave = () => {
     setCurrentImage(artist.flip_image || artist.image);
+    setIsHovered(false);
   };
 
   return (
@@ -64,7 +67,9 @@ export function ArtistCard({ artist }: { artist: Artist }) {
         {artist.website && (
           <Link
             href={`https://${artist.website}`}
-            className="text-sm text-gray-400 transition-colors hover:text-gray-600"
+            className={`text-sm text-gray-400 transition-colors hover:text-gray-600 ${
+              isHovered ? "border-b border-gray-400" : ""
+            }`}
           >
             {formatWebsiteDisplay(artist.website)}
           </Link>
