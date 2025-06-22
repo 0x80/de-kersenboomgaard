@@ -102,7 +102,7 @@ pnpm lint         # Run ESLint
 id: jane-doe # Unique identifier (used for images)
 name: Jane Doe # Display name
 profession: Painter & Sculptor # What they do
-link: www.janedoe.com # Website (without https://)
+link: https://www.janedoe.com # Website (fully qualified URL)
 building_number: 2 # Building number (1, 2, or 3)
 house_number: 42 # House number (determines display order)
 ---
@@ -307,5 +307,3 @@ The site is configured for automatic deployment. Any changes to the main branch 
 - Test changes in development before committing
 
 ---
-
-Built with ❤️ for the Kersenboomgaard artist community in Utrecht.
