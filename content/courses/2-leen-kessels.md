@@ -1,9 +1,9 @@
 ---
 artist_id: leen-kessels
-name: Beeldhouwen in Steen
+name: Cursus en workshops beeldhouwen in steen
 start_month: 5
 end_month: 8
-link: www.leenkessels.nl/cursus
+link: www.leenkessels.nl
 ---
 
-Een korte beschrijving van de cursus
+Cursus en workshops beeldhouwen in steen
