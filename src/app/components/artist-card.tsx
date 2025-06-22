@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useScrollBasedImages } from "../../hooks/use-scroll-based-images";
 import { type Artist } from "../page";
@@ -22,6 +22,32 @@ export function ArtistCard({ artist }: { artist: Artist }) {
         : [artist.image, artist.flip_image].filter(Boolean),
     enabled: true,
   });
+
+  // Cross-fade state management
+  const [frontImage, setFrontImage] = useState(currentImage);
+  const [backImage, setBackImage] = useState(currentImage);
+  const [showFront, setShowFront] = useState(true);
+
+  // Handle cross-fade when currentImage changes
+  useEffect(() => {
+    if (currentImage && currentImage !== (showFront ? frontImage : backImage)) {
+      if (showFront) {
+        setBackImage(currentImage);
+        setShowFront(false);
+      } else {
+        setFrontImage(currentImage);
+        setShowFront(true);
+      }
+    }
+  }, [currentImage, frontImage, backImage, showFront]);
+
+  // Initialize images when component mounts
+  useEffect(() => {
+    if (currentImage) {
+      setFrontImage(currentImage);
+      setBackImage(currentImage);
+    }
+  }, []);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -51,13 +77,28 @@ export function ArtistCard({ artist }: { artist: Artist }) {
         </div>
       )}
       <div className="relative z-10 flex-shrink-0">
-        <Image
-          src={currentImage || "/placeholder.svg"}
-          alt={artist.name}
-          width={120}
-          height={120}
-          className="h-[120px] w-[120px] rounded-full border-4 border-white object-cover shadow-lg transition-opacity duration-300 ease-in-out"
-        />
+        <div className="relative h-[120px] w-[120px]">
+          {/* Front Image */}
+          <Image
+            src={frontImage || "/placeholder.svg"}
+            alt={artist.name}
+            width={120}
+            height={120}
+            className={`absolute inset-0 h-[120px] w-[120px] rounded-full border-4 border-white object-cover shadow-lg transition-opacity duration-500 ease-in-out ${
+              showFront ? "opacity-100" : "opacity-0"
+            }`}
+          />
+          {/* Back Image */}
+          <Image
+            src={backImage || "/placeholder.svg"}
+            alt={artist.name}
+            width={120}
+            height={120}
+            className={`absolute inset-0 h-[120px] w-[120px] rounded-full border-4 border-white object-cover shadow-lg transition-opacity duration-500 ease-in-out ${
+              showFront ? "opacity-0" : "opacity-100"
+            }`}
+          />
+        </div>
       </div>
       <div className="relative z-10 min-w-0 flex-1">
         <h3 className="mb-1 text-xl font-medium text-gray-900">
