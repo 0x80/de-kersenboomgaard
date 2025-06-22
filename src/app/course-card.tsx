@@ -51,12 +51,7 @@ export function CourseCard({ course }: { course: Course }) {
   };
 
   return (
-    <Link
-      href={`https://${course.link}`}
-      className="block rounded-lg border border-transparent p-6 transition-all duration-200 hover:border-gray-200 hover:bg-gray-50"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
+    <div className="rounded-lg border border-gray-100 bg-white p-6 shadow-sm">
       <div className="space-y-3">
         <h3 className="text-xl font-medium text-gray-900">{course.name}</h3>
 
@@ -65,7 +60,7 @@ export function CourseCard({ course }: { course: Course }) {
           door{" "}
           <button
             onClick={(e) => handleArtistClick(e, course.artist_id)}
-            className="text-gray-700 underline underline-offset-2 transition-colors hover:text-gray-900"
+            className="bg-gray-100 px-1 py-0.5 text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
           >
             {course.artist_name}
           </button>
@@ -76,7 +71,7 @@ export function CourseCard({ course }: { course: Course }) {
                 onClick={(e) =>
                   handleArtistClick(e, course.additional_artist_id!)
                 }
-                className="text-gray-700 underline underline-offset-2 transition-colors hover:text-gray-900"
+                className="bg-gray-100 px-1 py-0.5 text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
               >
                 {course.additional_artist_name}
               </button>
@@ -92,10 +87,15 @@ export function CourseCard({ course }: { course: Course }) {
           <p className="leading-relaxed text-gray-600">{course.content}</p>
         )}
 
-        <p className="text-sm text-gray-400 transition-colors hover:text-gray-600">
+        <Link
+          href={`https://${course.link}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block bg-gray-100 px-1 py-0.5 text-sm text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
+        >
           Meer info →
-        </p>
+        </Link>
       </div>
-    </Link>
+    </div>
   );
 }

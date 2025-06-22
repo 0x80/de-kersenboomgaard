@@ -228,7 +228,7 @@ export default async function Component() {
                 href="https://www.plaatsmaker.nl"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-900 hover:underline"
+                className="bg-gray-100 px-1 py-0.5 text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
               >
                 Plaatsmaker
               </a>
@@ -237,7 +237,7 @@ export default async function Component() {
                 href="https://www.portaal.nl"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-900 hover:underline"
+                className="bg-gray-100 px-1 py-0.5 text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
               >
                 Portaal
               </a>{" "}
@@ -246,7 +246,7 @@ export default async function Component() {
                 href="https://www.utrecht.nl"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-900 hover:underline"
+                className="bg-gray-100 px-1 py-0.5 text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
               >
                 Gemeente Utrecht
               </a>
