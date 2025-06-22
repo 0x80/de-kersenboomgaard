@@ -3,6 +3,7 @@ import matter from "gray-matter";
 import fs from "node:fs/promises";
 import path from "node:path";
 
+import { got } from "get-or-throw";
 import { ArtistCard } from "./artist-card";
 import { type Course } from "./course-card";
 
@@ -52,8 +53,8 @@ function parseTimeFormat(timeStr: string): string {
   // Convert h12m00 format to 12:00
   const match = timeStr.match(/h(\d{1,2})m(\d{2})/);
   if (match) {
-    const hours = match[1].padStart(2, "0");
-    const minutes = match[2];
+    const hours = got(match, 1).padStart(2, "0");
+    const minutes = got(match, 2);
     return `${hours}:${minutes}`;
   }
   // If it's already in HH:MM format or other format, return as is

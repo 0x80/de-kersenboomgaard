@@ -1,5 +1,6 @@
 "use client";
 
+import { got } from "get-or-throw";
 import Link from "next/link";
 
 export interface Course {
@@ -32,10 +33,10 @@ const DUTCH_MONTHS = [
 
 function formatMonthRange(startMonth?: number, endMonth?: number): string {
   if (!startMonth && !endMonth) return "";
-  if (startMonth && !endMonth) return DUTCH_MONTHS[startMonth - 1];
-  if (!startMonth && endMonth) return DUTCH_MONTHS[endMonth - 1];
-  if (startMonth === endMonth) return DUTCH_MONTHS[startMonth! - 1];
-  return `${DUTCH_MONTHS[startMonth! - 1]} - ${DUTCH_MONTHS[endMonth! - 1]}`;
+  if (startMonth && !endMonth) return got(DUTCH_MONTHS, startMonth - 1);
+  if (!startMonth && endMonth) return got(DUTCH_MONTHS, endMonth - 1);
+  if (startMonth === endMonth) return got(DUTCH_MONTHS, startMonth! - 1);
+  return `${got(DUTCH_MONTHS, startMonth! - 1)} - ${got(DUTCH_MONTHS, endMonth! - 1)}`;
 }
 
 export function CourseCard({ course }: { course: Course }) {
