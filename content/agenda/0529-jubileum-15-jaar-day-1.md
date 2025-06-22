@@ -7,4 +7,4 @@ end_time: h22m00
 event_link: https://www.facebook.com/atelierskersenboomgaard/
 ---
 
-Dit jaar bestaan we 15 jaar en dat willen we vieren. Nadere informatie volgt.
+In 2026 jaar bestaan we 15 jaar en dat gaan we vieren! Nadere informatie volgt nog.

@@ -88,7 +88,7 @@ export function CourseCard({ course }: { course: Course }) {
         )}
 
         <Link
-          href={`https://${course.link}`}
+          href={course.link}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-block bg-gray-100 px-1 py-0.5 text-sm text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"

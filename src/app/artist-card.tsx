@@ -66,7 +66,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
         )}
         {artist.website && (
           <Link
-            href={`https://${artist.website}`}
+            href={artist.website}
             className={`text-sm text-gray-400 transition-colors hover:text-gray-600 ${
               isHovered ? "border-b border-gray-400" : ""
             }`}

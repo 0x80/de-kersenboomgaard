@@ -1,5 +1,5 @@
 ---
 artist_id: bea-van-frankenhuyzen
 name: Zeefdrukken
-link: studiobea.nl/workshops
+link: https://studiobea.nl/workshops
 ---
