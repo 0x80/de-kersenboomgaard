@@ -7,7 +7,7 @@ import { useState } from "react";
 import { type Artist } from "./page";
 
 function formatWebsiteDisplay(website: string): string {
-  return website.replace(/^www\./, "");
+  return website.replace(/^https?:\/\//, "").replace(/^www\./, "");
 }
 
 export function ArtistCard({ artist }: { artist: Artist }) {
