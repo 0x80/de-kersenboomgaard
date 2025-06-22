@@ -6,4 +6,3 @@ link: www.ateliermoniquesleegers.nl
 building_number: 1
 house_number: 56
 ---
-

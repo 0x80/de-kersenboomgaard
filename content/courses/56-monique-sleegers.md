@@ -1,5 +1,5 @@
 ---
 artist_id: monique-sleegers
-name: Sculpturen
-link: www.ateliermoniquesleegers.nl
+name: Boetseren
+link: https://www.ateliermoniquesleegers.nl/cursussen-en-workshops/
 ---
