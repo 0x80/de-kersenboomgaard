@@ -5,7 +5,44 @@ import path from "node:path";
 
 import { ArtistCard } from "./artist-card";
 
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "") // Remove special characters except spaces and hyphens
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/-+/g, "-") // Replace multiple hyphens with single hyphen
+    .trim();
+}
+
+async function getArtistImages(
+  artistId: string,
+): Promise<{ image: string; flip_image: string }> {
+  const assetsDir = path.join(process.cwd(), "public/assets", artistId);
+
+  try {
+    const files = await fs.readdir(assetsDir);
+    const jpgFiles = files
+      .filter(
+        (file) =>
+          file.toLowerCase().endsWith(".jpg") ||
+          file.toLowerCase().endsWith(".jpeg"),
+      )
+      .sort();
+
+    const image = jpgFiles[0] ? `/assets/${artistId}/${jpgFiles[0]}` : "";
+    const flip_image = jpgFiles[1]
+      ? `/assets/${artistId}/${jpgFiles[1]}`
+      : image;
+
+    return { image, flip_image };
+  } catch (error) {
+    // If folder doesn't exist or no images found, return empty strings
+    return { image: "", flip_image: "" };
+  }
+}
+
 export interface Artist {
+  id: string;
   name: string;
   description: string;
   website: string;
@@ -24,12 +61,16 @@ async function getArtists(): Promise<Artist[]> {
       const fileContent = await fs.readFile(filePath, "utf-8");
       const { data } = matter(fileContent);
 
+      const id = data.id || generateSlug(data.name);
+      const { image, flip_image } = await getArtistImages(id);
+
       return {
+        id,
         name: data.name,
         description: data.profession,
         website: data.link,
-        image: data.image,
-        flip_image: data.flip_image,
+        image,
+        flip_image,
         house_number: data.house_number,
       };
     }),
