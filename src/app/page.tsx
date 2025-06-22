@@ -168,7 +168,7 @@ export default async function Component() {
                 id="courses"
                 className="mb-4 text-3xl font-light text-gray-900"
               >
-                Cursussen
+                Cursussen & Workshops
               </h2>
             </div>
 

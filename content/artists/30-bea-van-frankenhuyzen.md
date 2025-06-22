@@ -1,7 +1,7 @@
 ---
 id: bea-van-frankenhuyzen
 name: Bea van Frankenhuyzen
-profession: Zeefdrukker
+profession: Multidisciplinair kunstenaar en ontwerper
 link: studiobea.nl
 building_number: 2
 house_number: 30
