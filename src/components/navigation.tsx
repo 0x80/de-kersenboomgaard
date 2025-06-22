@@ -13,13 +13,70 @@ const navigationItems = [
 
 export function Navigation() {
   const [isOpen, setIsOpen] = React.useState(false);
+  const [isVisible, setIsVisible] = React.useState(true);
 
   const handleLinkClick = () => {
     setIsOpen(false);
   };
 
+  React.useEffect(() => {
+    let lastScrollY = 0;
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const scrollingDown =
+        currentScrollY > lastScrollY && currentScrollY > 100;
+      const scrollingUp = currentScrollY < lastScrollY;
+      const isAtTop = currentScrollY < 100;
+
+      // Always show when at top of page
+      if (isAtTop) {
+        setIsVisible(true);
+      }
+      // Show immediately when scrolling up
+      else if (scrollingUp) {
+        setIsVisible(true);
+      }
+      // Hide immediately when scrolling down (but not if mobile menu is open)
+      else if (scrollingDown && !isOpen) {
+        setIsVisible(false);
+      }
+
+      lastScrollY = currentScrollY;
+    };
+
+    // Throttle scroll events for better performance
+    let ticking = false;
+    const throttledHandleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", throttledHandleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", throttledHandleScroll);
+    };
+  }, [isOpen]);
+
+  // Prevent hiding when mobile menu is open
+  React.useEffect(() => {
+    if (isOpen) {
+      setIsVisible(true);
+    }
+  }, [isOpen]);
+
   return (
-    <header className="fixed top-0 right-0 left-0 z-50 border-b border-gray-200/50 bg-white/90 backdrop-blur-md">
+    <header
+      className={`fixed top-0 right-0 left-0 z-50 border-b border-gray-200/50 bg-white/90 backdrop-blur-md transition-transform duration-400 ease-out ${
+        isVisible ? "translate-y-0" : "-translate-y-full"
+      }`}
+    >
       <div className="mx-auto max-w-6xl px-6 py-4">
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-medium text-gray-900">
