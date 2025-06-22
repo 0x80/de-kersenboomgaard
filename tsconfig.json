@@ -1,10 +1,11 @@
 {
   "extends": "@codecompose/typescript-config/nextjs.json",
   "compilerOptions": {
-    "useUnknownInCatchVariables": true,
-    "verbatimModuleSyntax": true,
-    "erasableSyntaxOnly": true
+    "paths": {
+      "~/*": ["./src/*"]
+    }
   },
+
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }
