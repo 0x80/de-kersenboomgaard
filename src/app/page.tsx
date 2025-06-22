@@ -4,6 +4,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 import { ArtistCard } from "./artist-card";
+import { CourseCard, type Course } from "./course-card";
 
 function generateSlug(name: string): string {
   return name
@@ -35,7 +36,7 @@ async function getArtistImages(
       : image;
 
     return { image, flip_image };
-  } catch (error) {
+  } catch {
     // If folder doesn't exist or no images found, return empty strings
     return { image: "", flip_image: "" };
   }
@@ -79,11 +80,46 @@ async function getArtists(): Promise<Artist[]> {
   return artists.toSorted((a, b) => a.house_number - b.house_number);
 }
 
+async function getCourses(): Promise<Course[]> {
+  const contentDir = path.join(process.cwd(), "content/courses");
+  const files = await glob("*.md", { cwd: contentDir });
+
+  // Get all artists to match with courses
+  const artists = await getArtists();
+  const artistsMap = new Map(artists.map((artist) => [artist.id, artist]));
+
+  const courses = await Promise.all(
+    files.map(async (file) => {
+      const filePath = path.join(contentDir, file);
+      const fileContent = await fs.readFile(filePath, "utf-8");
+      const { data, content } = matter(fileContent);
+
+      const artist = artistsMap.get(data.artist_id);
+
+      return {
+        artist_id: data.artist_id,
+        name: data.name,
+        link: data.link,
+        start_month: data.start_month,
+        end_month: data.end_month,
+        content: content.trim(),
+        artist_name: artist?.name || "",
+        house_number: artist?.house_number || 0,
+      };
+    }),
+  );
+
+  return courses
+    .filter((course) => course.artist_name) // Only include courses with valid artists
+    .toSorted((a, b) => a.house_number - b.house_number);
+}
+
 export default async function Component() {
   const artists = await getArtists();
+  const courses = await getCourses();
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white" style={{ scrollBehavior: "smooth" }}>
       {/* Header */}
       <header className="border-b border-gray-200">
         <div className="mx-auto max-w-6xl px-6 py-4">
@@ -91,8 +127,19 @@ export default async function Component() {
             <h1 className="text-lg font-medium text-gray-900">
               Ateliers Kersenboomgaard
             </h1>
-            <nav className="text-sm tracking-wide text-gray-600 uppercase">
-              KUNSTENAARS
+            <nav className="flex space-x-6 text-sm tracking-wide text-gray-600 uppercase">
+              <a
+                href="#artists"
+                className="transition-colors hover:text-gray-900"
+              >
+                KUNSTENAARS
+              </a>
+              <a
+                href="#courses"
+                className="transition-colors hover:text-gray-900"
+              >
+                CURSUSSEN
+              </a>
             </nav>
           </div>
         </div>
@@ -101,7 +148,7 @@ export default async function Component() {
       {/* Main Content */}
       <main className="mx-auto max-w-6xl px-6 py-12">
         <div className="mb-16 text-center">
-          <h2 className="mb-4 text-3xl font-light text-gray-900">
+          <h2 id="artists" className="mb-4 text-3xl font-light text-gray-900">
             Kunstenaars
           </h2>
         </div>
@@ -112,6 +159,27 @@ export default async function Component() {
             <ArtistCard key={index} artist={artist} />
           ))}
         </div>
+
+        {/* Courses Section */}
+        {courses.length > 0 && (
+          <>
+            <div className="mt-24 mb-16 text-center">
+              <h2
+                id="courses"
+                className="mb-4 text-3xl font-light text-gray-900"
+              >
+                Cursussen
+              </h2>
+            </div>
+
+            {/* Courses Grid */}
+            <div className="mx-auto grid max-w-4xl grid-cols-1 gap-6 md:grid-cols-2">
+              {courses.map((course, index) => (
+                <CourseCard key={index} course={course} />
+              ))}
+            </div>
+          </>
+        )}
       </main>
     </div>
   );
