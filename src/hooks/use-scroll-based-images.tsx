@@ -55,11 +55,10 @@ export function useScrollBasedImages({
         Math.min(1, (initialPosition - avatarCenter) / travelDistance),
       );
 
-      // Map progress to image index (REVERSED: start with last image, end with first)
-      // 0% scroll = last image (alphabetically last)
-      // 100% scroll = first image (alphabetically first)
-      const imageIndex =
-        images.length - 1 - Math.floor(scrollProgress * images.length);
+      // Map progress to image index
+      // 0% scroll = first image (alphabetically first)
+      // 100% scroll = last image (alphabetically last)
+      const imageIndex = Math.floor(scrollProgress * images.length);
       const clampedIndex = Math.max(0, Math.min(images.length - 1, imageIndex));
 
       setCurrentImageIndex(clampedIndex);
