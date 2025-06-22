@@ -3,6 +3,6 @@ name: Berend Weij
 image: /assets/berend-weij.jpeg
 profession: Manager, developer en leraar
 link: studiozoetekauw.nl
-buildingNumber: 2
-houseNumber: 50
+building_number: 2
+house_number: 50
 ---

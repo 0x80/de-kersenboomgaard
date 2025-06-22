@@ -1,9 +1,9 @@
 ---
 name: Anouk Saleming
 image: /assets/anouk-saleming.jpg
-flipImage: /assets/anouk-saleming_flip.jpg
+flip_image: /assets/anouk-saleming_flip.jpg
 profession: Theaterdocent, schrijver en performer
 link: www.anouksaleming.nl
-buildingNumber: 1
-houseNumber: 48
+building_number: 1
+house_number: 48
 ---

@@ -1,9 +1,9 @@
 ---
 name: Hinke Weikamp
 image: /assets/hinke-weikamp.jpg
-flipImage: /assets/hinke-weikamp_flip.jpg
+flip_image: /assets/hinke-weikamp_flip.jpg
 profession: Grafisch ontwerp en monoprint
 link: www.ontwerpstudiohinke.nl
-buildingNumber: 1
-houseNumber: 58
+building_number: 1
+house_number: 58
 ---

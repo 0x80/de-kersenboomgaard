@@ -10,8 +10,8 @@ export interface Artist {
   description: string;
   website: string;
   image: string;
-  flipImage: string;
-  houseNumber: number;
+  flip_image: string;
+  house_number: number;
 }
 
 async function getArtists(): Promise<Artist[]> {
@@ -29,13 +29,13 @@ async function getArtists(): Promise<Artist[]> {
         description: data.profession,
         website: data.link,
         image: data.image,
-        flipImage: data.flipImage,
-        houseNumber: data.houseNumber,
+        flip_image: data.flip_image,
+        house_number: data.house_number,
       };
     }),
   );
 
-  return artists.toSorted((a, b) => a.houseNumber - b.houseNumber);
+  return artists.toSorted((a, b) => a.house_number - b.house_number);
 }
 
 export default async function Component() {

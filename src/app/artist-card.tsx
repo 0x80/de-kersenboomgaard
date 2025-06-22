@@ -8,7 +8,7 @@ import { type Artist } from "./page";
 
 export function ArtistCard({ artist }: { artist: Artist }) {
   const [currentImage, setCurrentImage] = useState(
-    artist.flipImage || artist.image,
+    artist.flip_image || artist.image,
   );
 
   const handleMouseEnter = () => {
@@ -18,7 +18,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
   };
 
   const handleMouseLeave = () => {
-    setCurrentImage(artist.flipImage || artist.image);
+    setCurrentImage(artist.flip_image || artist.image);
   };
 
   return (
@@ -27,7 +27,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {artist.houseNumber && (
+      {artist.house_number && (
         <div
           className="absolute -top-24 right-0 w-28 origin-bottom-left rotate-90 text-left text-8xl font-bold text-gray-200"
           style={{
@@ -35,7 +35,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
               'Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
           }}
         >
-          {artist.houseNumber}
+          {artist.house_number}
         </div>
       )}
       <div className="relative z-10 flex-shrink-0">

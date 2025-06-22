@@ -1,9 +1,9 @@
 ---
 name: Anne ten Donkelaar
 image: /assets/anne-ten-donkelaar.jpg
-flipImage: /assets/anne-ten-donkelaar_flip.jpg
+flip_image: /assets/anne-ten-donkelaar_flip.jpg
 link: anneten.nl
 profession: Beeldende kunst
-buildingNumber: 3
-houseNumber: 18
+building_number: 3
+house_number: 18
 ---

@@ -1,6 +1,6 @@
 ---
 name: Lars Zuidweg
 image: /assets/lars-zuidweg.jpg
-buildingNumber: 1
-houseNumber: 58
+building_number: 1
+house_number: 58
 ---

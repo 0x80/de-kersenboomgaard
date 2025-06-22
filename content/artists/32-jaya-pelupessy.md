@@ -3,6 +3,6 @@ name: Jaya Pelupessy
 image: /assets/jaya-pelupessy.jpg
 profession: Fotografie
 link: www.jayapelupessy.com
-buildingNumber: 2
-houseNumber: 32
+building_number: 2
+house_number: 32
 ---

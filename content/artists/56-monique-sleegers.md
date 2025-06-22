@@ -1,9 +1,9 @@
 ---
 name: Monique Sleegers
 image: /assets/monique-sleegers.jpg
-flipImage: /assets/monique-sleegers_flip.jpg
+flip_image: /assets/monique-sleegers_flip.jpg
 profession: Beeldend kunstenaar en docent
 link: www.ateliermoniquesleegers.nl
-buildingNumber: 1
-houseNumber: 56
+building_number: 1
+house_number: 56
 ---
