@@ -1,6 +1,6 @@
 # Ateliers Kersenboomgaard Website
 
-A modern website for the Kersenboomgaard artist studios in Utrecht, showcasing artists, courses, and events. Built with Next.js, React, Tailwind CSS, and ShadCN UI components.
+A modern website for the Kersenboomgaard artist studios in Utrecht, showcasing artists, courses, and events.
 
 ## 🚀 Quick Start
 
@@ -92,8 +92,9 @@ pnpm lint         # Run ESLint
 
 1. **Create Artist Profile**: Add a new markdown file in `content/artists/`
 
-   - Filename format: `{house_number}-{artist-name}.md`
+   - Filename format: `{house_number}-{artist-name}.md` (recommended for organization)
    - Example: `42-jane-doe.md`
+   - Note: Filename doesn't affect functionality - artists are sorted by `house_number` field
 
 2. **Artist Frontmatter Structure**:
 
@@ -109,8 +110,9 @@ house_number: 42 # House number (determines display order)
 ```
 
 3. **Add Artist Images**: Create folder `public/assets/jane-doe/`
-   - Main image: `jane-doe.jpg` (first alphabetically)
-   - Hover image: `jane-doe_flip.jpg` (optional, second alphabetically)
+   - Add any number of images with any names
+   - Images are displayed in alphabetical order
+   - All images cycle based on scroll position
    - Supported formats: `.jpg`, `.jpeg`, `.png`
 
 ### Editing via GitHub UI
@@ -127,8 +129,9 @@ house_number: 42 # House number (determines display order)
 
 1. **Create Course File**: Add markdown file in `content/courses/`
 
-   - Filename: `{artist_house_number}-{course-name}.md`
+   - Filename format: `{artist_house_number}-{course-name}.md` (recommended for organization)
    - Example: `42-pottery-workshop.md`
+   - Note: Filename doesn't affect functionality - courses are sorted by linked artist's `house_number`
 
 2. **Course Frontmatter Structure**:
 
@@ -141,18 +144,17 @@ end_month: 6 # End month (1-12)
 link: https://www.janedoe.com/courses # Registration/info link
 additional_artist_id: john-smith # Optional co-instructor
 ---
-Course description goes here in markdown format.
-You can use **bold**, *italic*, and other markdown formatting.
-
-Multiple paragraphs are supported.
+Course description goes here as plain text.
+Multiple paragraphs are supported, but markdown formatting is not rendered.
 ```
 
 ### Course Features
 
+- **Multiple Courses per Artist**: Artists can have multiple courses by creating separate course files with the same `artist_id`
 - **Automatic Artist Linking**: Courses link to artist profiles automatically
 - **Co-instructors**: Support for multiple instructors via `additional_artist_id`
-- **Sorting**: Courses display in house number order
-- **Rich Content**: Full markdown support in course descriptions
+- **Sorting**: Courses display in house number order of the linked artist
+- **Plain Text Content**: Course descriptions are displayed as plain text (markdown is not rendered)
 
 ## 📅 Agenda Management
 
@@ -197,25 +199,27 @@ Event description in markdown format.
 ```
 public/assets/
 ├── artist-id/
-│   ├── artist-id.jpg          # Main image (first alphabetically)
-│   ├── artist-id_flip.jpg     # Hover image (optional)
-│   └── other-images.jpg       # Additional images (ignored)
+│   ├── image1.jpg             # Any filename works
+│   ├── image2.png             # Images sorted alphabetically
+│   ├── image3.jpeg            # All images used in scroll cycle
+│   └── any-name.jpg           # Filename doesn't matter
 ```
 
 ### Image Guidelines
 
-- **Naming**: Use artist ID as folder name (matches `id` in artist frontmatter)
+- **Folder Naming**: Use artist ID as folder name (matches `id` in artist frontmatter)
+- **File Naming**: Image filenames don't matter - any name works
 - **Formats**: JPG, JPEG, PNG supported
-- **Main Image**: First image alphabetically becomes the main image
-- **Hover Effect**: Second image (often with `_flip` suffix) used for hover
+- **Display Order**: Images are sorted alphabetically by filename
+- **Scroll-Based Display**: All images cycle equally based on scroll position
 - **Fallbacks**: Missing images handled gracefully with placeholders
 
 ### Adding Images via GitHub
 
 1. Navigate to `public/assets/` in repository
 2. Create new folder with artist ID name
-3. Upload images using GitHub's file upload
-4. Ensure proper naming convention
+3. Upload images with any filenames
+4. Images will automatically display in alphabetical order during scroll
 
 ## 🎨 Design System & v0.dev Integration
 
@@ -288,7 +292,7 @@ The site is configured for automatic deployment. Any changes to the main branch 
 - **Add Artist**: Copy existing artist file, update all fields, add images
 - **Update Course**: Edit course file, changes reflect immediately after deployment
 - **Schedule Event**: Add to agenda folder with proper date formatting
-- **Update Images**: Replace files in artist folders, keep same names
+- **Update Images**: Add/replace files in artist folders with any filenames (they'll sort alphabetically)
 
 ## 🆘 Troubleshooting
 
