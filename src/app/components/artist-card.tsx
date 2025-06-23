@@ -3,9 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-
-import { useScrollBasedImages } from "../../hooks/use-scroll-based-images";
-import { type Artist } from "../page";
+import { useScrollBasedImages } from "~/hooks/use-scroll-based-images";
+import type { Artist } from "~/types";
 
 function formatWebsiteDisplay(website: string): string {
   return website.replace(/^https?:\/\//, "").replace(/^www\./, "");

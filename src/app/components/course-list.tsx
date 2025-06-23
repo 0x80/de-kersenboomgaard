@@ -1,17 +1,6 @@
 "use client";
 
-export interface Course {
-  artist_id: string;
-  name: string;
-  link: string;
-  start_month?: number;
-  end_month?: number;
-  content: string;
-  artist_name: string;
-  house_number: number;
-  additional_artist_id?: string;
-  additional_artist_name?: string;
-}
+import type { Course } from "~/types";
 
 export function CourseList({ courses }: { courses: Course[] }) {
   const handleArtistClick = (e: React.MouseEvent, artistId: string) => {

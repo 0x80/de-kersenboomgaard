@@ -1,16 +1,7 @@
 "use client";
 
 import { got } from "get-or-throw";
-
-export interface AgendaItem {
-  title: string;
-  start_date: string;
-  start_time?: string;
-  end_date?: string;
-  end_time?: string;
-  event_link: string;
-  content: string;
-}
+import type { AgendaItem } from "~/types";
 
 const DUTCH_MONTHS = [
   "januari",
