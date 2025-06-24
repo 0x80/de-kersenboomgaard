@@ -337,6 +337,159 @@ The site is configured for automatic deployment. Any changes to the main branch 
 3. Static generation for optimal performance
 4. Automatic sitemap and SEO optimization
 
+## 🔍 Pull Requests & Preview Deployments
+
+This project is hosted on Vercel with automatic preview deployments for every pull request. This allows you to safely test changes before they go live and share previews with stakeholders for approval.
+
+### Creating a Pull Request
+
+#### For Content Changes (Non-Technical Users)
+
+1. **Fork the Repository**
+
+   - Go to the GitHub repository page
+   - Click the "Fork" button in the top-right corner
+   - This creates your own copy of the repository
+
+2. **Make Your Changes**
+
+   - Navigate to your forked repository
+   - Edit files directly in the GitHub web interface
+   - Add new artists, update courses, or modify content as needed
+
+3. **Create the Pull Request**
+   - After making changes, GitHub will show a "Compare & pull request" button
+   - Click it and add a descriptive title like "Add new artist: Jane Doe"
+   - Provide details about what you've changed in the description
+   - Click "Create pull request"
+
+#### For Code Changes (Developers)
+
+```bash
+# Create a new branch for your changes
+git checkout -b feature/your-feature-name
+
+# Make your changes
+# ... edit files ...
+
+# Commit your changes
+git add .
+git commit -m "Add new feature: description"
+
+# Push to your fork or branch
+git push origin feature/your-feature-name
+
+# Create pull request via GitHub interface
+```
+
+### Automatic Preview Deployments
+
+When you create a pull request, Vercel automatically:
+
+1. **Builds Your Changes** - Creates a complete build with your modifications
+2. **Deploys to Preview URL** - Generates a unique preview URL for testing
+3. **Updates on Changes** - Rebuilds and updates the preview for each new commit
+4. **Cleans Up** - Removes the preview deployment when the PR is merged or closed
+
+### Accessing Preview Deployments
+
+#### Finding Your Preview URL
+
+1. **GitHub PR Page** - Look for the Vercel bot comment with the preview link
+2. **GitHub Checks** - Click "Details" next to the Vercel deployment check
+3. **Vercel Dashboard** - View all deployments in your Vercel project dashboard
+
+#### Preview URL Format
+
+```
+https://de-kersenboomgaard-git-[branch-name]-[username].vercel.app
+```
+
+### Benefits of Preview Deployments
+
+#### Safe Testing Environment
+
+- **No Risk to Live Site** - Test changes without affecting the production website
+- **Full Functionality** - Preview deployments include all features and content
+- **Real Environment** - Test with actual domain behavior and performance
+
+#### Stakeholder Review
+
+- **Share with Artists** - Send preview links to artists for content approval
+- **Client Feedback** - Get feedback from stakeholders before changes go live
+- **Visual Confirmation** - See exactly how changes will look on the live site
+
+#### Development Workflow
+
+- **Feature Testing** - Test new features in isolation
+- **Content Validation** - Verify content formatting and display
+- **SEO Testing** - Check meta tags and structured data in preview environment
+
+### Recommended Workflow
+
+#### For Content Updates
+
+1. **Create PR** with your content changes
+2. **Share Preview Link** with relevant artists or stakeholders
+3. **Gather Feedback** and make any necessary adjustments
+4. **Merge PR** once approved - changes automatically deploy to live site
+
+#### For Code Changes
+
+1. **Develop in Branch** with proper testing
+2. **Create PR** with detailed description of changes
+3. **Test Preview Deployment** thoroughly
+4. **Code Review** by team members
+5. **Merge** after approval and testing
+
+### Preview Deployment Features
+
+#### Automatic Updates
+
+- **Live Sync** - Every commit to the PR branch updates the preview
+- **Build Status** - GitHub shows build success/failure status
+- **Comment Updates** - Vercel bot updates the PR comment with new preview links
+
+#### Full Feature Parity
+
+- **Complete Build** - Includes all optimizations and features
+- **Real Data** - Uses actual content and images
+- **Performance Testing** - Test loading speeds and optimization
+
+#### Easy Cleanup
+
+- **Automatic Removal** - Previews are automatically deleted when PR is closed
+- **No Manual Cleanup** - No need to manually manage preview deployments
+- **Resource Efficient** - Vercel handles all deployment lifecycle management
+
+### Troubleshooting Preview Deployments
+
+#### Common Issues
+
+- **Build Failures** - Check the Vercel build logs for syntax errors
+- **Missing Content** - Verify file paths and frontmatter syntax
+- **Slow Loading** - Large images may need optimization
+- **404 Errors** - Check that new content files follow naming conventions
+
+#### Getting Help
+
+- **Build Logs** - Check Vercel deployment logs for detailed error messages
+- **GitHub Checks** - Review failed checks for specific issues
+- **Local Testing** - Run `pnpm dev` locally to test changes before pushing
+
+### Best Practices
+
+#### Content Changes
+
+- **Test Locally First** - Use `pnpm dev` to verify changes work correctly
+- **Descriptive PR Titles** - Use clear titles like "Add artist: Name" or "Update course: Title"
+- **Include Screenshots** - Add screenshots to PR description for visual changes
+
+#### Code Changes
+
+- **Small, Focused PRs** - Keep changes focused on a single feature or fix
+- **Test All Scenarios** - Verify changes work across different content types
+
 ## 📝 Content Editing Tips
 
 ### For Non-Technical Users
