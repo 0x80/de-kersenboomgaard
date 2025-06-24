@@ -1,7 +1,8 @@
 ---
 id: kim-van-der-zijde
 name: Kim van der Zijde
-profession: Beeldend kunstenaar
+profession: Ontwerper van kostuums en decor voor theater
 link: https://kimvanderzijde.nl
+building_number: 2
 house_number: 24
 ---

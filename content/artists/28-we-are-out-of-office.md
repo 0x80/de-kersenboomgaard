@@ -1,7 +1,8 @@
 ---
 id: we-are-out-of-office
-name: We Are Out Of Office
-profession: Kunstenaars duo Felix van Dam & Winneke de Groot
+name: We are out of office
+profession: Kunstenaars duo
 link: https://weareoutofoffice.bigcartel.com/
+building_number: 2
 house_number: 26
 ---

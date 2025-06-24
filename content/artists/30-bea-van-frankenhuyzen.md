@@ -1,7 +1,8 @@
 ---
 id: bea-van-frankenhuyzen
 name: Bea van Frankenhuyzen
-profession: Beeldend kunstenaar
+profession: Multidisciplinair kunstenaar en ontwerper
 link: https://studiobea.nl
+building_number: 2
 house_number: 30
 ---

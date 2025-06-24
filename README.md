@@ -120,6 +120,7 @@ id: jane-doe # Unique identifier (used for images)
 name: Jane Doe # Display name
 profession: Painter & Sculptor # What they do
 link: https://www.janedoe.com # Website (fully qualified URL)
+building_number: 2 # Building number (1, 2, or 3)
 house_number: 42 # House number (determines display order)
 ---
 ```

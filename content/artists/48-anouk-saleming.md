@@ -1,7 +1,8 @@
 ---
 id: anouk-saleming
 name: Anouk Saleming
-profession: Beeldend kunstenaar
+profession: "Theaterdocent, schrijver en performer"
 link: https://www.musework.nl/
+building_number: 1
 house_number: 48
 ---
