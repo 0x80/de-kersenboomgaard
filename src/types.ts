@@ -10,16 +10,13 @@ export interface Artist {
 }
 
 export interface Course {
-  artist_id: string;
+  artist_ids: string | string[];
   name: string;
   link: string;
   start_month?: number;
   end_month?: number;
   content: string;
-  artist_name: string;
   house_number: number;
-  additional_artist_id?: string;
-  additional_artist_name?: string;
 }
 
 export interface AgendaItem {

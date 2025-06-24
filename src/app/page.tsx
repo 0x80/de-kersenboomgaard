@@ -92,7 +92,7 @@ export default async function Component() {
                 </SectionHeader>
               </div>
 
-              <CourseList courses={courses} />
+              <CourseList courses={courses} artists={artists} />
             </>
           )}
 

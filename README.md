@@ -2,7 +2,7 @@
 
 A modern website for the Kersenboomgaard artist studios in Utrecht, showcasing artists, courses, and events.
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -153,12 +153,11 @@ house_number: 42 # House number (determines display order)
 
 ```yaml
 ---
-artist_id: jane-doe # Must match artist ID
+artist_ids: jane-doe,john-smith # Instructor IDs (comma-separated, links to artist profiles)
 name: Pottery Workshop # Course title
 start_month: 3 # Start month (1-12)
 end_month: 6 # End month (1-12)
 link: https://www.janedoe.com/courses # Registration/info link
-additional_artist_id: john-smith # Optional co-instructor
 ---
 Course description goes here as plain text.
 Multiple paragraphs are supported, but markdown formatting is not rendered.
@@ -166,11 +165,14 @@ Multiple paragraphs are supported, but markdown formatting is not rendered.
 
 ### Course Features
 
-- **Multiple Courses per Artist**: Artists can have multiple courses by creating separate course files with the same `artist_id`
+- **Multiple Instructors**: Use `artist_ids` to link multiple instructors (comma-separated, creates clickable links to artist profiles)
+- **Multiple Courses per Artist**: Artists can have multiple courses by creating separate course files
 - **Automatic Artist Linking**: Courses link to artist profiles automatically
-- **Co-instructors**: Support for multiple instructors via `additional_artist_id`
-- **Sorting**: Courses display in house number order of the linked artist
+- **Smart Display**: Shows "docent" for single instructor, "docenten" for multiple instructors
+- **Flexible Format**: Supports single artist, comma-separated string, or array format
+- **Sorting**: Courses display in house number order of the first linked artist
 - **Plain Text Content**: Course descriptions are displayed as plain text (markdown is not rendered)
+- **Backward Compatibility**: Still supports old `artist_id`/`additional_artist_id` format during transition
 
 ## 🎨 Exposition Management
 
