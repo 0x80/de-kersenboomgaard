@@ -70,9 +70,8 @@ export async function getSEOData(): Promise<SEOData> {
     ...courseKeywords,
   ];
 
-  // Generate dynamic description mentioning specific well-known artists
-  const featuredArtists = artistNames.slice(0, 4); // First 4 artists
-  const description = `De Kersenboomgaard Utrecht: kunstenaarscommunity met ${artists.length}+ kunstenaars, makers en creatievelingen waaronder ${featuredArtists.join(", ")}. Atelierwoningen, cursussen en workshops in Leidsche Rijn.`;
+  // Generate dynamic description without mentioning specific artists to treat everyone equally
+  const description = `De Kersenboomgaard Utrecht: kunstenaarscommunity met ${artists.length}+ kunstenaars, makers en creatievelingen. Atelierwoningen, cursussen en workshops in Leidsche Rijn.`;
 
   // Generate dynamic title
   const title = `De Kersenboomgaard - Kunstenaars & Ateliers Utrecht | ${artists.length}+ Creatievelingen`;
