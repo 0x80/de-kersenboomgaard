@@ -64,12 +64,12 @@ export function generateStructuredData(
 
   // Person schemas for artists
   const persons = artists
-    .filter((artist) => artist.name && artist.description)
+    .filter((artist) => artist.name && artist.profession)
     .map((artist) => ({
       "@context": "https://schema.org",
       "@type": "Person",
       name: artist.name,
-      jobTitle: artist.description,
+      jobTitle: artist.profession,
       worksFor: {
         "@type": "Organization",
         name: "De Kersenboomgaard",
@@ -81,7 +81,7 @@ export function generateStructuredData(
         postalCode: "3544HM",
         addressCountry: "NL",
       },
-      ...(artist.website && { url: artist.website }),
+      ...(artist.link && { url: artist.link }),
       ...(artist.image && {
         image: {
           "@type": "ImageObject",

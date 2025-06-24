@@ -22,8 +22,8 @@ export async function getArtists(): Promise<Artist[]> {
       return {
         id,
         name: data.name,
-        description: data.profession,
-        website: data.link,
+        profession: data.profession,
+        link: data.link,
         image,
         flip_image,
         all_images,

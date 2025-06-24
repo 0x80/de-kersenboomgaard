@@ -6,8 +6,8 @@ import { useEffect, useState } from "react";
 import { useScrollBasedImages } from "~/hooks/use-scroll-based-images";
 import type { Artist } from "~/types";
 
-function formatWebsiteDisplay(website: string): string {
-  return website.replace(/^https?:\/\//, "").replace(/^www\./, "");
+function formatWebsiteDisplay(link: string): string {
+  return link.replace(/^https?:\/\//, "").replace(/^www\./, "");
 }
 
 export function ArtistCard({ artist }: { artist: Artist }) {
@@ -103,19 +103,19 @@ export function ArtistCard({ artist }: { artist: Artist }) {
         <h3 className="mb-1 text-xl font-medium text-gray-900">
           {artist.name}
         </h3>
-        {artist.description && (
+        {artist.profession && (
           <p className="text-m mb-2 leading-relaxed text-gray-600">
-            {artist.description}
+            {artist.profession}
           </p>
         )}
-        {artist.website && (
+        {artist.link && (
           <Link
-            href={artist.website}
+            href={artist.link}
             className={`text-md text-gray-400 transition-colors hover:text-gray-600 ${
               isHovered ? "border-b border-gray-400" : ""
             }`}
           >
-            {formatWebsiteDisplay(artist.website)}
+            {formatWebsiteDisplay(artist.link)}
           </Link>
         )}
       </div>

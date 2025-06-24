@@ -21,7 +21,7 @@ export async function getSEOData(): Promise<SEOData> {
   const professions = [
     ...new Set(
       artists
-        .map((artist) => artist.description)
+        .map((artist) => artist.profession)
         .filter(Boolean)
         .map((profession) => profession.toLowerCase()),
     ),
