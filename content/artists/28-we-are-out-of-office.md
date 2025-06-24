@@ -1,8 +1,7 @@
 ---
 id: we-are-out-of-office
-name: We are out of office
-profession: Kunstenaars duo
+name: We Are Out Of Office
+profession: Beeldend kunstenaars
 link: https://weareoutofoffice.bigcartel.com/
-building_number: 2
 house_number: 26
 ---

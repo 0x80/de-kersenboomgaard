@@ -1,8 +1,7 @@
 ---
 id: minke-elisa-brands
-name: Minke Elisa Brands
-profession: Choreograaf en artistiek leider
+name: Minke & Elisa Brands
+profession: Schrijver en beeldend kunstenaar
 link: https://minkeelisabrands.nl
-building_number: 1
 house_number: 42
 ---

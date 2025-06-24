@@ -1,7 +1,6 @@
 ---
 id: lars-zuidweg
 name: Lars Zuidweg
-profession: Schrijver en beeldend kunstenaar
-building_number: 1
+profession: Beeldend kunstenaar
 house_number: 58
 ---
