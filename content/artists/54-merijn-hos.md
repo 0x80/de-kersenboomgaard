@@ -1,7 +1,7 @@
 ---
 id: merijn-hos
 name: Merijn Hos
-profession: Beeldend kunstenaar
+profession: Illustrator, beeldend kunstenaar en art director
 link: https://merijnhos.com
 house_number: 54
 ---

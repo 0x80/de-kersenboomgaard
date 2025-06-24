@@ -1,7 +1,7 @@
 ---
 id: jaya-pelupessy
 name: Jaya Pelupessy
-profession: Beeldend kunstenaar
+profession: Fotografie
 link: https://www.jayapelupessy.com
 house_number: 32
 ---

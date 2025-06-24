@@ -1,7 +1,7 @@
 ---
 id: leen-kessels
 name: Leen Kessels
-profession: Beeldend kunstenaar
+profession: Beeldhouwer in steen
 link: https://www.leenkessels.nl
 house_number: 2
 ---

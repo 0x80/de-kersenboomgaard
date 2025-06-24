@@ -1,6 +1,6 @@
 ---
 id: elma-cavcic
-name: Elma Čavčić
+name: Elma Cavcic
 profession: Beeldend kunstenaar
 link: https://www.elmacavcic.nl/
 house_number: 44

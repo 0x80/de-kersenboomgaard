@@ -72,15 +72,19 @@ export default async function Component() {
           </div>
 
           {/* Expositions Section */}
-          {expositions.length > 0 && (
-            <>
-              <div className="mt-16 mb-8">
-                <SectionHeader id="expositions">
-                  Exposities & Voorstellingen
-                </SectionHeader>
-              </div>
-              <ExpositionList expositions={expositions} artists={artists} />
-            </>
+          <div className="mt-16 mb-8">
+            <SectionHeader id="expositions">
+              Exposities & Voorstellingen
+            </SectionHeader>
+          </div>
+          {expositions.length > 0 ? (
+            <ExpositionList expositions={expositions} artists={artists} />
+          ) : (
+            <div className="mx-auto max-w-4xl">
+              <p className="text-center text-gray-600">
+                Momenteel zijn er geen exposities of voorstellingen gepland.
+              </p>
+            </div>
           )}
 
           {/* Courses Section */}
