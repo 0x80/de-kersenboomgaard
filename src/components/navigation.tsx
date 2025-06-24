@@ -90,7 +90,7 @@ export function Navigation() {
               <a
                 key={item.href}
                 href={item.href}
-                className="rounded-md px-4 py-2 text-sm tracking-wide text-gray-600 uppercase transition-colors hover:bg-gray-100/50 hover:text-gray-900 focus:bg-gray-100/50 focus:text-gray-900 focus:outline-none"
+                className="px-4 py-2 text-sm tracking-wide text-gray-600 uppercase transition-colors hover:text-black hover:shadow-[0_3px_0_0_#374151] focus:text-black focus:shadow-[0_3px_0_0_#374151] focus:outline-none"
               >
                 {item.label}
               </a>

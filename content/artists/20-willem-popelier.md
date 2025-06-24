@@ -1,8 +1,7 @@
 ---
 id: willem-popelier
 name: Willem Popelier
-profession: Werkt met fotografie
+profession: Beeldend kunstenaar
 link: https://www.willempopelier.nl
-building_number: 3
 house_number: 20
 ---

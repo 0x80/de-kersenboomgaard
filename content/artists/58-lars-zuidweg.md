@@ -1,6 +1,6 @@
 ---
 id: lars-zuidweg
 name: Lars Zuidweg
-building_number: 1
+profession: Beeldend kunstenaar
 house_number: 58
 ---

@@ -1,8 +1,7 @@
 ---
 id: nanette-smeets
 name: Nanette Smeets
-profession: Visual storytelling en freelance illustratie
+profession: Beeldend kunstenaar
 link: https://inktvogel.nl
-building_number: 2
 house_number: 50
 ---

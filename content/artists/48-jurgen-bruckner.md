@@ -1,7 +1,6 @@
 ---
 id: jurgen-bruckner
-name: Jürgen Brucker
-profession: "Studio Koerper"
-building_number: 1
+name: Jürgen Bruckner
+profession: Beeldend kunstenaar
 house_number: 48
 ---
