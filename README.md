@@ -246,6 +246,66 @@ This project uses the same tech stack as [v0.dev](https://v0.dev), making it per
 - **CSS Variables**: Enabled for consistent theming
 - **Component Style**: New York (clean, minimal aesthetic)
 
+## 🔍 SEO & Search Engine Optimization
+
+The website features an advanced, automated SEO system that dynamically generates search engine optimization data from your content files. This ensures maximum discoverability for both the artist community and individual artists.
+
+### How It Works
+
+The SEO system automatically extracts information from your artist and course markdown files to generate:
+
+- **Dynamic Page Titles**: "De Kersenboomgaard - Kunstenaars & Ateliers Utrecht | 30+ Creatievelingen"
+- **Rich Descriptions**: Mentions specific artists like "Max Kisman, Raafat Ballan, Jesse van Boheemen"
+- **Comprehensive Keywords**: All artist names, professions, and course titles
+- **Structured Data**: Schema.org markup for enhanced search results
+
+### What Gets Generated Automatically
+
+#### Keywords & Metadata
+
+- **Base Keywords**: "De Kersenboomgaard", "kunstenaars Utrecht", "ateliers Utrecht"
+- **Artist-Specific**: Each artist name + "Utrecht" (e.g., "Max Kisman Utrecht")
+- **Profession-Based**: "beeldhouwer Utrecht", "schilder Utrecht", etc.
+- **Course-Based**: "cursus [course name]", "workshop [course name]"
+
+#### Structured Data (JSON-LD)
+
+- **Organization Schema**: De Kersenboomgaard as kunstenaarscommunity
+- **LocalBusiness Schema**: Address, location, and business details
+- **Person Schemas**: Individual artist profiles with professions and websites
+- **Course Schemas**: Workshop listings with instructors and locations
+
+#### Social Media Optimization
+
+- **Open Graph Tags**: Optimized Facebook sharing
+- **Twitter Cards**: Enhanced Twitter sharing
+- **Image Metadata**: Proper social media image handling
+
+### Search Engine Benefits
+
+The automated system ensures your site ranks for searches like:
+
+- **"Max Kisman Utrecht"** → Direct artist match
+- **"kunstenaars Utrecht"** → Primary community result
+- **"cursussen beeldende kunst Utrecht"** → Course matches
+- **"ateliers Utrecht"** → High ranking for the community
+
+### Technical Implementation
+
+- **Build-Time Generation**: All SEO data generated during build for optimal performance
+- **Automatic Updates**: Adding new artists or courses automatically updates SEO
+- **Dutch Optimization**: Focused on Dutch keywords and local Utrecht searches
+- **Schema.org Compliance**: Rich snippets for enhanced search results
+
+### Files Involved
+
+- `src/app/helpers/get-seo-data.ts` - Extracts SEO data from content
+- `src/app/helpers/generate-structured-data.ts` - Creates JSON-LD markup
+- `src/app/layout.tsx` - Implements metadata and social tags
+- `src/app/page.tsx` - Includes structured data scripts
+
+The system requires no manual SEO work - simply add artists and courses using the content management system, and search optimization happens automatically.
+
 ## 🔧 Development Guidelines
 
 ### Code Style
