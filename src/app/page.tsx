@@ -75,7 +75,9 @@ export default async function Component() {
           {expositions.length > 0 && (
             <>
               <div className="mt-16 mb-8">
-                <SectionHeader id="expositions">Exposities</SectionHeader>
+                <SectionHeader id="expositions">
+                  Exposities & Voorstellingen
+                </SectionHeader>
               </div>
               <ExpositionList expositions={expositions} artists={artists} />
             </>

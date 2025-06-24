@@ -6,10 +6,10 @@ end_date: 2024-11-01
 end_time: h17m00
 location: Oude Schuur Kersenboomgaard
 address: Kersenlaan 12, 1234 AB Boomstad
-curator: Sophie Blad
-opening_time: h15m00
-opening_description: Vernissage met rondleiding en borrel
-artist_id:
+opening_event_time: h15m00
+opening_event_description: Vernissage met rondleiding en borrel
+artist_ids: jeroen-van-loon,willem-popelier
+link: https://www.stedelijkmuseum.nl/nl/tentoonstellingen
 ---
 
 De herfst-expositie brengt fotografie en beeldhouwkunst samen onder het thema 'Vergankelijkheid'.

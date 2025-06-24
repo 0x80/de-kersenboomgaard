@@ -6,10 +6,10 @@ end_date: 2024-08-31
 end_time: h19m00
 location: Buitenplaats Kersenboomgaard
 address: Kersenlaan 12, 1234 AB Boomstad
-curator: Pieter van Zon
-opening_time: h13m00
-opening_description: Feestelijke opening met muziek en borrel
-artist_id:
+opening_event_time: h13m00
+opening_event_description: Feestelijke opening met muziek en borrel
+artist_ids: anne-forest,boris-rijksen,iris-frederix
+link: https://www.centraalmuseum.nl/nl/zien-en-doen/tentoonstellingen
 ---
 
 De zomer-expositie staat in het teken van 'Licht en Ruimte', met installaties en schilderijen in de open lucht.

@@ -72,15 +72,17 @@ pnpm lint         # Run ESLint
 │   │   ├── layout.tsx         # Root layout with SEO
 │   │   ├── globals.css        # Global styles
 │   │   ├── components/        # Page-specific components
-│   │   │   ├── agenda-list.tsx    # Agenda display component
-│   │   │   ├── artist-card.tsx    # Artist display component
-│   │   │   └── course-list.tsx    # Course display component
+│   │   │   ├── agenda-list.tsx      # Agenda display component
+│   │   │   ├── artist-card.tsx      # Artist display component
+│   │   │   ├── course-list.tsx      # Course display component
+│   │   │   └── exposition-list.tsx  # Exposition display component
 │   │   └── helpers/           # Server-side helper functions
 │   │       ├── generate-structured-data.ts  # SEO structured data
 │   │       ├── get-agenda-items.ts          # Agenda content loader
 │   │       ├── get-artist-images.ts         # Image management
 │   │       ├── get-artists.ts               # Artist content loader
 │   │       ├── get-courses.ts               # Course content loader
+│   │       ├── get-expositions.ts           # Exposition content loader
 │   │       └── get-seo-data.ts              # SEO metadata generator
 │   ├── components/
 │   │   ├── navigation.tsx     # Site navigation
@@ -93,6 +95,7 @@ pnpm lint         # Run ESLint
 ├── content/                  # Content management (markdown files)
 │   ├── artists/             # Artist profiles
 │   ├── courses/             # Course information
+│   ├── expositions/         # Exhibition listings
 │   └── agenda/              # Event listings
 ├── public/
 │   └── assets/              # Artist images organized by ID
@@ -168,6 +171,60 @@ Multiple paragraphs are supported, but markdown formatting is not rendered.
 - **Co-instructors**: Support for multiple instructors via `additional_artist_id`
 - **Sorting**: Courses display in house number order of the linked artist
 - **Plain Text Content**: Course descriptions are displayed as plain text (markdown is not rendered)
+
+## 🎨 Exposition Management
+
+### Adding Expositions
+
+1. **Create Exposition File**: Add markdown file in `content/expositions/`
+
+   - Filename format: `expo-YYYY-season.md` or descriptive name
+   - Example: `expo-2024-spring.md`, `expo-winter-showcase.md`
+
+2. **Exposition Frontmatter Structure**:
+
+```yaml
+---
+title: Lente Expositie 2024 # Exhibition title
+start_date: 2024-04-10 # Start date (YYYY-MM-DD)
+start_time: h14m00 # Opening time (h{hour}m{minute})
+end_date: 2024-06-10 # End date (YYYY-MM-DD)
+end_time: h18m00 # Closing time (optional)
+location: Galerie Kersenboomgaard # Venue name
+address: Kersenlaan 12, 1234 AB Boomstad # Full address
+curator: Anna de Kunst # Curator name
+opening_event_time: h14m00 # Special opening event time
+opening_event_description: Officiële opening met muziek en borrel # Opening details
+artist_ids: thijs-koerselman,max-kisman # Featured artists (comma-separated, links to artist profiles)
+link: https://www.galerie-kersenboomgaard.nl/exposities/lente-2024 # More info link
+---
+Exhibition description in plain text.
+Multiple paragraphs supported.
+```
+
+### Exposition Features
+
+- **Multiple Artist Linking**: Use `artist_ids` to link multiple featured artists (comma-separated, creates clickable links to artist profiles)
+- **"Meer info" Links**: Use `link` to display a dedicated "Meer info" button (opens in new tab)
+- **Dutch Date Formatting**: Automatic formatting like "10 april - 10 juni 2024"
+- **Opening Events**: Special opening event time and description support
+- **Location Details**: Full venue and address information
+- **Curator Information**: Curator name and details
+- **Automatic Sorting**: Expositions display by date (most recent first)
+- **Flexible Artist Format**: Supports single artist, comma-separated string, or array format
+
+### Time Format (Same as Agenda)
+
+- Use format: `h{hour}m{minute}`
+- Examples: `h09m30` (9:30), `h14m00` (14:00), `h20m15` (20:15)
+- Times display in Dutch format with proper formatting
+
+### Date Display Features
+
+- **Single Day**: "10 april 2024 • 14:00 - 18:00"
+- **Multiple Days**: "10 - 15 april 2024 • 14:00 - 18:00"
+- **Cross-month**: "29 april - 2 mei 2024"
+- **Dutch Months**: Automatic translation to Dutch month names
 
 ## 📅 Agenda Management
 

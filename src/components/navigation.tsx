@@ -5,6 +5,7 @@ import * as React from "react";
 
 const navigationItems = [
   { href: "#artists", label: "BEWONERS" },
+  { href: "#expositions", label: "EXPOSITIES" },
   { href: "#courses", label: "CURSUSSEN" },
   { href: "#agenda", label: "AGENDA" },
   { href: "#over-ons", label: "OVER ONS" },

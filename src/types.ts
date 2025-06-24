@@ -44,14 +44,19 @@ export interface Exposition {
   /**
    * Time of the opening event (one-off, always on the first day)
    */
-  opening_time?: string;
+  opening_event_time?: string;
   /**
    * Description for the opening event
    */
-  opening_description?: string;
+  opening_event_description?: string;
   /**
-   * Artist id (should match an artist in content/artists)
+   * Artist ids (should match artists in content/artists)
+   * Can be a single string, comma-separated string, or array of strings
    */
-  artist_id: string;
+  artist_ids: string | string[];
+  /**
+   * Link to more information about the exposition
+   */
+  link?: string;
   content: string;
 }
