@@ -1,3 +1,4 @@
+import { SectionHeader } from "../components/section-header";
 import { AgendaList } from "./components/agenda-list";
 import { ArtistCard } from "./components/artist-card";
 import { CourseList } from "./components/course-list";
@@ -54,10 +55,10 @@ export default async function Component() {
       >
         {/* Main Content */}
         <main className="mx-auto max-w-6xl px-6 py-12 pt-24">
-          <div className="mb-16 text-center">
-            <h2 id="artists" className="mb-4 text-3xl font-light text-gray-900">
+          <div className="mb-16">
+            <SectionHeader id="artists">
               Kunstenaars, Makers & Creatievelingen
-            </h2>
+            </SectionHeader>
           </div>
 
           {/* Artists Grid */}
@@ -70,13 +71,10 @@ export default async function Component() {
           {/* Courses Section */}
           {courses.length > 0 && (
             <>
-              <div className="mt-24 mb-16 text-center">
-                <h2
-                  id="courses"
-                  className="mb-4 text-3xl font-light text-gray-900"
-                >
+              <div className="mt-24 mb-16">
+                <SectionHeader id="courses">
                   Cursussen & Workshops
-                </h2>
+                </SectionHeader>
               </div>
 
               <CourseList courses={courses} />
@@ -86,13 +84,8 @@ export default async function Component() {
           {/* Agenda Section */}
           {agendaItems.length > 0 && (
             <>
-              <div className="mt-24 mb-16 text-center">
-                <h2
-                  id="agenda"
-                  className="mb-4 text-3xl font-light text-gray-900"
-                >
-                  Agenda
-                </h2>
+              <div className="mt-24 mb-16">
+                <SectionHeader id="agenda">Agenda</SectionHeader>
               </div>
 
               <AgendaList agendaItems={agendaItems} />
@@ -100,13 +93,8 @@ export default async function Component() {
           )}
 
           {/* Over ons Section */}
-          <div className="mt-24 mb-16 text-center">
-            <h2
-              id="over-ons"
-              className="mb-4 text-3xl font-light text-gray-900"
-            >
-              Over Ons
-            </h2>
+          <div className="mt-24 mb-16">
+            <SectionHeader id="over-ons">Over Ons</SectionHeader>
           </div>
 
           <div className="mx-auto max-w-4xl">
@@ -162,10 +150,8 @@ export default async function Component() {
           </div>
 
           {/* Contact Section */}
-          <div className="mt-24 mb-16 text-center">
-            <h2 id="contact" className="mb-4 text-3xl font-light text-gray-900">
-              Contact
-            </h2>
+          <div className="mt-24 mb-16">
+            <SectionHeader id="contact">Contact</SectionHeader>
           </div>
 
           <div className="mx-auto max-w-4xl">
