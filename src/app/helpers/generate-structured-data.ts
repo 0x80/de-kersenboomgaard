@@ -11,6 +11,8 @@ export function generateStructuredData(
   artists: Artist[],
   courses: Course[],
 ): StructuredData {
+  // Create a map for quick artist lookup
+  const artistsMap = new Map(artists.map((artist) => [artist.id, artist]));
   // Organization schema for De Kersenboomgaard
   const organization = {
     "@context": "https://schema.org",
@@ -91,38 +93,57 @@ export function generateStructuredData(
     }));
 
   // Course/Event schemas
-  const courseSchemas = courses.map((course) => ({
-    "@context": "https://schema.org",
-    "@type": "Course",
-    name: course.name,
-    description: `${course.name} gegeven door ${course.artist_name}${
-      course.additional_artist_name
-        ? ` en ${course.additional_artist_name}`
-        : ""
-    }`,
-    provider: {
-      "@type": "Organization",
-      name: "De Kersenboomgaard",
-    },
-    instructor: {
-      "@type": "Person",
-      name: course.artist_name,
-    },
-    location: {
-      "@type": "Place",
-      name: "De Kersenboomgaard",
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "Emmy van Lokhorststraat 2 - 60",
-        addressLocality: "Utrecht",
-        postalCode: "3544HM",
-        addressCountry: "NL",
+  const courseSchemas = courses.map((course) => {
+    // Get artist IDs as array
+    const artistIdsArray = Array.isArray(course.artist_ids)
+      ? course.artist_ids
+      : typeof course.artist_ids === "string" && course.artist_ids.includes(",")
+        ? course.artist_ids.split(",").map((id) => id.trim())
+        : [course.artist_ids].filter((id) => id);
+
+    // Get artist names
+    const courseArtists = artistIdsArray
+      .map((id) => artistsMap.get(id))
+      .filter((artist) => artist !== undefined);
+
+    const artistNames = courseArtists.map((artist) => artist.name);
+    const instructorName = artistNames[0] || "Unknown";
+    const artistNamesText =
+      artistNames.length > 1
+        ? artistNames.slice(0, -1).join(", ") +
+          " en " +
+          artistNames[artistNames.length - 1]
+        : artistNames[0] || "Unknown";
+
+    return {
+      "@context": "https://schema.org",
+      "@type": "Course",
+      name: course.name,
+      description: `${course.name} gegeven door ${artistNamesText}`,
+      provider: {
+        "@type": "Organization",
+        name: "De Kersenboomgaard",
       },
-    },
-    ...(course.link && { url: course.link }),
-    courseMode: "In-person",
-    educationalLevel: "All levels",
-  }));
+      instructor: {
+        "@type": "Person",
+        name: instructorName,
+      },
+      location: {
+        "@type": "Place",
+        name: "De Kersenboomgaard",
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: "Emmy van Lokhorststraat 2 - 60",
+          addressLocality: "Utrecht",
+          postalCode: "3544HM",
+          addressCountry: "NL",
+        },
+      },
+      ...(course.link && { url: course.link }),
+      courseMode: "In-person",
+      educationalLevel: "All levels",
+    };
+  });
 
   return {
     organization,

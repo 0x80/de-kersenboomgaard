@@ -13,10 +13,7 @@ export function SectionHeader({
 }: SectionHeaderProps) {
   return (
     <div className="text-center">
-      <h2
-        id={id}
-        className={`mb-4 text-3xl font-light text-gray-900 ${className}`}
-      >
+      <h2 id={id} className={`text-3xl font-light text-gray-900 ${className}`}>
         <div className="group inline-flex items-center gap-2">
           {children}
           <a

@@ -2,12 +2,15 @@ import { SectionHeader } from "../components/section-header";
 import { AgendaList } from "./components/agenda-list";
 import { ArtistCard } from "./components/artist-card";
 import { CourseList } from "./components/course-list";
+import { ExpositionList } from "./components/exposition-list";
 import { generateStructuredData } from "./helpers/generate-structured-data";
 import { getAgendaItems } from "./helpers/get-agenda-items";
 import { getArtists } from "./helpers/get-artists";
 import { getCourses } from "./helpers/get-courses";
+import { getExpositions } from "./helpers/get-expositions";
 
 export default async function Component() {
+  const expositions = await getExpositions();
   const artists = await getArtists();
   const courses = await getCourses();
   const agendaItems = await getAgendaItems();
@@ -55,7 +58,7 @@ export default async function Component() {
       >
         {/* Main Content */}
         <main className="mx-auto max-w-6xl px-6 py-12 pt-24">
-          <div className="mb-16">
+          <div className="mb-8">
             <SectionHeader id="artists">
               Kunstenaars, Makers & Creatievelingen
             </SectionHeader>
@@ -68,23 +71,35 @@ export default async function Component() {
             ))}
           </div>
 
+          {/* Expositions Section */}
+          {expositions.length > 0 && (
+            <>
+              <div className="mt-16 mb-8">
+                <SectionHeader id="expositions">
+                  Exposities & Voorstellingen
+                </SectionHeader>
+              </div>
+              <ExpositionList expositions={expositions} artists={artists} />
+            </>
+          )}
+
           {/* Courses Section */}
           {courses.length > 0 && (
             <>
-              <div className="mt-24 mb-16">
+              <div className="mt-16 mb-8">
                 <SectionHeader id="courses">
                   Cursussen & Workshops
                 </SectionHeader>
               </div>
 
-              <CourseList courses={courses} />
+              <CourseList courses={courses} artists={artists} />
             </>
           )}
 
           {/* Agenda Section */}
           {agendaItems.length > 0 && (
             <>
-              <div className="mt-24 mb-16">
+              <div className="mt-16 mb-8">
                 <SectionHeader id="agenda">Agenda</SectionHeader>
               </div>
 
@@ -93,7 +108,7 @@ export default async function Component() {
           )}
 
           {/* Over ons Section */}
-          <div className="mt-24 mb-16">
+          <div className="mt-16 mb-8">
             <SectionHeader id="over-ons">Over Ons</SectionHeader>
           </div>
 
@@ -150,7 +165,7 @@ export default async function Component() {
           </div>
 
           {/* Contact Section */}
-          <div className="mt-24 mb-16">
+          <div className="mt-16 mb-8">
             <SectionHeader id="contact">Contact</SectionHeader>
           </div>
 
@@ -166,7 +181,7 @@ export default async function Component() {
           </div>
 
           {/* Facebook Section */}
-          <div className="mt-24 mb-16 text-center">
+          <div className="mt-16 mb-8 text-center">
             <div className="mx-auto max-w-4xl">
               <a
                 href="https://www.facebook.com/atelierskersenboomgaard/"

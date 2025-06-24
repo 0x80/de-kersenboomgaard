@@ -19,27 +19,60 @@ export async function getCourses(): Promise<Course[]> {
       const fileContent = await fs.readFile(filePath, "utf-8");
       const { data, content } = matter(fileContent);
 
-      const artist = artistsMap.get(data.artist_id);
-      const additionalArtist = data.additional_artist_id
-        ? artistsMap.get(data.additional_artist_id)
-        : undefined;
+      // Handle flexible artist_ids format - support both old and new formats
+      let artistIds: string | string[];
+
+      if (data.artist_ids) {
+        // New format
+        artistIds = data.artist_ids;
+      } else {
+        // Backward compatibility: convert old format to new
+        const ids = [data.artist_id];
+        if (data.additional_artist_id) {
+          ids.push(data.additional_artist_id);
+        }
+        artistIds = ids.filter((id) => id); // Remove any undefined values
+      }
+
+      // If it's a string with commas, split it into an array
+      if (typeof artistIds === "string" && artistIds.includes(",")) {
+        artistIds = artistIds
+          .split(",")
+          .map((id) => id.trim())
+          .filter((id) => id.length > 0);
+      }
+
+      // Normalize to array for processing
+      const artistIdsArray = Array.isArray(artistIds)
+        ? artistIds
+        : [artistIds].filter((id) => id);
+
+      // Get the first artist's house number for sorting (use lowest if multiple)
+      const courseArtists = artistIdsArray
+        .map((id) => artistsMap.get(id))
+        .filter(
+          (artist): artist is NonNullable<typeof artist> =>
+            artist !== undefined,
+        );
+
+      const houseNumber =
+        courseArtists.length > 0
+          ? Math.min(...courseArtists.map((artist) => artist.house_number))
+          : 0;
 
       return {
-        artist_id: data.artist_id,
+        artist_ids: artistIds,
         name: data.name,
         link: data.link,
         start_month: data.start_month,
         end_month: data.end_month,
         content: content.trim(),
-        artist_name: artist?.name || "",
-        house_number: artist?.house_number || 0,
-        additional_artist_id: data.additional_artist_id,
-        additional_artist_name: additionalArtist?.name,
+        house_number: houseNumber,
       };
     }),
   );
 
   return courses
-    .filter((course) => course.artist_name) // Only include courses with valid artists
+    .filter((course) => course.house_number > 0) // Only include courses with valid artists
     .toSorted((a, b) => a.house_number - b.house_number);
 }
