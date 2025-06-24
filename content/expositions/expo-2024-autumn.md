@@ -1,12 +1,15 @@
 ---
 title: Herfst Expositie 2024
 start_date: 2024-09-15
-start_time: 15:00
+start_time: h15m00
 end_date: 2024-11-01
-end_time: 17:00
+end_time: h17m00
 location: Oude Schuur Kersenboomgaard
 address: Kersenlaan 12, 1234 AB Boomstad
 curator: Sophie Blad
+opening_time: h15m00
+opening_description: Vernissage met rondleiding en borrel
+artist_id:
 ---
 
 De herfst-expositie brengt fotografie en beeldhouwkunst samen onder het thema 'Vergankelijkheid'.
