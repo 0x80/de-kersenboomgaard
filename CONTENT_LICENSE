@@ -1,0 +1,65 @@
+# Content License and Copyright Notice
+
+## Artist Content Protection
+
+All content in this repository related to artists, including but not limited to:
+
+- Artist images and artwork (`public/assets/artists/`)
+- Artist profiles and biographical information (`content/artists/`)
+- Course descriptions and materials (`content/courses/`)
+- Event information and promotional materials (`content/agenda/`)
+- Any other creative or personal content
+
+**IS PROTECTED BY COPYRIGHT** and remains the exclusive property of the respective artists and creators.
+
+## Usage Restrictions
+
+### ❌ NOT PERMITTED:
+
+- Copying, downloading, or reproducing artist images or artwork
+- Using artist profiles, names, or biographical information for other projects
+- Redistributing or republishing any artist content
+- Creating derivative works from artist materials
+- Commercial use of any artist content
+- Using artist content in other websites, applications, or projects
+
+### ✅ PERMITTED:
+
+- Viewing the content on the official De Kersenboomgaard website
+- Linking to the official website
+- Referencing artists with proper attribution when discussing the community
+
+## Rights and Permissions
+
+Each artist retains full copyright and intellectual property rights to their:
+
+- Artwork and images
+- Professional descriptions and biographical content
+- Course materials and descriptions
+- Any other contributed content
+
+## Contact for Permissions
+
+If you wish to use any artist content, you must:
+
+1. **Contact the individual artist directly** using the website links provided in their profiles
+2. **Obtain explicit written permission** from the artist
+3. **Respect any terms or conditions** set by the artist
+
+## Legal Notice
+
+Unauthorized use of artist content may constitute copyright infringement and could result in legal action. This notice serves as formal notification that all artist content is protected under applicable copyright laws.
+
+## For Developers
+
+If you want to use this codebase to create your own artist community website:
+
+1. ✅ **Use the source code** (covered by MIT License)
+2. ❌ **Remove ALL existing artist content** before deployment
+3. ✅ **Add your own content** with proper permissions
+4. ✅ **Maintain this dual licensing structure** to protect your artists
+
+---
+
+**Last Updated:** January 2025
+**Contact:** For questions about content usage, please contact the individual artists through their provided websites.

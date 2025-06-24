@@ -354,6 +354,60 @@ The site is configured for automatic deployment. Any changes to the main branch 
 - **Schedule Event**: Add to agenda folder with proper date formatting
 - **Update Images**: Add/replace files in artist folders with any filenames (they'll sort alphabetically)
 
+## 📄 License and Copyright
+
+This project uses a **dual licensing structure** to protect artist content while keeping the code open source:
+
+### 🔓 Open Source Code (MIT License)
+
+The source code, configuration files, and technical components are licensed under the MIT License. You are free to:
+
+- Use the code as a template for your own projects
+- Modify and distribute the code
+- Create derivative works
+- Use commercially
+
+### 🔒 Protected Artist Content (All Rights Reserved)
+
+All artist-related content is protected by copyright and **NOT** covered by the MIT license:
+
+- **Artist images and artwork** (`public/assets/artists/`)
+- **Artist profiles and information** (`content/artists/`)
+- **Course descriptions** (`content/courses/`)
+- **Event materials** (`content/agenda/`)
+
+#### ❌ You MAY NOT:
+
+- Copy, download, or reproduce artist images or artwork
+- Use artist profiles or information in other projects
+- Redistribute any artist content
+- Use artist content commercially
+
+#### ✅ You MAY:
+
+- View content on the official website
+- Link to the official website
+- Reference artists with proper attribution
+
+### Using This Code for Your Own Project
+
+If you want to create your own artist community website:
+
+1. **Fork or download** the source code (MIT licensed)
+2. **Remove ALL existing artist content** before deployment
+3. **Add your own content** with proper permissions from your artists
+4. **Maintain this dual licensing structure** to protect your artists' rights
+
+### Getting Permission for Artist Content
+
+To use any artist content, you must:
+
+1. Contact the individual artist directly (links in their profiles)
+2. Obtain explicit written permission
+3. Respect any terms set by the artist
+
+For full details, see [`LICENSE`](LICENSE) and [`CONTENT_LICENSE`](CONTENT_LICENSE).
+
 ## 🆘 Troubleshooting
 
 ### Common Issues

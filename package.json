@@ -2,11 +2,20 @@
   "name": "de-kersenboomgaard",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
+  "description": "Website for De Kersenboomgaard artist community in Utrecht. Code is MIT licensed, artist content is protected by copyright.",
+  "author": "Thijs Koerselman",
+  "homepage": "https://dekersenboomgaard.nl",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/0x80/de-kersenboomgaard"
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "echo \"Error: no test specified\" && exit 0"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.10",
