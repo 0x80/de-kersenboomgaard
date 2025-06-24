@@ -2,12 +2,15 @@ import { SectionHeader } from "../components/section-header";
 import { AgendaList } from "./components/agenda-list";
 import { ArtistCard } from "./components/artist-card";
 import { CourseList } from "./components/course-list";
+import { ExpositionList } from "./components/exposition-list";
 import { generateStructuredData } from "./helpers/generate-structured-data";
 import { getAgendaItems } from "./helpers/get-agenda-items";
 import { getArtists } from "./helpers/get-artists";
 import { getCourses } from "./helpers/get-courses";
+import { getExpositions } from "./helpers/get-expositions";
 
 export default async function Component() {
+  const expositions = await getExpositions();
   const artists = await getArtists();
   const courses = await getCourses();
   const agendaItems = await getAgendaItems();
@@ -55,6 +58,16 @@ export default async function Component() {
       >
         {/* Main Content */}
         <main className="mx-auto max-w-6xl px-6 py-12 pt-24">
+          {/* Expositions Section */}
+          {expositions.length > 0 && (
+            <>
+              <div className="mb-16">
+                <SectionHeader id="expositions">Exposities</SectionHeader>
+              </div>
+              <ExpositionList expositions={expositions} artists={artists} />
+            </>
+          )}
+
           <div className="mb-16">
             <SectionHeader id="artists">
               Kunstenaars, Makers & Creatievelingen
