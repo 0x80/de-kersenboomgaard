@@ -67,16 +67,29 @@ pnpm lint         # Run ESLint
 
 ```
 ├── src/
-│   ├── app/                    # Next.js App Router pages
+│   ├── app/                    # Next.js App Router
 │   │   ├── page.tsx           # Homepage with all content
-│   │   ├── layout.tsx         # Root layout
-│   │   ├── artist-card.tsx    # Artist display component
-│   │   └── course-card.tsx    # Course display component
+│   │   ├── layout.tsx         # Root layout with SEO
+│   │   ├── globals.css        # Global styles
+│   │   ├── components/        # Page-specific components
+│   │   │   ├── agenda-list.tsx    # Agenda display component
+│   │   │   ├── artist-card.tsx    # Artist display component
+│   │   │   └── course-list.tsx    # Course display component
+│   │   └── helpers/           # Server-side helper functions
+│   │       ├── generate-structured-data.ts  # SEO structured data
+│   │       ├── get-agenda-items.ts          # Agenda content loader
+│   │       ├── get-artist-images.ts         # Image management
+│   │       ├── get-artists.ts               # Artist content loader
+│   │       ├── get-courses.ts               # Course content loader
+│   │       └── get-seo-data.ts              # SEO metadata generator
 │   ├── components/
 │   │   ├── navigation.tsx     # Site navigation
 │   │   └── ui/               # ShadCN UI components
 │   ├── hooks/                # Custom React hooks
-│   └── lib/                  # Utility functions
+│   ├── utils/                # Utility functions
+│   │   ├── cn.ts             # Class name utility
+│   │   └── generate-slug.ts  # Slug generation
+│   └── types.ts              # TypeScript type definitions
 ├── content/                  # Content management (markdown files)
 │   ├── artists/             # Artist profiles
 │   ├── courses/             # Course information
@@ -109,7 +122,7 @@ house_number: 42 # House number (determines display order)
 ---
 ```
 
-3. **Add Artist Images**: Create folder `public/assets/jane-doe/`
+3. **Add Artist Images**: Create folder `public/assets/artists/jane-doe/`
    - Add any number of images with any names
    - Images are displayed in alphabetical order
    - All images cycle based on scroll position
@@ -197,7 +210,7 @@ Event description in markdown format.
 ### Image Organization
 
 ```
-public/assets/
+public/assets/artists/
 ├── artist-id/
 │   ├── image1.jpg             # Any filename works
 │   ├── image2.png             # Images sorted alphabetically
@@ -216,7 +229,7 @@ public/assets/
 
 ### Adding Images via GitHub
 
-1. Navigate to `public/assets/` in repository
+1. Navigate to `public/assets/artists/` in repository
 2. Create new folder with artist ID name
 3. Upload images with any filenames
 4. Images will automatically display in alphabetical order during scroll
