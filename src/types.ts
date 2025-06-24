@@ -1,8 +1,8 @@
 export interface Artist {
   id: string;
   name: string;
-  description: string;
-  website: string;
+  profession: string;
+  link: string;
   image: string;
   flip_image: string;
   all_images: string[];
