@@ -93,7 +93,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
               <div className="flex h-full w-full items-center justify-center px-12 sm:px-16">
                 <Carousel
                   className="w-full"
-                  opts={{ startIndex: currentImageIndex }}
+                  opts={{ startIndex: currentImageIndex, loop: true }}
                 >
                   <CarouselContent>
                     {images.map((image, index) => (
