@@ -107,7 +107,6 @@ pnpm lint         # Run ESLint
 ### Adding a New Artist
 
 1. **Create Artist Profile**: Add a new markdown file in `content/artists/`
-
    - Filename format: `{house_number}-{artist-name}.md` (recommended for organization)
    - Example: `42-jane-doe.md`
    - Note: Filename doesn't affect functionality - artists are sorted by `house_number` field
@@ -143,7 +142,6 @@ house_number: 42 # House number (determines display order)
 ### Adding a Course
 
 1. **Create Course File**: Add markdown file in `content/courses/`
-
    - Filename format: `{artist_house_number}-{course-name}.md` (recommended for organization)
    - Example: `42-pottery-workshop.md`
    - Note: Filename doesn't affect functionality - courses are sorted by linked artist's `house_number`
@@ -178,7 +176,6 @@ Multiple paragraphs are supported, but markdown formatting is not rendered.
 ### Adding Expositions
 
 1. **Create Exposition File**: Add markdown file in `content/expositions/`
-
    - Filename format: `expo-YYYY-season.md` or descriptive name
    - Example: `expo-2024-spring.md`, `expo-winter-showcase.md`
 
@@ -232,7 +229,6 @@ Multiple paragraphs supported.
 ### Adding Events
 
 1. **Create Event File**: Add markdown file in `content/agenda/`
-
    - Filename format: `MMDD-event-name.md`
    - Example: `0529-jubileum-15-jaar.md`
 
@@ -417,13 +413,11 @@ This project is hosted on Vercel with automatic preview deployments for every pu
 #### For Content Changes (Non-Technical Users)
 
 1. **Fork the Repository**
-
    - Go to the GitHub repository page
    - Click the "Fork" button in the top-right corner
    - This creates your own copy of the repository
 
 2. **Make Your Changes**
-
    - Navigate to your forked repository
    - Edit files directly in the GitHub web interface
    - Add new artists, update courses, or modify content as needed
