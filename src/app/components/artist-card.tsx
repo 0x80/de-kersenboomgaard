@@ -70,6 +70,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
               <button
                 type="button"
                 className="relative h-[120px] w-[120px] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2"
+                aria-label={`View all images of ${artist.name}`}
               >
                 {images.map((image, index) => (
                   <Image
