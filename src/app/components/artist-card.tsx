@@ -83,7 +83,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
             alt={artist.name}
             width={120}
             height={120}
-            className={`absolute inset-0 h-[120px] w-[120px] rounded-full border-4 border-white object-cover shadow-lg transition-opacity duration-500 ease-in-out ${
+            className={`absolute inset-0 h-[120px] w-[120px] border-4 border-white object-cover shadow-lg transition-opacity duration-500 ease-in-out ${
               showFront ? "opacity-100" : "opacity-0"
             }`}
           />
@@ -93,7 +93,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
             alt={artist.name}
             width={120}
             height={120}
-            className={`absolute inset-0 h-[120px] w-[120px] rounded-full border-4 border-white object-cover shadow-lg transition-opacity duration-500 ease-in-out ${
+            className={`absolute inset-0 h-[120px] w-[120px] border-4 border-white object-cover shadow-lg transition-opacity duration-500 ease-in-out ${
               showFront ? "opacity-0" : "opacity-100"
             }`}
           />
