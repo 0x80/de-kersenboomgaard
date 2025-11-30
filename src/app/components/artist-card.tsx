@@ -93,7 +93,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
                 <Carousel className="w-full">
                   <CarouselContent>
                     {images.map((image, index) => (
-                      <CarouselItem key={index}>
+                      <CarouselItem key={image}>
                         <div className="relative h-[80vh] w-full sm:h-[70vh] sm:max-h-[600px]">
                           <Image
                             src={image}
