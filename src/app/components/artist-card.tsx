@@ -91,7 +91,10 @@ export function ArtistCard({ artist }: { artist: Artist }) {
                 {artist.name} Gallery
               </DialogTitle>
               <div className="flex h-full w-full items-center justify-center px-12 sm:px-16">
-                <Carousel className="w-full">
+                <Carousel
+                  className="w-full"
+                  opts={{ startIndex: currentImageIndex }}
+                >
                   <CarouselContent>
                     {images.map((image, index) => (
                       <CarouselItem key={image}>
