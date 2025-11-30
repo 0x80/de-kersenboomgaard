@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useScrollBasedImages } from "~/hooks/use-scroll-based-images";
 import type { Artist } from "~/types";
 
 function formatWebsiteDisplay(link: string): string {
@@ -12,15 +11,14 @@ function formatWebsiteDisplay(link: string): string {
 
 export function ArtistCard({ artist }: { artist: Artist }) {
   const [isHovered, setIsHovered] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // Use scroll-based images for all devices
-  const { currentImage, elementRef } = useScrollBasedImages({
-    images:
-      artist.all_images.length > 0
-        ? artist.all_images
-        : [artist.image, artist.flip_image].filter(Boolean),
-    enabled: true,
-  });
+  const images =
+    artist.all_images.length > 0
+      ? artist.all_images
+      : [artist.image, artist.flip_image].filter(Boolean);
+
+  const currentImage = images[currentImageIndex] || images[0] || "";
 
   // Cross-fade state management
   const [frontImage, setFrontImage] = useState(currentImage);
@@ -54,11 +52,27 @@ export function ArtistCard({ artist }: { artist: Artist }) {
 
   const handleMouseLeave = () => {
     setIsHovered(false);
+    setCurrentImageIndex(0); // Reset to first image on leave
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (images.length <= 1) return;
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const width = rect.width;
+
+    // Calculate index based on mouse position
+    // 0 to width maps to 0 to images.length - 1
+    const percentage = Math.max(0, Math.min(1, x / width));
+    const index = Math.floor(percentage * images.length);
+    const clampedIndex = Math.max(0, Math.min(images.length - 1, index));
+
+    setCurrentImageIndex(clampedIndex);
   };
 
   return (
     <div
-      ref={elementRef}
       id={`artist-${artist.id}`}
       className="relative flex items-start space-x-4"
       onMouseEnter={handleMouseEnter}
@@ -76,7 +90,10 @@ export function ArtistCard({ artist }: { artist: Artist }) {
         </div>
       )}
       <div className="relative z-10 flex-shrink-0">
-        <div className="relative h-[120px] w-[120px]">
+        <div
+          className="relative h-[120px] w-[120px] cursor-pointer"
+          onMouseMove={handleMouseMove}
+        >
           {/* Front Image */}
           <Image
             src={frontImage || "/placeholder.svg"}
