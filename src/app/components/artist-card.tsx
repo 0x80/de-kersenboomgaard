@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import {
   Carousel,
   CarouselContent,
@@ -25,6 +25,7 @@ function formatWebsiteDisplay(link: string): string {
 
 export function ArtistCard({ artist }: { artist: Artist }) {
   const [isHovered, setIsHovered] = useState(false);
+  const carouselRef = useRef<HTMLDivElement>(null);
 
   const images =
     artist.all_images.length > 0
@@ -43,6 +44,16 @@ export function ArtistCard({ artist }: { artist: Artist }) {
   const handleMouseLeave = () => {
     setIsHovered(false);
   };
+
+  /** Focus the carousel when dialog opens for keyboard navigation */
+  const handleDialogOpen = useCallback((open: boolean) => {
+    if (open) {
+      /** Small delay to ensure the carousel is mounted */
+      setTimeout(() => {
+        carouselRef.current?.focus();
+      }, 0);
+    }
+  }, []);
 
   return (
     <div
@@ -65,7 +76,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
       )}
       <div className="relative z-10 flex-shrink-0">
         {images.length > 1 ? (
-          <Dialog>
+          <Dialog onOpenChange={handleDialogOpen}>
             <DialogTrigger asChild>
               <button
                 type="button"
@@ -92,8 +103,10 @@ export function ArtistCard({ artist }: { artist: Artist }) {
               </DialogTitle>
               <div className="flex h-full w-full items-center justify-center px-12 sm:px-16">
                 <Carousel
-                  className="w-full"
+                  ref={carouselRef}
+                  className="w-full outline-none"
                   opts={{ startIndex: currentImageIndex, loop: true }}
+                  tabIndex={0}
                 >
                   <CarouselContent>
                     {images.map((image, index) => (
