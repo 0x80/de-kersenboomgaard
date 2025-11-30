@@ -1,6 +1,6 @@
 # Ateliers Kersenboomgaard Website
 
-A modern website for the Kersenboomgaard artist studios in Utrecht, showcasing artists, courses, and events.
+The public website of "de Kersenboomgaard" community in Utrecht, showcasing artists, workshops, expositions, and events.
 
 ## Quick Start
 
