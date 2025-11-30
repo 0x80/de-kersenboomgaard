@@ -85,7 +85,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
                 ))}
               </button>
             </DialogTrigger>
-            <DialogContent className="h-[100dvh] w-screen max-w-none border-none bg-transparent p-0 shadow-none sm:h-auto sm:w-[90vw] sm:max-w-4xl sm:p-4 [&>button]:absolute [&>button]:right-4 [&>button]:top-4 [&>button]:z-50 [&>button]:text-white [&>button]:drop-shadow-md">
+            <DialogContent className="h-[100dvh] w-screen max-w-none border-none bg-transparent p-0 shadow-none sm:h-auto sm:w-[90vw] sm:max-w-4xl sm:p-4 [&>button]:absolute [&>button]:top-4 [&>button]:right-4 [&>button]:z-50 [&>button]:text-white [&>button]:drop-shadow-md">
               <DialogTitle className="sr-only">
                 {artist.name} Gallery
               </DialogTitle>
