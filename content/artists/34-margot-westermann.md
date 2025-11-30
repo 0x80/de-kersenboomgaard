@@ -1,7 +1,7 @@
 ---
 id: margot-westermann
 name: Margot Westermann
-profession: Illustratie en druktechnieken
-link: https://www.instagram.com/maak.aap
+profession: Illustrator & Boekvormgever
+link: https://www.solomoos.nl/
 house_number: 34
 ---
