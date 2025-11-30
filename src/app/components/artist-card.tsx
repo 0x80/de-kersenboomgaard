@@ -3,21 +3,21 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import type { Artist } from "~/types";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "~/components/ui/carousel";
 import {
   Dialog,
   DialogContent,
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
-} from "~/components/ui/carousel";
 import { useScrollBasedImages } from "~/hooks/use-scroll-based-images";
+import type { Artist } from "~/types";
 
 function formatWebsiteDisplay(link: string): string {
   return link.replace(/^https?:\/\//, "").replace(/^www\./, "");
@@ -79,7 +79,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
                     alt={artist.name}
                     width={120}
                     height={120}
-                    className={`absolute inset-0 h-[120px] w-[120px] border-4 border-white object-cover shadow-lg transition-opacity duration-300 ${
+                    className={`absolute inset-0 h-[120px] w-[120px] border-4 border-white object-cover shadow-[0_2px_8px_rgba(0,0,0,0.15)] transition-opacity duration-300 ${
                       index === currentImageIndex ? "opacity-100" : "opacity-0"
                     }`}
                   />
@@ -122,7 +122,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
             alt={artist.name}
             width={120}
             height={120}
-            className="h-[120px] w-[120px] border-4 border-white object-cover shadow-lg"
+            className="h-[120px] w-[120px] border-4 border-white object-cover shadow-[0_2px_8px_rgba(0,0,0,0.15)]"
           />
         )}
       </div>
