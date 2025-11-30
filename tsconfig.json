@@ -1,6 +1,7 @@
 {
-  "extends": "@codecompose/typescript-config/nextjs.json",
+  "extends": "@codecompose/typescript-config/nextjs",
   "compilerOptions": {
+    "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"]
     }
