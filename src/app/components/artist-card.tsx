@@ -2,8 +2,21 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { Artist } from "~/types";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from "~/components/ui/carousel";
 
 function formatWebsiteDisplay(link: string): string {
   return link.replace(/^https?:\/\//, "").replace(/^www\./, "");
@@ -11,40 +24,13 @@ function formatWebsiteDisplay(link: string): string {
 
 export function ArtistCard({ artist }: { artist: Artist }) {
   const [isHovered, setIsHovered] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const images =
     artist.all_images.length > 0
       ? artist.all_images
       : [artist.image, artist.flip_image].filter(Boolean);
 
-  const currentImage = images[currentImageIndex] || images[0] || "";
-
-  // Cross-fade state management
-  const [frontImage, setFrontImage] = useState(currentImage);
-  const [backImage, setBackImage] = useState(currentImage);
-  const [showFront, setShowFront] = useState(true);
-
-  // Handle cross-fade when currentImage changes
-  useEffect(() => {
-    if (currentImage && currentImage !== (showFront ? frontImage : backImage)) {
-      if (showFront) {
-        setBackImage(currentImage);
-        setShowFront(false);
-      } else {
-        setFrontImage(currentImage);
-        setShowFront(true);
-      }
-    }
-  }, [currentImage, frontImage, backImage, showFront]);
-
-  // Initialize images when component mounts
-  useEffect(() => {
-    if (currentImage) {
-      setFrontImage(currentImage);
-      setBackImage(currentImage);
-    }
-  }, []);
+  const currentImage = images[0] || "";
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -52,23 +38,6 @@ export function ArtistCard({ artist }: { artist: Artist }) {
 
   const handleMouseLeave = () => {
     setIsHovered(false);
-    setCurrentImageIndex(0); // Reset to first image on leave
-  };
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (images.length <= 1) return;
-
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const width = rect.width;
-
-    // Calculate index based on mouse position
-    // 0 to width maps to 0 to images.length - 1
-    const percentage = Math.max(0, Math.min(1, x / width));
-    const index = Math.floor(percentage * images.length);
-    const clampedIndex = Math.max(0, Math.min(images.length - 1, index));
-
-    setCurrentImageIndex(clampedIndex);
   };
 
   return (
@@ -90,31 +59,51 @@ export function ArtistCard({ artist }: { artist: Artist }) {
         </div>
       )}
       <div className="relative z-10 flex-shrink-0">
-        <div
-          className="relative h-[120px] w-[120px] cursor-pointer"
-          onMouseMove={handleMouseMove}
-        >
-          {/* Front Image */}
-          <Image
-            src={frontImage || "/placeholder.svg"}
-            alt={artist.name}
-            width={120}
-            height={120}
-            className={`absolute inset-0 h-[120px] w-[120px] border-4 border-white object-cover shadow-lg transition-opacity duration-500 ease-in-out ${
-              showFront ? "opacity-100" : "opacity-0"
-            }`}
-          />
-          {/* Back Image */}
-          <Image
-            src={backImage || "/placeholder.svg"}
-            alt={artist.name}
-            width={120}
-            height={120}
-            className={`absolute inset-0 h-[120px] w-[120px] border-4 border-white object-cover shadow-lg transition-opacity duration-500 ease-in-out ${
-              showFront ? "opacity-0" : "opacity-100"
-            }`}
-          />
-        </div>
+        <Dialog>
+          <DialogTrigger asChild>
+            <button
+              type="button"
+              className="relative h-[120px] w-[120px] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2"
+            >
+              <Image
+                src={currentImage || "/placeholder.svg"}
+                alt={artist.name}
+                width={120}
+                height={120}
+                className="h-[120px] w-[120px] border-4 border-white object-cover shadow-lg transition-transform hover:scale-105"
+              />
+            </button>
+          </DialogTrigger>
+          <DialogContent className="max-w-3xl border-none bg-transparent p-0 shadow-none sm:max-w-4xl [&>button]:text-white [&>button]:hover:text-gray-300">
+            <DialogTitle className="sr-only">{artist.name} Gallery</DialogTitle>
+            <Carousel className="w-full">
+              <CarouselContent>
+                {images.map((image, index) => (
+                  <CarouselItem
+                    key={index}
+                    className="flex items-center justify-center"
+                  >
+                    <div className="relative aspect-square h-[50vh] w-full max-w-[80vw] sm:h-[70vh]">
+                      <Image
+                        src={image}
+                        alt={`${artist.name} - Image ${index + 1}`}
+                        fill
+                        className="object-contain"
+                        priority={index === 0}
+                      />
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              {images.length > 1 && (
+                <>
+                  <CarouselPrevious className="left-2 border-none bg-white/80 hover:bg-white sm:left-4" />
+                  <CarouselNext className="right-2 border-none bg-white/80 hover:bg-white sm:right-4" />
+                </>
+              )}
+            </Carousel>
+          </DialogContent>
+        </Dialog>
       </div>
       <div className="relative z-10 min-w-0 flex-1">
         <h3 className="mb-1 text-xl font-medium text-gray-900">
