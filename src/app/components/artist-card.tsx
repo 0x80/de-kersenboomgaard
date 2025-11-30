@@ -17,6 +17,7 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from "~/components/ui/carousel";
+import { useScrollBasedImages } from "~/hooks/use-scroll-based-images";
 
 function formatWebsiteDisplay(link: string): string {
   return link.replace(/^https?:\/\//, "").replace(/^www\./, "");
@@ -30,7 +31,10 @@ export function ArtistCard({ artist }: { artist: Artist }) {
       ? artist.all_images
       : [artist.image, artist.flip_image].filter(Boolean);
 
-  const currentImage = images[0] || "";
+  const { currentImage, currentImageIndex, elementRef } = useScrollBasedImages({
+    images,
+    enabled: images.length > 1,
+  });
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -42,6 +46,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
 
   return (
     <div
+      ref={elementRef}
       id={`artist-${artist.id}`}
       className="relative flex items-start space-x-4"
       onMouseEnter={handleMouseEnter}
@@ -59,51 +64,63 @@ export function ArtistCard({ artist }: { artist: Artist }) {
         </div>
       )}
       <div className="relative z-10 flex-shrink-0">
-        <Dialog>
-          <DialogTrigger asChild>
-            <button
-              type="button"
-              className="relative h-[120px] w-[120px] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2"
-            >
-              <Image
-                src={currentImage || "/placeholder.svg"}
-                alt={artist.name}
-                width={120}
-                height={120}
-                className="h-[120px] w-[120px] border-4 border-white object-cover shadow-lg transition-transform hover:scale-105"
-              />
-            </button>
-          </DialogTrigger>
-          <DialogContent className="max-w-3xl border-none bg-transparent p-0 shadow-none sm:max-w-4xl [&>button]:text-white [&>button]:hover:text-gray-300">
-            <DialogTitle className="sr-only">{artist.name} Gallery</DialogTitle>
-            <Carousel className="w-full">
-              <CarouselContent>
+        {images.length > 1 ? (
+          <Dialog>
+            <DialogTrigger asChild>
+              <button
+                type="button"
+                className="relative h-[120px] w-[120px] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2"
+              >
                 {images.map((image, index) => (
-                  <CarouselItem
-                    key={index}
-                    className="flex items-center justify-center"
-                  >
-                    <div className="relative aspect-square h-[50vh] w-full max-w-[80vw] sm:h-[70vh]">
-                      <Image
-                        src={image}
-                        alt={`${artist.name} - Image ${index + 1}`}
-                        fill
-                        className="object-contain"
-                        priority={index === 0}
-                      />
-                    </div>
-                  </CarouselItem>
+                  <Image
+                    key={image}
+                    src={image}
+                    alt={artist.name}
+                    width={120}
+                    height={120}
+                    className={`absolute inset-0 h-[120px] w-[120px] border-4 border-white object-cover shadow-lg transition-opacity duration-300 ${
+                      index === currentImageIndex ? "opacity-100" : "opacity-0"
+                    }`}
+                  />
                 ))}
-              </CarouselContent>
-              {images.length > 1 && (
-                <>
-                  <CarouselPrevious className="left-2 border-none bg-white/80 hover:bg-white sm:left-4" />
-                  <CarouselNext className="right-2 border-none bg-white/80 hover:bg-white sm:right-4" />
-                </>
-              )}
-            </Carousel>
-          </DialogContent>
-        </Dialog>
+              </button>
+            </DialogTrigger>
+            <DialogContent className="h-[100dvh] w-screen max-w-none border-none bg-transparent p-0 shadow-none sm:h-auto sm:w-[90vw] sm:max-w-4xl sm:p-4 [&>button]:absolute [&>button]:right-4 [&>button]:top-4 [&>button]:z-50 [&>button]:text-white [&>button]:drop-shadow-md">
+              <DialogTitle className="sr-only">
+                {artist.name} Gallery
+              </DialogTitle>
+              <div className="flex h-full w-full items-center justify-center px-12 sm:px-16">
+                <Carousel className="w-full">
+                  <CarouselContent>
+                    {images.map((image, index) => (
+                      <CarouselItem key={index}>
+                        <div className="relative h-[80vh] w-full sm:h-[70vh] sm:max-h-[600px]">
+                          <Image
+                            src={image}
+                            alt={`${artist.name} - Image ${index + 1}`}
+                            fill
+                            className="object-contain"
+                            priority={index === 0}
+                          />
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious className="-left-10 border-none bg-white/90 shadow-md hover:bg-white sm:-left-12" />
+                  <CarouselNext className="-right-10 border-none bg-white/90 shadow-md hover:bg-white sm:-right-12" />
+                </Carousel>
+              </div>
+            </DialogContent>
+          </Dialog>
+        ) : (
+          <Image
+            src={currentImage || "/placeholder.svg"}
+            alt={artist.name}
+            width={120}
+            height={120}
+            className="h-[120px] w-[120px] border-4 border-white object-cover shadow-lg"
+          />
+        )}
       </div>
       <div className="relative z-10 min-w-0 flex-1">
         <h3 className="mb-1 text-xl font-medium text-gray-900">
