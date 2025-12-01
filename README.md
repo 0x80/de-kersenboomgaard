@@ -124,9 +124,11 @@ house_number: 42 # House number (determines display order)
 ```
 
 3. **Add Artist Images**: Create folder `public/assets/artists/jane-doe/`
-   - Add any number of images with any names
-   - Images are displayed in alphabetical order
-   - All images cycle based on scroll position
+   - Add any number of images (no limit)
+   - Images are sorted alphabetically by filename
+   - Each page load starts at a random image
+   - All images cycle through as users scroll (synchronized across all artists)
+   - Clicking an image opens a carousel to browse all images
    - Supported formats: `.jpg`, `.jpeg`, `.png`
 
 ### Editing via GitHub UI
@@ -277,8 +279,11 @@ public/assets/artists/
 - **Folder Naming**: Use artist ID as folder name (matches `id` in artist frontmatter)
 - **File Naming**: Image filenames don't matter - any name works
 - **Formats**: JPG, JPEG, PNG supported
+- **No Limit**: Add as many images as you want per artist
 - **Display Order**: Images are sorted alphabetically by filename
-- **Scroll-Based Display**: All images cycle equally based on scroll position
+- **Random Start**: Each page load begins at a random image per artist
+- **Scroll-Based Cycling**: Images cycle through as users scroll (synchronized across all artists)
+- **Full Access**: Clicking any artist image opens a carousel to browse all their images
 - **Fallbacks**: Missing images handled gracefully with placeholders
 
 ### Adding Images via GitHub
