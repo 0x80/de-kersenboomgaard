@@ -23,7 +23,13 @@ function formatWebsiteDisplay(link: string): string {
   return link.replace(/^https?:\/\//, "").replace(/^www\./, "");
 }
 
-export function ArtistCard({ artist }: { artist: Artist }) {
+export function ArtistCard({
+  artist,
+  initialImageOffset = 0,
+}: {
+  artist: Artist;
+  initialImageOffset?: number;
+}) {
   const [isHovered, setIsHovered] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
 
@@ -32,9 +38,10 @@ export function ArtistCard({ artist }: { artist: Artist }) {
       ? artist.all_images
       : [artist.image, artist.flip_image].filter(Boolean);
 
-  const { currentImage, currentImageIndex, elementRef } = useScrollBasedImages({
+  const { currentImage, currentImageIndex } = useScrollBasedImages({
     images,
     enabled: images.length > 1,
+    initialOffset: initialImageOffset,
   });
 
   const handleMouseEnter = () => {
@@ -57,7 +64,6 @@ export function ArtistCard({ artist }: { artist: Artist }) {
 
   return (
     <div
-      ref={elementRef}
       id={`artist-${artist.id}`}
       className="relative flex items-start space-x-4"
       onMouseEnter={handleMouseEnter}
