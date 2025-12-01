@@ -75,6 +75,9 @@ export function useScrollBasedImages({
 
     /** Calculate image index from current global state */
     const updateImageIndex = () => {
+      /** Guard against division by zero if images array becomes empty */
+      if (images.length === 0) return;
+
       const pixelsPerTransition = window.innerHeight / 2;
       const globalIndex = Math.floor(
         globalAccumulatedScroll / pixelsPerTransition,
