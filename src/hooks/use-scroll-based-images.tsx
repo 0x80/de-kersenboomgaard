@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface UseScrollBasedImagesProps {
   images: string[];
@@ -9,9 +9,56 @@ interface UseScrollBasedImagesProps {
   initialOffset?: number;
 }
 
-/** Shared scroll state across all hook instances for synchronized transitions */
+/** Shared scroll state across all hook instances */
 let globalAccumulatedScroll = 0;
 let lastScrollY = typeof window !== "undefined" ? window.scrollY : 0;
+let listenerCount = 0;
+let subscribers: Set<() => void> = new Set();
+
+/** Single global scroll handler - updates state once and notifies all subscribers */
+function handleGlobalScroll() {
+  const currentScrollY = window.scrollY;
+  const delta = Math.abs(currentScrollY - lastScrollY);
+  lastScrollY = currentScrollY;
+  globalAccumulatedScroll += delta;
+
+  /** Notify all subscribers */
+  subscribers.forEach((callback) => callback());
+}
+
+/** Throttled scroll handler using requestAnimationFrame */
+let ticking = false;
+function throttledScrollHandler() {
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      handleGlobalScroll();
+      ticking = false;
+    });
+    ticking = true;
+  }
+}
+
+/** Register/unregister the global scroll listener based on subscriber count */
+function subscribe(callback: () => void) {
+  subscribers.add(callback);
+  listenerCount++;
+
+  if (listenerCount === 1) {
+    lastScrollY = window.scrollY;
+    window.addEventListener("scroll", throttledScrollHandler, {
+      passive: true,
+    });
+  }
+
+  return () => {
+    subscribers.delete(callback);
+    listenerCount--;
+
+    if (listenerCount === 0) {
+      window.removeEventListener("scroll", throttledScrollHandler);
+    }
+  };
+}
 
 export function useScrollBasedImages({
   images,
@@ -21,51 +68,26 @@ export function useScrollBasedImages({
   /** Initialize with server-provided offset for stable hydration */
   const [currentImageIndex, setCurrentImageIndex] = useState(initialOffset);
 
-  const handleScroll = useCallback(() => {
-    /** Calculate pixels per transition: 2 transitions per viewport height */
-    const pixelsPerTransition = window.innerHeight / 2;
-
-    /** Update global accumulated scroll (both directions count) */
-    const currentScrollY = window.scrollY;
-    const delta = Math.abs(currentScrollY - lastScrollY);
-    lastScrollY = currentScrollY;
-    globalAccumulatedScroll += delta;
-
-    /** Calculate global grid index based on accumulated scroll */
-    const globalIndex = Math.floor(
-      globalAccumulatedScroll / pixelsPerTransition,
-    );
-    /** Apply initial offset and cycle through images round-robin */
-    const imageIndex = (globalIndex + initialOffset) % images.length;
-    setCurrentImageIndex(imageIndex);
-  }, [images.length, initialOffset]);
-
   useEffect(() => {
     if (!enabled || images.length <= 1) {
       return;
     }
 
-    /** Initialize last scroll position */
-    lastScrollY = window.scrollY;
-
-    /** Add scroll listener with throttling for better performance */
-    let ticking = false;
-    const throttledHandleScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          handleScroll();
-          ticking = false;
-        });
-        ticking = true;
-      }
+    /** Calculate image index from current global state */
+    const updateImageIndex = () => {
+      const pixelsPerTransition = window.innerHeight / 2;
+      const globalIndex = Math.floor(
+        globalAccumulatedScroll / pixelsPerTransition,
+      );
+      const imageIndex = (globalIndex + initialOffset) % images.length;
+      setCurrentImageIndex(imageIndex);
     };
 
-    window.addEventListener("scroll", throttledHandleScroll, { passive: true });
+    /** Subscribe to global scroll updates */
+    const unsubscribe = subscribe(updateImageIndex);
 
-    return () => {
-      window.removeEventListener("scroll", throttledHandleScroll);
-    };
-  }, [enabled, images.length, handleScroll]);
+    return unsubscribe;
+  }, [enabled, images.length, initialOffset]);
 
   return {
     currentImageIndex,
