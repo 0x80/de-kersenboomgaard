@@ -1,96 +1,66 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface UseScrollBasedImagesProps {
   images: string[];
   enabled?: boolean;
 }
 
+/** Shared scroll state across all hook instances for synchronized transitions */
+let globalAccumulatedScroll = 0;
+let lastScrollY = typeof window !== "undefined" ? window.scrollY : 0;
+
 export function useScrollBasedImages({
   images,
   enabled = true,
 }: UseScrollBasedImagesProps) {
-  /** Create a stable key from images array for dependency tracking */
-  const imagesKey = useMemo(() => images.join(","), [images]);
-
-  const [state, setState] = useState(() => ({
-    currentImageIndex: 0,
-    imagesKey,
-  }));
-
-  const initialPositionRef = useRef<number | null>(null);
-  const lastImagesKeyRef = useRef(imagesKey);
-  const elementRef = useRef<HTMLDivElement>(null);
-
-  /** Reset when images change by checking key mismatch */
-  const currentImageIndex =
-    state.imagesKey === imagesKey ? state.currentImageIndex : 0;
-
-  const setCurrentImageIndex = useCallback(
-    (index: number) => {
-      setState({ currentImageIndex: index, imagesKey });
-    },
-    [imagesKey],
+  /**
+   * Random offset initialized once per component mount.
+   * This makes each artist potentially start at a different image on page load.
+   */
+  const [randomOffset] = useState(() =>
+    images.length > 0 ? Math.floor(Math.random() * images.length) : 0,
   );
 
+  const [currentImageIndex, setCurrentImageIndex] = useState(randomOffset);
+
   const handleScroll = useCallback(() => {
-    const element = elementRef.current;
-    if (!element) return;
+    /** Calculate pixels per transition: 2 transitions per viewport height */
+    const pixelsPerTransition = window.innerHeight / 2;
 
-    /** Reset initial position when images change */
-    if (lastImagesKeyRef.current !== imagesKey) {
-      lastImagesKeyRef.current = imagesKey;
-      initialPositionRef.current = null;
-    }
+    /** Update global accumulated scroll (both directions count) */
+    const currentScrollY = window.scrollY;
+    const delta = Math.abs(currentScrollY - lastScrollY);
+    lastScrollY = currentScrollY;
+    globalAccumulatedScroll += delta;
 
-    const rect = element.getBoundingClientRect();
-    const avatarCenter = rect.top + rect.height / 2;
-    const viewportHeight = window.innerHeight;
-    const viewportCenter = viewportHeight / 2;
-
-    /** Store initial position when element first becomes visible */
-    if (initialPositionRef.current === null && avatarCenter < viewportHeight) {
-      initialPositionRef.current = avatarCenter;
-      return;
-    }
-
-    /** Only calculate if we have an initial position */
-    if (initialPositionRef.current === null) return;
-
-    const initialPosition = initialPositionRef.current;
-
-    /** Determine travel distance based on initial position */
-    let travelDistance: number;
-
-    if (initialPosition <= viewportHeight) {
-      /** Artist was initially visible - travel from initial position to top */
-      travelDistance = Math.max(initialPosition, 100);
-    } else {
-      /** Artist was initially outside viewport - travel from initial position to viewport center */
-      travelDistance = initialPosition - viewportCenter;
-    }
-
-    /** Calculate current progress (0 = at initial position, 1 = at target position) */
-    const scrollProgress = Math.max(
-      0,
-      Math.min(1, (initialPosition - avatarCenter) / travelDistance),
+    /** Calculate global grid index based on accumulated scroll */
+    const globalIndex = Math.floor(
+      globalAccumulatedScroll / pixelsPerTransition,
     );
-
-    /** Map progress to image index */
-    const imageIndex = Math.floor(scrollProgress * images.length);
-    const clampedIndex = Math.max(0, Math.min(images.length - 1, imageIndex));
-
-    setCurrentImageIndex(clampedIndex);
-  }, [images.length, imagesKey, setCurrentImageIndex]);
+    /** Apply random offset and cycle through images round-robin */
+    const imageIndex = (globalIndex + randomOffset) % images.length;
+    setCurrentImageIndex(imageIndex);
+  }, [images.length, randomOffset]);
 
   useEffect(() => {
     if (!enabled || images.length <= 1) {
       return;
     }
 
-    /** Initial check */
-    handleScroll();
+    /** Initialize last scroll position */
+    lastScrollY = window.scrollY;
+
+    /** Set initial image based on current accumulated scroll (deferred to avoid sync setState) */
+    const initialFrame = requestAnimationFrame(() => {
+      const pixelsPerTransition = window.innerHeight / 2;
+      const globalIndex = Math.floor(
+        globalAccumulatedScroll / pixelsPerTransition,
+      );
+      const imageIndex = (globalIndex + randomOffset) % images.length;
+      setCurrentImageIndex(imageIndex);
+    });
 
     /** Add scroll listener with throttling for better performance */
     let ticking = false;
@@ -107,13 +77,13 @@ export function useScrollBasedImages({
     window.addEventListener("scroll", throttledHandleScroll, { passive: true });
 
     return () => {
+      cancelAnimationFrame(initialFrame);
       window.removeEventListener("scroll", throttledHandleScroll);
     };
-  }, [enabled, images.length, handleScroll]);
+  }, [enabled, images.length, handleScroll, randomOffset]);
 
   return {
     currentImageIndex,
     currentImage: images[currentImageIndex] || images[0] || "",
-    elementRef,
   };
 }

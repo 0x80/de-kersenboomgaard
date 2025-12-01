@@ -32,7 +32,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
       ? artist.all_images
       : [artist.image, artist.flip_image].filter(Boolean);
 
-  const { currentImage, currentImageIndex, elementRef } = useScrollBasedImages({
+  const { currentImage, currentImageIndex } = useScrollBasedImages({
     images,
     enabled: images.length > 1,
   });
@@ -57,7 +57,6 @@ export function ArtistCard({ artist }: { artist: Artist }) {
 
   return (
     <div
-      ref={elementRef}
       id={`artist-${artist.id}`}
       className="relative flex items-start space-x-4"
       onMouseEnter={handleMouseEnter}
