@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface UseScrollBasedImagesProps {
   images: string[];
@@ -16,16 +16,17 @@ export function useScrollBasedImages({
   enabled = true,
 }: UseScrollBasedImagesProps) {
   /**
-   * Random offset initialized once per component mount.
+   * Random offset stored in ref, initialized after hydration.
    * This makes each artist potentially start at a different image on page load.
    */
-  const [randomOffset] = useState(() =>
-    images.length > 0 ? Math.floor(Math.random() * images.length) : 0,
-  );
+  const randomOffsetRef = useRef<number | null>(null);
 
-  const [currentImageIndex, setCurrentImageIndex] = useState(randomOffset);
+  /** Start at index 0 for SSR, will be updated after hydration */
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const handleScroll = useCallback(() => {
+    const randomOffset = randomOffsetRef.current ?? 0;
+
     /** Calculate pixels per transition: 2 transitions per viewport height */
     const pixelsPerTransition = window.innerHeight / 2;
 
@@ -42,11 +43,16 @@ export function useScrollBasedImages({
     /** Apply random offset and cycle through images round-robin */
     const imageIndex = (globalIndex + randomOffset) % images.length;
     setCurrentImageIndex(imageIndex);
-  }, [images.length, randomOffset]);
+  }, [images.length]);
 
   useEffect(() => {
     if (!enabled || images.length <= 1) {
       return;
+    }
+
+    /** Initialize random offset once on mount (client-side only) */
+    if (randomOffsetRef.current === null) {
+      randomOffsetRef.current = Math.floor(Math.random() * images.length);
     }
 
     /** Initialize last scroll position */
@@ -54,6 +60,7 @@ export function useScrollBasedImages({
 
     /** Set initial image based on current accumulated scroll (deferred to avoid sync setState) */
     const initialFrame = requestAnimationFrame(() => {
+      const randomOffset = randomOffsetRef.current ?? 0;
       const pixelsPerTransition = window.innerHeight / 2;
       const globalIndex = Math.floor(
         globalAccumulatedScroll / pixelsPerTransition,
@@ -80,7 +87,7 @@ export function useScrollBasedImages({
       cancelAnimationFrame(initialFrame);
       window.removeEventListener("scroll", throttledHandleScroll);
     };
-  }, [enabled, images.length, handleScroll, randomOffset]);
+  }, [enabled, images.length, handleScroll]);
 
   return {
     currentImageIndex,
