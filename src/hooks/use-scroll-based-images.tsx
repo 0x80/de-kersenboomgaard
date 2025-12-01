@@ -1,10 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface UseScrollBasedImagesProps {
   images: string[];
   enabled?: boolean;
+  /** Initial offset for the image index, typically provided server-side for stable hydration */
+  initialOffset?: number;
 }
 
 /** Shared scroll state across all hook instances for synchronized transitions */
@@ -14,19 +16,12 @@ let lastScrollY = typeof window !== "undefined" ? window.scrollY : 0;
 export function useScrollBasedImages({
   images,
   enabled = true,
+  initialOffset = 0,
 }: UseScrollBasedImagesProps) {
-  /**
-   * Random offset stored in ref, initialized after hydration.
-   * This makes each artist potentially start at a different image on page load.
-   */
-  const randomOffsetRef = useRef<number | null>(null);
-
-  /** Start at index 0 for SSR, will be updated after hydration */
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  /** Initialize with server-provided offset for stable hydration */
+  const [currentImageIndex, setCurrentImageIndex] = useState(initialOffset);
 
   const handleScroll = useCallback(() => {
-    const randomOffset = randomOffsetRef.current ?? 0;
-
     /** Calculate pixels per transition: 2 transitions per viewport height */
     const pixelsPerTransition = window.innerHeight / 2;
 
@@ -40,34 +35,18 @@ export function useScrollBasedImages({
     const globalIndex = Math.floor(
       globalAccumulatedScroll / pixelsPerTransition,
     );
-    /** Apply random offset and cycle through images round-robin */
-    const imageIndex = (globalIndex + randomOffset) % images.length;
+    /** Apply initial offset and cycle through images round-robin */
+    const imageIndex = (globalIndex + initialOffset) % images.length;
     setCurrentImageIndex(imageIndex);
-  }, [images.length]);
+  }, [images.length, initialOffset]);
 
   useEffect(() => {
     if (!enabled || images.length <= 1) {
       return;
     }
 
-    /** Initialize random offset once on mount (client-side only) */
-    if (randomOffsetRef.current === null) {
-      randomOffsetRef.current = Math.floor(Math.random() * images.length);
-    }
-
     /** Initialize last scroll position */
     lastScrollY = window.scrollY;
-
-    /** Set initial image based on current accumulated scroll (deferred to avoid sync setState) */
-    const initialFrame = requestAnimationFrame(() => {
-      const randomOffset = randomOffsetRef.current ?? 0;
-      const pixelsPerTransition = window.innerHeight / 2;
-      const globalIndex = Math.floor(
-        globalAccumulatedScroll / pixelsPerTransition,
-      );
-      const imageIndex = (globalIndex + randomOffset) % images.length;
-      setCurrentImageIndex(imageIndex);
-    });
 
     /** Add scroll listener with throttling for better performance */
     let ticking = false;
@@ -84,7 +63,6 @@ export function useScrollBasedImages({
     window.addEventListener("scroll", throttledHandleScroll, { passive: true });
 
     return () => {
-      cancelAnimationFrame(initialFrame);
       window.removeEventListener("scroll", throttledHandleScroll);
     };
   }, [enabled, images.length, handleScroll]);

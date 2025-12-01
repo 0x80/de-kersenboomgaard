@@ -23,7 +23,13 @@ function formatWebsiteDisplay(link: string): string {
   return link.replace(/^https?:\/\//, "").replace(/^www\./, "");
 }
 
-export function ArtistCard({ artist }: { artist: Artist }) {
+export function ArtistCard({
+  artist,
+  initialImageOffset = 0,
+}: {
+  artist: Artist;
+  initialImageOffset?: number;
+}) {
   const [isHovered, setIsHovered] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
 
@@ -35,6 +41,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
   const { currentImage, currentImageIndex } = useScrollBasedImages({
     images,
     enabled: images.length > 1,
+    initialOffset: initialImageOffset,
   });
 
   const handleMouseEnter = () => {

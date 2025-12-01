@@ -9,13 +9,29 @@ import { getArtists } from "./helpers/get-artists";
 import { getCourses } from "./helpers/get-courses";
 import { getExpositions } from "./helpers/get-expositions";
 
+/** Ensure fresh random offsets on each request */
+export const dynamic = "force-dynamic";
+
 export default async function Component() {
   const expositions = await getExpositions();
   const artists = await getArtists();
   const courses = await getCourses();
   const agendaItems = await getAgendaItems();
 
-  // Generate structured data for SEO
+  /**
+   * Generate random image offsets server-side for stable hydration.
+   * Math.random() is safe here as server components only render once per request.
+   */
+  const artistImageOffsets = artists.map((artist) => {
+    const imageCount =
+      artist.all_images.length > 0
+        ? artist.all_images.length
+        : [artist.image, artist.flip_image].filter(Boolean).length;
+    // eslint-disable-next-line react-hooks/purity
+    return imageCount > 1 ? Math.floor(Math.random() * imageCount) : 0;
+  });
+
+  /** Generate structured data for SEO */
   const structuredData = generateStructuredData(artists, courses);
 
   return (
@@ -67,7 +83,11 @@ export default async function Component() {
           {/* Artists Grid */}
           <div className="mx-auto grid max-w-4xl grid-cols-1 gap-8 md:grid-cols-2">
             {artists.map((artist, index) => (
-              <ArtistCard key={index} artist={artist} />
+              <ArtistCard
+                key={index}
+                artist={artist}
+                initialImageOffset={artistImageOffsets[index]}
+              />
             ))}
           </div>
 
