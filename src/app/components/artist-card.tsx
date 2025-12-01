@@ -160,7 +160,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
                         <CarouselImage
                           src={image}
                           alt={`${artist.name} - Image ${index + 1}`}
-                          priority={index === 0}
+                          priority={index === currentImageIndex}
                         />
                       </div>
                     </CarouselItem>

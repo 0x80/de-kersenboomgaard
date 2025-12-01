@@ -12,8 +12,7 @@ interface UseScrollBasedImagesProps {
 /** Shared scroll state across all hook instances */
 let globalAccumulatedScroll = 0;
 let lastScrollY = typeof window !== "undefined" ? window.scrollY : 0;
-let listenerCount = 0;
-let subscribers: Set<() => void> = new Set();
+const subscribers: Set<() => void> = new Set();
 
 /** Single global scroll handler - updates state once and notifies all subscribers */
 function handleGlobalScroll() {
@@ -41,9 +40,9 @@ function throttledScrollHandler() {
 /** Register/unregister the global scroll listener based on subscriber count */
 function subscribe(callback: () => void) {
   subscribers.add(callback);
-  listenerCount++;
 
-  if (listenerCount === 1) {
+  /** First subscriber - attach the global scroll listener */
+  if (subscribers.size === 1) {
     lastScrollY = window.scrollY;
     window.addEventListener("scroll", throttledScrollHandler, {
       passive: true,
@@ -52,9 +51,9 @@ function subscribe(callback: () => void) {
 
   return () => {
     subscribers.delete(callback);
-    listenerCount--;
 
-    if (listenerCount === 0) {
+    /** Last subscriber removed - detach the global scroll listener */
+    if (subscribers.size === 0) {
       window.removeEventListener("scroll", throttledScrollHandler);
     }
   };
@@ -88,6 +87,9 @@ export function useScrollBasedImages({
 
     /** Subscribe to global scroll updates */
     const unsubscribe = subscribe(updateImageIndex);
+
+    /** Sync with current scroll state immediately */
+    updateImageIndex();
 
     return unsubscribe;
   }, [enabled, images.length, initialOffset]);
