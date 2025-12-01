@@ -9,6 +9,9 @@ interface UseScrollBasedImagesProps {
   initialOffset?: number;
 }
 
+/** Fixed pixels per transition - stable across viewport changes (mobile browser chrome) */
+const PIXELS_PER_TRANSITION = 400;
+
 /** Shared scroll state across all hook instances */
 let globalAccumulatedScroll = 0;
 let lastScrollY = typeof window !== "undefined" ? window.scrollY : 0;
@@ -77,9 +80,8 @@ export function useScrollBasedImages({
       /** Guard against division by zero if images array becomes empty */
       if (images.length === 0) return;
 
-      const pixelsPerTransition = window.innerHeight / 2;
       const globalIndex = Math.floor(
-        globalAccumulatedScroll / pixelsPerTransition,
+        globalAccumulatedScroll / PIXELS_PER_TRANSITION,
       );
       const imageIndex = (globalIndex + initialOffset) % images.length;
       setCurrentImageIndex(imageIndex);
