@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 interface UseScrollBasedImagesProps {
   images: string[];
   enabled?: boolean;
-  /** Initial offset for the image index, typically provided server-side for stable hydration */
+  /** Initial offset for the image index, used for varied starting positions */
   initialOffset?: number;
 }
 
@@ -65,7 +65,7 @@ export function useScrollBasedImages({
   enabled = true,
   initialOffset = 0,
 }: UseScrollBasedImagesProps) {
-  /** Initialize with server-provided offset for stable hydration */
+  /** Initialize with provided offset for varied starting positions */
   const [currentImageIndex, setCurrentImageIndex] = useState(initialOffset);
 
   useEffect(() => {
