@@ -23,10 +23,48 @@ function formatWebsiteDisplay(link: string): string {
   return link.replace(/^https?:\/\//, "").replace(/^www\./, "");
 }
 
-/** Skeleton placeholder for image loading state */
+/** Skeleton placeholder for thumbnail loading state */
 function ImageSkeleton() {
   return (
     <div className="h-[120px] w-[120px] animate-pulse border-4 border-white bg-gray-200 shadow-[0_2px_8px_rgba(0,0,0,0.15)]" />
+  );
+}
+
+/** Skeleton placeholder for carousel image loading state */
+function CarouselImageSkeleton() {
+  return (
+    <div className="absolute inset-0 flex items-center justify-center">
+      <div className="h-full w-full max-w-[80%] animate-pulse bg-gray-800/50" />
+    </div>
+  );
+}
+
+/** Carousel image with loading state */
+function CarouselImage({
+  src,
+  alt,
+  priority,
+}: {
+  src: string;
+  alt: string;
+  priority?: boolean;
+}) {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  return (
+    <>
+      {!isLoaded && <CarouselImageSkeleton />}
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        className={`object-contain transition-opacity duration-300 ${
+          isLoaded ? "opacity-100" : "opacity-0"
+        }`}
+        priority={priority}
+        onLoad={() => setIsLoaded(true)}
+      />
+    </>
   );
 }
 
@@ -119,11 +157,9 @@ export function ArtistCard({ artist }: { artist: Artist }) {
                   {images.map((image, index) => (
                     <CarouselItem key={image}>
                       <div className="relative h-[80vh] w-full sm:h-[70vh] sm:max-h-[600px]">
-                        <Image
+                        <CarouselImage
                           src={image}
                           alt={`${artist.name} - Image ${index + 1}`}
-                          fill
-                          className="object-contain"
                           priority={index === 0}
                         />
                       </div>
