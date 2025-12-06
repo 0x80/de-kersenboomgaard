@@ -20,7 +20,10 @@ import { useScrollBasedImages } from "~/hooks/use-scroll-based-images";
 import type { Artist } from "~/types";
 
 function formatWebsiteDisplay(link: string): string {
-  return link.replace(/^https?:\/\//, "").replace(/^www\./, "");
+  return link
+    .replace(/^https?:\/\//, "")
+    .replace(/^www\./, "")
+    .replace(/\/$/, "");
 }
 
 /** Skeleton placeholder for thumbnail loading state */
