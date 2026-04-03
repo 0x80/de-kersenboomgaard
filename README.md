@@ -168,7 +168,6 @@ Multiple paragraphs are supported, but markdown formatting is not rendered.
 - **Sorting**: Courses display in house number order of the first linked artist
 - **Plain Text Content**: Course descriptions are displayed as plain text (markdown is not rendered)
 
-
 ## Exposition Management
 
 ### Adding Expositions
