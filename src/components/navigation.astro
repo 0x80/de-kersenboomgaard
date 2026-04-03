@@ -94,7 +94,13 @@ const navigationItems = [
 </header>
 
 <script>
+  let navAbortController: AbortController | undefined;
+
   function initNavigation() {
+    navAbortController?.abort();
+    navAbortController = new AbortController();
+    const signal = navAbortController.signal;
+
     const header = document.getElementById("site-header");
     const toggleButton = document.getElementById("mobile-menu-toggle");
     const mobileMenu = document.getElementById("mobile-menu");
@@ -120,18 +126,17 @@ const navigationItems = [
       }
     }
 
-    toggleButton.addEventListener("click", () => setMenuOpen(!isOpen));
+    toggleButton.addEventListener("click", () => setMenuOpen(!isOpen), { signal });
     mobileLinks.forEach((link) =>
-      link.addEventListener("click", () => setMenuOpen(false)),
+      link.addEventListener("click", () => setMenuOpen(false), { signal }),
     );
 
     // Keep nav visible during programmatic scrolls (nav link clicks)
     document.querySelectorAll('a[href^="#"]').forEach((link) => {
       link.addEventListener("click", () => {
         isAutoScrolling = true;
-        // Clear after smooth scroll completes (generous timeout)
         setTimeout(() => { isAutoScrolling = false; }, 1000);
-      });
+      }, { signal });
     });
 
     let ticking = false;
@@ -164,7 +169,7 @@ const navigationItems = [
           ticking = true;
         }
       },
-      { passive: true },
+      { passive: true, signal },
     );
   }
 

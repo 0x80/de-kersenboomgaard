@@ -76,20 +76,3 @@ const artistsMap = Object.fromEntries(artists.map((a) => [a.id, a]));
   }
 </div>
 
-<script>
-  function initExpoScrollLinks() {
-    document.querySelectorAll(".artist-scroll-link").forEach((link) => {
-      link.addEventListener("click", (e) => {
-        e.preventDefault();
-        const href = (e.currentTarget as HTMLAnchorElement).getAttribute("href");
-        if (href) {
-          const target = document.querySelector(href);
-          target?.scrollIntoView({ behavior: "smooth" });
-        }
-      });
-    });
-  }
-
-  initExpoScrollLinks();
-  document.addEventListener("astro:after-swap", initExpoScrollLinks);
-</script>
