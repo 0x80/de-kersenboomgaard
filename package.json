@@ -2,15 +2,15 @@
   "name": "de-kersenboomgaard",
   "version": "0.2.0",
   "private": true,
-  "type": "module",
-  "license": "MIT",
   "description": "Website for De Kersenboomgaard artist community in Utrecht. Code is MIT licensed, artist content is protected by copyright.",
-  "author": "Thijs Koerselman",
   "homepage": "https://dekersenboomgaard.nl",
+  "license": "MIT",
+  "author": "Thijs Koerselman",
   "repository": {
     "type": "git",
     "url": "https://github.com/0x80/de-kersenboomgaard"
   },
+  "type": "module",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",

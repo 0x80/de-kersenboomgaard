@@ -78,9 +78,7 @@ export function useScrollBasedImages({
       /** Guard against division by zero if images array becomes empty */
       if (images.length === 0) return;
 
-      const globalIndex = Math.floor(
-        globalAccumulatedScroll / PIXELS_PER_TRANSITION,
-      );
+      const globalIndex = Math.floor(globalAccumulatedScroll / PIXELS_PER_TRANSITION);
       const imageIndex = (globalIndex + initialOffset) % images.length;
       setCurrentImageIndex(imageIndex);
     };

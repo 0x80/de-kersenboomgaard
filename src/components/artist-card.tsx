@@ -8,12 +8,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "./ui/carousel";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-} from "./ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "./ui/dialog";
 
 function formatWebsiteDisplay(link: string): string {
   return link
@@ -36,13 +31,7 @@ function CarouselImageSkeleton() {
   );
 }
 
-function CarouselImage({
-  src,
-  alt,
-}: {
-  src: string;
-  alt: string;
-}) {
+function CarouselImage({ src, alt }: { src: string; alt: string }) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   return (
@@ -126,9 +115,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
             </button>
           </DialogTrigger>
           <DialogContent className="h-[100dvh] w-screen max-w-none border-none bg-transparent p-0 shadow-none sm:h-auto sm:w-[90vw] sm:max-w-4xl sm:p-4 [&>button]:absolute [&>button]:top-4 [&>button]:right-4 [&>button]:z-50 [&>button]:text-white [&>button]:drop-shadow-md">
-            <DialogTitle className="sr-only">
-              {artist.name} Gallery
-            </DialogTitle>
+            <DialogTitle className="sr-only">{artist.name} Gallery</DialogTitle>
             <div className="flex h-full w-full items-center justify-center px-12 sm:px-16">
               <Carousel
                 ref={carouselRef}
@@ -140,10 +127,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
                   {images.map((image, index) => (
                     <CarouselItem key={image}>
                       <div className="relative h-[80vh] w-full sm:h-[70vh] sm:max-h-[600px]">
-                        <CarouselImage
-                          src={image}
-                          alt={`${artist.name} - Image ${index + 1}`}
-                        />
+                        <CarouselImage src={image} alt={`${artist.name} - Image ${index + 1}`} />
                       </div>
                     </CarouselItem>
                   ))}
@@ -179,8 +163,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
         <div
           className="text-gray-150 absolute -top-24 right-0 w-28 origin-bottom-left rotate-90 text-left text-8xl font-bold"
           style={{
-            fontFamily:
-              'Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+            fontFamily: 'Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
           }}
         >
           {artist.houseNumber}
@@ -188,13 +171,9 @@ export function ArtistCard({ artist }: { artist: Artist }) {
       )}
       <div className="relative z-10 flex-shrink-0">{renderImageContent()}</div>
       <div className="relative z-10 min-w-0 flex-1">
-        <h3 className="mb-1 text-xl font-medium text-gray-900">
-          {artist.name}
-        </h3>
+        <h3 className="mb-1 text-xl font-medium text-gray-900">{artist.name}</h3>
         {artist.profession && (
-          <p className="text-m mb-2 leading-relaxed text-gray-600">
-            {artist.profession}
-          </p>
+          <p className="text-m mb-2 leading-relaxed text-gray-600">{artist.profession}</p>
         )}
         {artist.link && (
           <a

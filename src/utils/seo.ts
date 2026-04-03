@@ -145,9 +145,7 @@ export function generateStructuredData(artists: Artist[], courses: Course[]) {
     const instructorName = artistNames[0] || "Unknown";
     const artistNamesText =
       artistNames.length > 1
-        ? artistNames.slice(0, -1).join(", ") +
-          " en " +
-          artistNames[artistNames.length - 1]
+        ? artistNames.slice(0, -1).join(", ") + " en " + artistNames[artistNames.length - 1]
         : artistNames[0] || "Unknown";
 
     return {

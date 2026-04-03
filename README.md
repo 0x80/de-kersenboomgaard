@@ -98,7 +98,7 @@ pnpm check-types  # Run astro check
 └── package.json
 ```
 
-## 🎨 Artist Content Management
+## Artist Content Management
 
 ### Adding a New Artist
 
@@ -135,7 +135,7 @@ house_number: 42 # House number (determines display order)
 4. Commit changes directly to main branch
 5. Website updates automatically via deployment
 
-## 📚 Course Content Management
+## Course Content Management
 
 ### Adding a Course
 
@@ -167,9 +167,9 @@ Multiple paragraphs are supported, but markdown formatting is not rendered.
 - **Flexible Format**: Supports single artist, comma-separated string, or array format
 - **Sorting**: Courses display in house number order of the first linked artist
 - **Plain Text Content**: Course descriptions are displayed as plain text (markdown is not rendered)
-- **Backward Compatibility**: Still supports old `artist_id`/`additional_artist_id` format during transition
 
-## 🎨 Exposition Management
+
+## Exposition Management
 
 ### Adding Expositions
 
@@ -222,7 +222,7 @@ Multiple paragraphs supported.
 - **Cross-month**: "29 april - 2 mei 2024"
 - **Dutch Months**: Automatic translation to Dutch month names
 
-## 📅 Agenda Management
+## Agenda Management
 
 ### Adding Events
 
@@ -257,7 +257,7 @@ Event description in markdown format.
 - **Cross-month**: "29 mei - 2 juni 2026"
 - **Dutch Months**: Automatic translation to Dutch month names
 
-## 🖼 Image Management
+## Image Management
 
 ### Image Organization
 
@@ -289,111 +289,27 @@ public/assets/artists/
 3. Upload images with any filenames
 4. Images will automatically display in alphabetical order during scroll
 
-## 🎨 Design System & v0.dev Integration
+## SEO
 
-This project uses the same tech stack as [v0.dev](https://v0.dev), making it perfect for AI-aided design and rapid prototyping:
+The site automatically generates SEO metadata and JSON-LD structured data from content files at build time. Adding or updating artists and courses automatically updates all search optimization. No manual SEO work needed.
 
-### v0.dev Compatibility
+Relevant files: `src/utils/seo.ts`, `src/layouts/layout.astro`, `src/pages/index.astro`.
 
-- **Framework**: Next.js with App Router ✅
-- **Styling**: Tailwind CSS ✅
-- **Components**: ShadCN UI (New York style) ✅
-- **Icons**: Lucide React ✅
-- **TypeScript**: Full support ✅
-
-### Using v0.dev for Development
-
-1. Visit [v0.dev](https://v0.dev)
-2. Describe the component or page you want to create
-3. Copy the generated code directly into this project
-4. Components will work seamlessly with existing design system
-
-### Design Tokens
-
-- **Base Color**: Stone (neutral grays)
-- **CSS Variables**: Enabled for consistent theming
-- **Component Style**: New York (clean, minimal aesthetic)
-
-## 🔍 SEO & Search Engine Optimization
-
-The website features an advanced, automated SEO system that dynamically generates search engine optimization data from your content files. This ensures maximum discoverability for both the artist community and individual artists.
-
-### How It Works
-
-The SEO system automatically extracts information from your artist and course markdown files to generate:
-
-- **Dynamic Page Titles**: "De Kersenboomgaard - Kunstenaars & Ateliers Utrecht | 30+ Creatievelingen"
-- **Rich Descriptions**: Mentions specific artists like "Max Kisman, Raafat Ballan, Jesse van Boheemen"
-- **Comprehensive Keywords**: All artist names, professions, and course titles
-- **Structured Data**: Schema.org markup for enhanced search results
-
-### What Gets Generated Automatically
-
-#### Keywords & Metadata
-
-- **Base Keywords**: "De Kersenboomgaard", "kunstenaars Utrecht", "ateliers Utrecht"
-- **Artist-Specific**: Each artist name + "Utrecht" (e.g., "Max Kisman Utrecht")
-- **Profession-Based**: "beeldhouwer Utrecht", "schilder Utrecht", etc.
-- **Course-Based**: "cursus [course name]", "workshop [course name]"
-
-#### Structured Data (JSON-LD)
-
-- **Organization Schema**: De Kersenboomgaard as kunstenaarscommunity
-- **LocalBusiness Schema**: Address, location, and business details
-- **Person Schemas**: Individual artist profiles with professions and websites
-- **Course Schemas**: Workshop listings with instructors and locations
-
-#### Social Media Optimization
-
-- **Open Graph Tags**: Optimized Facebook sharing
-- **Twitter Cards**: Enhanced Twitter sharing
-- **Image Metadata**: Proper social media image handling
-
-### Search Engine Benefits
-
-The automated system ensures your site ranks for searches like:
-
-- **"Max Kisman Utrecht"** → Direct artist match
-- **"kunstenaars Utrecht"** → Primary community result
-- **"cursussen beeldende kunst Utrecht"** → Course matches
-- **"ateliers Utrecht"** → High ranking for the community
-
-### Technical Implementation
-
-- **Build-Time Generation**: All SEO data generated during build for optimal performance
-- **Automatic Updates**: Adding new artists or courses automatically updates SEO
-- **Dutch Optimization**: Focused on Dutch keywords and local Utrecht searches
-- **Schema.org Compliance**: Rich snippets for enhanced search results
-
-### Files Involved
-
-- `src/utils/seo.ts` - Extracts SEO data from content and creates JSON-LD markup
-- `src/layouts/layout.astro` - Implements metadata and social tags
-- `src/pages/index.astro` - Includes structured data scripts
-
-The system requires no manual SEO work - simply add artists and courses using the content management system, and search optimization happens automatically.
-
-## 🔧 Development Guidelines
+## Development Guidelines
 
 ### Code Style
 
-- **Prettier**: Automatic formatting with Tailwind class sorting
-- **ESLint**: Code quality and consistency
-- **TypeScript**: Strict type checking enabled
+- **oxfmt** - Automatic formatting
+- **oxlint** - Code linting
+- **TypeScript** - Type checking via `astro check`
 
 ### Component Patterns
 
-- **Server Components**: Used by default for better performance
-- **Client Components**: Only when interactivity needed
-- **File-based Routing**: Leverage Next.js App Router conventions
+- **Astro components** by default for all static content
+- **React islands** (`client:load`) only for interactive features (image carousel)
+- Vanilla JS `<script>` tags for simple interactivity (scroll behavior, navigation)
 
-### Content Updates
-
-- **Automatic Builds**: Changes to content trigger automatic deployments
-- **No Cache Issues**: Content changes reflect immediately after build
-- **Type Safety**: TypeScript interfaces ensure content structure consistency
-
-## 🚀 Deployment
+## Deployment
 
 The site is configured for automatic deployment. Any changes to the main branch will trigger a new build and deployment.
 
@@ -404,7 +320,7 @@ The site is configured for automatic deployment. Any changes to the main branch 
 3. Static generation for optimal performance
 4. Automatic sitemap and SEO optimization
 
-## 🔍 Pull Requests & Preview Deployments
+## Pull Requests & Preview Deployments
 
 This project is hosted on Vercel with automatic preview deployments for every pull request. This allows you to safely test changes before they go live and share previews with stakeholders for approval.
 
@@ -555,7 +471,7 @@ https://de-kersenboomgaard-git-[branch-name]-[username].vercel.app
 - **Small, Focused PRs** - Keep changes focused on a single feature or fix
 - **Test All Scenarios** - Verify changes work across different content types
 
-## 📝 Content Editing Tips
+## Content Editing Tips
 
 ### For Non-Technical Users
 
@@ -572,11 +488,11 @@ https://de-kersenboomgaard-git-[branch-name]-[username].vercel.app
 - **Schedule Event**: Add to agenda folder with proper date formatting
 - **Update Images**: Add/replace files in artist folders with any filenames (they'll sort alphabetically)
 
-## 📄 License and Copyright
+## License and Copyright
 
 This project uses a **dual licensing structure** to protect artist content while keeping the code open source:
 
-### 🔓 Open Source Code (MIT License)
+### Open Source Code (MIT License)
 
 The source code, configuration files, and technical components are licensed under the MIT License. You are free to:
 
@@ -585,7 +501,7 @@ The source code, configuration files, and technical components are licensed unde
 - Create derivative works
 - Use commercially
 
-### 🔒 Protected Artist Content (All Rights Reserved)
+### Protected Artist Content (All Rights Reserved)
 
 All artist-related content is protected by copyright and **NOT** covered by the MIT license:
 
@@ -594,14 +510,14 @@ All artist-related content is protected by copyright and **NOT** covered by the 
 - **Course descriptions** (`content/courses/`)
 - **Event materials** (`content/agenda/`)
 
-#### ❌ You MAY NOT:
+#### You MAY NOT:
 
 - Copy, download, or reproduce artist images or artwork
 - Use artist profiles or information in other projects
 - Redistribute any artist content
 - Use artist content commercially
 
-#### ✅ You MAY:
+#### You MAY:
 
 - View content on the official website
 - Link to the official website
@@ -626,7 +542,7 @@ To use any artist content, you must:
 
 For full details, see [`LICENSE`](LICENSE) and [`CONTENT_LICENSE`](CONTENT_LICENSE).
 
-## 🆘 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 

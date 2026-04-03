@@ -52,11 +52,7 @@ export interface Exposition {
 async function getArtistImages(
   artistId: string,
 ): Promise<{ image: string; flipImage: string; allImages: string[] }> {
-  const assetsDir = path.join(
-    process.cwd(),
-    "public/assets/artists",
-    artistId,
-  );
+  const assetsDir = path.join(process.cwd(), "public/assets/artists", artistId);
 
   try {
     const files = await fs.readdir(assetsDir);
@@ -69,15 +65,9 @@ async function getArtistImages(
       )
       .sort();
 
-    const allImages = imageFiles.map(
-      (file) => `/assets/artists/${artistId}/${file}`,
-    );
-    const image = imageFiles[0]
-      ? `/assets/artists/${artistId}/${imageFiles[0]}`
-      : "";
-    const flipImage = imageFiles[1]
-      ? `/assets/artists/${artistId}/${imageFiles[1]}`
-      : image;
+    const allImages = imageFiles.map((file) => `/assets/artists/${artistId}/${file}`);
+    const image = imageFiles[0] ? `/assets/artists/${artistId}/${imageFiles[0]}` : "";
+    const flipImage = imageFiles[1] ? `/assets/artists/${artistId}/${imageFiles[1]}` : image;
 
     return { image, flipImage, allImages };
   } catch {
@@ -101,9 +91,7 @@ export async function getArtists(): Promise<Artist[]> {
 
   const artists = await Promise.all(
     entries.map(async (entry) => {
-      const { image, flipImage, allImages } = await getArtistImages(
-        entry.data.id,
-      );
+      const { image, flipImage, allImages } = await getArtistImages(entry.data.id);
 
       return {
         id: entry.data.id,
@@ -134,9 +122,7 @@ export async function getCourses(): Promise<Course[]> {
       .filter((artist): artist is Artist => artist !== undefined);
 
     const houseNumber =
-      courseArtists.length > 0
-        ? Math.min(...courseArtists.map((artist) => artist.houseNumber))
-        : 0;
+      courseArtists.length > 0 ? Math.min(...courseArtists.map((artist) => artist.houseNumber)) : 0;
 
     return {
       artistIds,
@@ -168,8 +154,7 @@ export async function getAgendaItems(): Promise<AgendaItem[]> {
   }));
 
   return items.toSorted(
-    (a, b) =>
-      new Date(b.startDate).getTime() - new Date(a.startDate).getTime(),
+    (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime(),
   );
 }
 
@@ -193,7 +178,6 @@ export async function getExpositions(): Promise<Exposition[]> {
   }));
 
   return items.toSorted(
-    (a, b) =>
-      new Date(b.startDate).getTime() - new Date(a.startDate).getTime(),
+    (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime(),
   );
 }
