@@ -23,76 +23,72 @@ pnpm install
 pnpm dev
 ```
 
-The development server will start at [http://localhost:3000](http://localhost:3000) with Turbopack for fast hot reloading.
+The development server will start at [http://localhost:4321](http://localhost:4321).
 
 ### Available Scripts
 
 ```bash
-pnpm dev          # Start development server with Turbopack
-pnpm build        # Build for production
-pnpm start        # Start production server
-pnpm lint         # Run ESLint
+pnpm dev          # Start development server
+pnpm build        # Type-check and build for production
+pnpm preview      # Preview production build
+pnpm lint         # Run oxlint
+pnpm format       # Run oxfmt
+pnpm check-types  # Run astro check
 ```
 
-## 🛠 Tech Stack
+## Tech Stack
 
 ### Core Framework
 
-- **Next.js 15.3.4** - React framework with App Router
-- **React 19** - UI library with latest features
+- **Astro 6** - Static site generator with islands architecture
+- **React 19** - Used selectively for interactive components (image carousel)
 - **TypeScript** - Type safety and better developer experience
 
 ### Styling & UI
 
 - **Tailwind CSS 4** - Utility-first CSS framework
-- **ShadCN UI** - High-quality component library
-  - Style: New York
-  - Base color: Stone
-  - Icons: Lucide React
-- **CSS Variables** - For consistent theming
+- **Lucide React** - Icon library (used in React islands)
 
 ### Content Management
 
-- **Gray Matter** - Frontmatter parsing for markdown files
-- **Glob** - File pattern matching for content discovery
-- **File-based CMS** - All content stored in markdown files
+- **Astro Content Collections** - Type-safe content with Zod schemas
+- **File-based CMS** - All content stored in markdown files with frontmatter
 
 ### Development Tools
 
-- **ESLint** - Code linting
-- **Prettier** - Code formatting with Tailwind plugin
+- **oxlint** - Fast Rust-based linter
+- **oxfmt** - Fast Rust-based formatter
+- **husky** - Git hooks for pre-commit checks
 - **pnpm** - Fast, disk space efficient package manager
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 ├── src/
-│   ├── app/                    # Next.js App Router
-│   │   ├── page.tsx           # Homepage with all content
-│   │   ├── layout.tsx         # Root layout with SEO
-│   │   ├── globals.css        # Global styles
-│   │   ├── components/        # Page-specific components
-│   │   │   ├── agenda-list.tsx      # Agenda display component
-│   │   │   ├── artist-card.tsx      # Artist display component
-│   │   │   ├── course-list.tsx      # Course display component
-│   │   │   └── exposition-list.tsx  # Exposition display component
-│   │   └── helpers/           # Server-side helper functions
-│   │       ├── generate-structured-data.ts  # SEO structured data
-│   │       ├── get-agenda-items.ts          # Agenda content loader
-│   │       ├── get-artist-images.ts         # Image management
-│   │       ├── get-artists.ts               # Artist content loader
-│   │       ├── get-courses.ts               # Course content loader
-│   │       ├── get-expositions.ts           # Exposition content loader
-│   │       └── get-seo-data.ts              # SEO metadata generator
+│   ├── pages/
+│   │   └── index.astro            # Homepage (single page)
+│   ├── layouts/
+│   │   └── layout.astro           # Root layout with SEO & meta
 │   ├── components/
-│   │   ├── navigation.tsx     # Site navigation
-│   │   └── ui/               # ShadCN UI components
-│   ├── hooks/                # Custom React hooks
-│   ├── utils/                # Utility functions
-│   │   ├── cn.ts             # Class name utility
-│   │   └── generate-slug.ts  # Slug generation
-│   └── types.ts              # TypeScript type definitions
-├── content/                  # Content management (markdown files)
+│   │   ├── navigation.astro       # Site navigation (vanilla JS)
+│   │   ├── section-header.astro   # Reusable section headers
+│   │   ├── agenda-list.astro      # Agenda display
+│   │   ├── course-list.astro      # Course display
+│   │   ├── exposition-list.astro  # Exposition display
+│   │   ├── artist-card.tsx        # Artist card (React island)
+│   │   └── ui/                    # React UI components (carousel, dialog)
+│   ├── hooks/
+│   │   └── use-scroll-based-images.ts  # Scroll-synced image rotation
+│   ├── styles/
+│   │   └── global.css             # Tailwind CSS global styles
+│   ├── utils/
+│   │   ├── content.ts             # Content loading & types
+│   │   ├── seo.ts                 # SEO metadata & structured data
+│   │   ├── date-format.ts         # Dutch date formatting
+│   │   ├── cn.ts                  # Class name utility
+│   │   └── generate-slug.ts       # Slug generation
+│   └── content.config.ts          # Astro Content Collection schemas
+├── content/                       # Content management (markdown files)
 │   ├── artists/             # Artist profiles
 │   ├── courses/             # Course information
 │   ├── expositions/         # Exhibition listings
@@ -371,10 +367,9 @@ The automated system ensures your site ranks for searches like:
 
 ### Files Involved
 
-- `src/app/helpers/get-seo-data.ts` - Extracts SEO data from content
-- `src/app/helpers/generate-structured-data.ts` - Creates JSON-LD markup
-- `src/app/layout.tsx` - Implements metadata and social tags
-- `src/app/page.tsx` - Includes structured data scripts
+- `src/utils/seo.ts` - Extracts SEO data from content and creates JSON-LD markup
+- `src/layouts/layout.astro` - Implements metadata and social tags
+- `src/pages/index.astro` - Includes structured data scripts
 
 The system requires no manual SEO work - simply add artists and courses using the content management system, and search optimization happens automatically.
 

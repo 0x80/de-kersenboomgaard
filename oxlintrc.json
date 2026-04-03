@@ -1,0 +1,10 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "linterOptions": {
+    "typeAware": true
+  },
+  "plugins": ["typescript", "import"],
+  "categories": {},
+  "rules": {},
+  "ignorePatterns": ["dist/"]
+}

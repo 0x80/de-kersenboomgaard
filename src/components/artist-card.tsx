@@ -1,23 +1,19 @@
-"use client";
-
-import Image from "next/image";
-import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useScrollBasedImages } from "../hooks/use-scroll-based-images";
+import type { Artist } from "../utils/content";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "~/components/ui/carousel";
+} from "./ui/carousel";
 import {
   Dialog,
   DialogContent,
   DialogTitle,
   DialogTrigger,
-} from "~/components/ui/dialog";
-import { useScrollBasedImages } from "~/hooks/use-scroll-based-images";
-import type { Artist } from "~/types";
+} from "./ui/dialog";
 
 function formatWebsiteDisplay(link: string): string {
   return link
@@ -26,14 +22,12 @@ function formatWebsiteDisplay(link: string): string {
     .replace(/\/$/, "");
 }
 
-/** Skeleton placeholder for thumbnail loading state */
 function ImageSkeleton() {
   return (
     <div className="h-[120px] w-[120px] animate-pulse border-4 border-white bg-gray-200 shadow-[0_2px_8px_rgba(0,0,0,0.15)]" />
   );
 }
 
-/** Skeleton placeholder for carousel image loading state */
 function CarouselImageSkeleton() {
   return (
     <div className="absolute inset-0 flex items-center justify-center">
@@ -42,29 +36,25 @@ function CarouselImageSkeleton() {
   );
 }
 
-/** Carousel image with loading state */
 function CarouselImage({
   src,
   alt,
-  priority,
 }: {
   src: string;
   alt: string;
-  priority?: boolean;
 }) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   return (
     <>
       {!isLoaded && <CarouselImageSkeleton />}
-      <Image
+      <img
         src={src}
         alt={alt}
-        fill
-        className={`object-contain transition-opacity duration-300 ${
+        className={`absolute inset-0 h-full w-full object-contain transition-opacity duration-300 ${
           isLoaded ? "opacity-100" : "opacity-0"
         }`}
-        priority={priority}
+        loading="lazy"
         onLoad={() => setIsLoaded(true)}
       />
     </>
@@ -77,11 +67,10 @@ export function ArtistCard({ artist }: { artist: Artist }) {
   const carouselRef = useRef<HTMLDivElement>(null);
 
   const images =
-    artist.all_images.length > 0
-      ? artist.all_images
-      : [artist.image, artist.flip_image].filter(Boolean);
+    artist.allImages.length > 0
+      ? artist.allImages
+      : [artist.image, artist.flipImage].filter(Boolean);
 
-  /** Generate random offset client-side only to avoid hydration mismatch */
   const [randomOffset] = useState(() =>
     images.length > 1 ? Math.floor(Math.random() * images.length) : 0,
   );
@@ -92,7 +81,6 @@ export function ArtistCard({ artist }: { artist: Artist }) {
     initialOffset: randomOffset,
   });
 
-  /** Mark as mounted after hydration (deferred to satisfy lint rules) */
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
       setIsMounted(true);
@@ -100,25 +88,14 @@ export function ArtistCard({ artist }: { artist: Artist }) {
     return () => cancelAnimationFrame(frame);
   }, []);
 
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-  };
-
-  /** Focus the carousel when dialog opens for keyboard navigation */
   const handleDialogOpen = useCallback((open: boolean) => {
     if (open) {
-      /** Small delay to ensure the carousel is mounted */
       setTimeout(() => {
         carouselRef.current?.focus();
       }, 0);
     }
   }, []);
 
-  /** Render image content - skeleton until mounted, then actual images */
   const renderImageContent = () => {
     if (!isMounted) {
       return <ImageSkeleton />;
@@ -134,7 +111,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
               aria-label={`View all images of ${artist.name}`}
             >
               {images.map((image, index) => (
-                <Image
+                <img
                   key={image}
                   src={image}
                   alt={artist.name}
@@ -143,12 +120,15 @@ export function ArtistCard({ artist }: { artist: Artist }) {
                   className={`absolute inset-0 h-[120px] w-[120px] border-4 border-white object-cover shadow-[0_2px_8px_rgba(0,0,0,0.15)] transition-opacity duration-300 ${
                     index === currentImageIndex ? "opacity-100" : "opacity-0"
                   }`}
+                  loading="lazy"
                 />
               ))}
             </button>
           </DialogTrigger>
           <DialogContent className="h-[100dvh] w-screen max-w-none border-none bg-transparent p-0 shadow-none sm:h-auto sm:w-[90vw] sm:max-w-4xl sm:p-4 [&>button]:absolute [&>button]:top-4 [&>button]:right-4 [&>button]:z-50 [&>button]:text-white [&>button]:drop-shadow-md">
-            <DialogTitle className="sr-only">{artist.name} Gallery</DialogTitle>
+            <DialogTitle className="sr-only">
+              {artist.name} Gallery
+            </DialogTitle>
             <div className="flex h-full w-full items-center justify-center px-12 sm:px-16">
               <Carousel
                 ref={carouselRef}
@@ -163,7 +143,6 @@ export function ArtistCard({ artist }: { artist: Artist }) {
                         <CarouselImage
                           src={image}
                           alt={`${artist.name} - Image ${index + 1}`}
-                          priority={index === currentImageIndex}
                         />
                       </div>
                     </CarouselItem>
@@ -179,7 +158,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
     }
 
     return (
-      <Image
+      <img
         src={currentImage || "/placeholder.svg"}
         alt={artist.name}
         width={120}
@@ -193,10 +172,10 @@ export function ArtistCard({ artist }: { artist: Artist }) {
     <div
       id={`artist-${artist.id}`}
       className="relative flex items-start space-x-4"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      {artist.house_number && (
+      {artist.houseNumber && (
         <div
           className="text-gray-150 absolute -top-24 right-0 w-28 origin-bottom-left rotate-90 text-left text-8xl font-bold"
           style={{
@@ -204,7 +183,7 @@ export function ArtistCard({ artist }: { artist: Artist }) {
               'Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
           }}
         >
-          {artist.house_number}
+          {artist.houseNumber}
         </div>
       )}
       <div className="relative z-10 flex-shrink-0">{renderImageContent()}</div>
@@ -218,14 +197,16 @@ export function ArtistCard({ artist }: { artist: Artist }) {
           </p>
         )}
         {artist.link && (
-          <Link
+          <a
             href={artist.link}
+            target="_blank"
+            rel="noopener noreferrer"
             className={`text-md text-gray-400 transition-colors hover:text-gray-600 ${
               isHovered ? "border-b border-gray-400" : ""
             }`}
           >
             {formatWebsiteDisplay(artist.link)}
-          </Link>
+          </a>
         )}
       </div>
     </div>

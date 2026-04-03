@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-gray-150: #eff0f2;
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+@layer base {
+  * {
+    @apply border-gray-200 outline-gray-400/50;
+  }
+  body {
+    @apply bg-white text-gray-900 antialiased;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+}

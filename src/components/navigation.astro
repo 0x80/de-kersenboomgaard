@@ -1,0 +1,173 @@
+---
+const navigationItems = [
+  { href: "#artists", label: "Bewoners" },
+  { href: "#expositions", label: "Exposities" },
+  { href: "#courses", label: "Cursussen" },
+  { href: "#agenda", label: "Agenda" },
+  { href: "#over-ons", label: "Over ons" },
+  { href: "#contact", label: "Contact" },
+];
+---
+
+<header
+  id="site-header"
+  class="fixed top-0 right-0 left-0 z-50 border-b border-gray-200/50 bg-white/90 backdrop-blur-md transition-transform duration-400 ease-out"
+>
+  <div class="mx-auto max-w-6xl px-6 py-4">
+    <div class="flex items-center justify-between">
+      <h1 class="text-lg font-medium text-gray-900">
+        Ateliers Kersenboomgaard
+      </h1>
+
+      <!-- Desktop Navigation -->
+      <nav class="hidden space-x-2 md:flex">
+        {
+          navigationItems.map((item) => (
+            <a
+              href={item.href}
+              class="px-2 py-2 text-sm tracking-wide text-gray-600 transition-colors hover:text-black hover:shadow-[0_3px_0_0_#374151] focus:text-black focus:shadow-[0_3px_0_0_#374151] focus:outline-none"
+            >
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+
+      <!-- Mobile Navigation Button -->
+      <button
+        id="mobile-menu-toggle"
+        class="rounded-md p-2 hover:bg-gray-100/50 focus:bg-gray-100/50 focus:outline-none md:hidden"
+        aria-label="Toggle navigation menu"
+      >
+        <svg
+          id="menu-icon"
+          class="h-6 w-6 text-gray-900"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="4" x2="20" y1="12" y2="12"></line>
+          <line x1="4" x2="20" y1="6" y2="6"></line>
+          <line x1="4" x2="20" y1="18" y2="18"></line>
+        </svg>
+        <svg
+          id="close-icon"
+          class="hidden h-6 w-6 text-gray-900"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M18 6 6 18"></path>
+          <path d="m6 6 12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile Navigation Menu -->
+    <div id="mobile-menu" class="mt-4 hidden border-t border-gray-200/50 pt-4 pb-4 md:hidden">
+      <nav class="flex flex-col space-y-2">
+        {
+          navigationItems.map((item) => (
+            <a
+              href={item.href}
+              class="mobile-nav-link rounded-md px-4 py-3 text-lg font-medium text-gray-900 transition-colors hover:bg-gray-100 hover:text-gray-600"
+            >
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+    </div>
+  </div>
+</header>
+
+<script>
+  function initNavigation() {
+    const header = document.getElementById("site-header");
+    const toggleButton = document.getElementById("mobile-menu-toggle");
+    const mobileMenu = document.getElementById("mobile-menu");
+    const menuIcon = document.getElementById("menu-icon");
+    const closeIcon = document.getElementById("close-icon");
+    const mobileLinks = document.querySelectorAll(".mobile-nav-link");
+
+    if (!header || !toggleButton || !mobileMenu || !menuIcon || !closeIcon) return;
+
+    let isOpen = false;
+    let isVisible = true;
+    let lastScrollY = 0;
+    let isAutoScrolling = false;
+
+    function setMenuOpen(open: boolean) {
+      isOpen = open;
+      mobileMenu!.classList.toggle("hidden", !open);
+      menuIcon!.classList.toggle("hidden", open);
+      closeIcon!.classList.toggle("hidden", !open);
+      if (open) {
+        isVisible = true;
+        header!.style.transform = "translateY(0)";
+      }
+    }
+
+    toggleButton.addEventListener("click", () => setMenuOpen(!isOpen));
+    mobileLinks.forEach((link) =>
+      link.addEventListener("click", () => setMenuOpen(false)),
+    );
+
+    // Keep nav visible during programmatic scrolls (nav link clicks)
+    document.querySelectorAll('a[href^="#"]').forEach((link) => {
+      link.addEventListener("click", () => {
+        isAutoScrolling = true;
+        // Clear after smooth scroll completes (generous timeout)
+        setTimeout(() => { isAutoScrolling = false; }, 1000);
+      });
+    });
+
+    let ticking = false;
+    function handleScroll() {
+      const currentScrollY = window.scrollY;
+      const scrollingDown = currentScrollY > lastScrollY && currentScrollY > 100;
+      const scrollingUp = currentScrollY < lastScrollY;
+      const isAtTop = currentScrollY < 100;
+
+      if (isAtTop) {
+        isVisible = true;
+      } else if (scrollingUp) {
+        isVisible = true;
+      } else if (scrollingDown && !isOpen && !isAutoScrolling) {
+        isVisible = false;
+      }
+
+      header!.style.transform = isVisible ? "translateY(0)" : "translateY(-100%)";
+      lastScrollY = currentScrollY;
+    }
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (!ticking) {
+          requestAnimationFrame(() => {
+            handleScroll();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      },
+      { passive: true },
+    );
+  }
+
+  initNavigation();
+  document.addEventListener("astro:after-swap", initNavigation);
+</script>
