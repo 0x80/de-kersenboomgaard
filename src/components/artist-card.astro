@@ -284,6 +284,9 @@ function formatWebsiteDisplay(link: string): string {
     abortController = new AbortController();
     const signal = abortController.signal;
 
+    // Reset scroll tracking to current position to avoid large delta on re-init
+    lastScrollY = window.scrollY;
+
     const cards = document.querySelectorAll<HTMLElement>(".artist-card");
     if (cards.length === 0) return;
 
@@ -348,8 +351,9 @@ function formatWebsiteDisplay(link: string): string {
       trigger.addEventListener(
         "click",
         () => {
+          // Find current visible image (check inline style first, fall back to CSS class)
           const images = card.querySelectorAll<HTMLImageElement>(".artist-image");
-          let currentIndex = 0;
+          let currentIndex = parseInt(card.dataset.offset || "0");
           images.forEach((img, i) => {
             if (img.style.opacity === "1") currentIndex = i;
           });
