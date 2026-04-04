@@ -19,6 +19,7 @@ const courses = defineCollection({
     artist_ids: z.string().default(""),
     name: z.string(),
     link: z.string().default(""),
+    disabled: z.boolean().default(false),
     start_month: z.number().optional(),
     end_month: z.number().optional(),
   }),

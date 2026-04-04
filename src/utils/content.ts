@@ -139,7 +139,8 @@ export async function getArtists(): Promise<Artist[]> {
 }
 
 export async function getCourses(artists: Artist[]): Promise<Course[]> {
-  const entries = await getCollection("courses");
+  const allEntries = await getCollection("courses");
+  const entries = allEntries.filter((entry) => !entry.data.disabled);
   const artistsMap = new Map(artists.map((artist) => [artist.id, artist]));
 
   const courses = await Promise.all(

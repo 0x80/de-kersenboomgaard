@@ -18,42 +18,54 @@ const artistsMap = Object.fromEntries(artists.map((a) => [a.id, a]));
         .filter((artist): artist is Artist => artist?.name !== undefined);
 
       return (
-        <article class="course-card border-t border-gray-200 pt-8">
+        <article class="course-card relative border-t border-gray-200 pt-8">
+          {course.houseNumber > 0 && (
+            <div
+              class="text-gray-150 absolute -top-24 right-0 w-28 origin-bottom-left rotate-90 text-left text-8xl font-bold"
+              style="font-family: Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;"
+            >
+              {course.houseNumber}
+            </div>
+          )}
           <div class:list={[
-            "grid gap-8",
+            "relative z-10 grid gap-8",
             course.images.length > 0 ? "grid-cols-1 md:grid-cols-[1fr_280px]" : "grid-cols-1",
           ]}>
-            <div class="space-y-3">
-              <h3 class="text-xl font-medium text-gray-900">{course.name}</h3>
-              {linkedArtists.length > 0 && (
-                <p class="text-sm text-gray-600">
-                  {linkedArtists.length === 1 ? "docent" : "docenten"}{" "}
-                  {linkedArtists.map((artist, index) => (
-                    <>
-                      <a
-                        href={`/kunstenaars#artist-${artist.id}`}
-                        class="bg-gray-100 px-1 py-0.5 text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
-                      >
-                        {artist.name}
-                      </a>
-                      {index < linkedArtists.length - 1 &&
-                        (index === linkedArtists.length - 2 ? " & " : ", ")}
-                    </>
-                  ))}
-                </p>
-              )}
-              {course.content && (
-                <p class="leading-relaxed text-gray-600">{course.content}</p>
-              )}
+            <div class="flex flex-col space-y-3">
+              <div class="space-y-3">
+                <h3 class="text-xl font-medium text-gray-900">{course.name}</h3>
+                {linkedArtists.length > 0 && (
+                  <p class="text-sm text-gray-600">
+                    {linkedArtists.length === 1 ? "Docent" : "Docenten"}{" "}
+                    {linkedArtists.map((artist, index) => (
+                      <>
+                        <a
+                          href={`/kunstenaars#artist-${artist.id}`}
+                          class="bg-gray-100 px-1 py-0.5 text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
+                        >
+                          {artist.name}
+                        </a>
+                        {index < linkedArtists.length - 1 &&
+                          (index === linkedArtists.length - 2 ? " & " : ", ")}
+                      </>
+                    ))}
+                  </p>
+                )}
+                {course.content && (
+                  <p class="leading-relaxed text-gray-600">{course.content}</p>
+                )}
+              </div>
               {course.link && (
-                <a
-                  href={course.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="inline-block bg-gray-100 px-1 py-0.5 text-sm text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
-                >
-                  Meer info &rarr;
-                </a>
+                <div class="mt-auto text-right">
+                  <a
+                    href={course.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-block bg-gray-100 px-1 py-0.5 text-sm text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
+                  >
+                    Meer info
+                  </a>
+                </div>
               )}
             </div>
 
