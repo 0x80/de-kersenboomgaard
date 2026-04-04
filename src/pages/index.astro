@@ -1,7 +1,7 @@
 ---
 import Layout from "../layouts/layout.astro";
 import SectionHeader from "../components/section-header.astro";
-import { ArtistCard } from "../components/artist-card";
+import ArtistCard from "../components/artist-card.astro";
 import AgendaList from "../components/agenda-list.astro";
 import CourseList from "../components/course-list.astro";
 import ExpositionList from "../components/exposition-list.astro";
@@ -39,7 +39,7 @@ const structuredData = generateStructuredData(artists, courses);
       <!-- Artists Grid -->
       <div class="mx-auto grid max-w-4xl grid-cols-1 gap-8 md:grid-cols-2">
         {artists.map((artist) => (
-          <ArtistCard client:load artist={artist} />
+          <ArtistCard artist={artist} />
         ))}
       </div>
 

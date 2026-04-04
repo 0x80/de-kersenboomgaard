@@ -1,0 +1,401 @@
+---
+import type { Artist } from "../utils/content";
+
+interface Props {
+  artist: Artist;
+}
+
+const { artist } = Astro.props;
+
+const images =
+  artist.allImages.length > 0
+    ? artist.allImages
+    : [artist.image, artist.flipImage].filter(Boolean);
+
+const offset = images.length > 1 ? Math.floor(Math.random() * images.length) : 0;
+
+function formatWebsiteDisplay(link: string): string {
+  return link
+    .replace(/^https?:\/\//, "")
+    .replace(/^www\./, "")
+    .replace(/\/$/, "");
+}
+---
+
+<div
+  class="artist-card relative flex items-start space-x-4"
+  id={`artist-${artist.id}`}
+  data-offset={offset}
+  data-image-count={images.length}
+>
+  {artist.houseNumber && (
+    <div
+      class="text-gray-150 absolute -top-24 right-0 w-28 origin-bottom-left rotate-90 text-left text-8xl font-bold"
+      style="font-family: Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;"
+    >
+      {artist.houseNumber}
+    </div>
+  )}
+
+  <div class="relative z-10 flex-shrink-0">
+    {images.length > 1 ? (
+      <button
+        class="image-trigger relative h-[120px] w-[120px] cursor-pointer bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2"
+        aria-label={`View all images of ${artist.name}`}
+      >
+        {images.map((src, i) => (
+          <img
+            src={src}
+            alt={artist.name}
+            width="120"
+            height="120"
+            class:list={[
+              "artist-image absolute inset-0 h-[120px] w-[120px] border-4 border-white object-cover shadow-[0_2px_8px_rgba(0,0,0,0.15)] transition-opacity duration-300",
+              i === 0 ? "opacity-100" : "opacity-0",
+            ]}
+            loading="lazy"
+          />
+        ))}
+      </button>
+    ) : (
+      <img
+        src={images[0] || "/placeholder.svg"}
+        alt={artist.name}
+        width="120"
+        height="120"
+        class="h-[120px] w-[120px] border-4 border-white object-cover shadow-[0_2px_8px_rgba(0,0,0,0.15)]"
+      />
+    )}
+  </div>
+
+  <div class="relative z-10 min-w-0 flex-1">
+    <h3 class="mb-1 text-xl font-medium text-gray-900">{artist.name}</h3>
+    {artist.profession && (
+      <p class="text-m mb-2 leading-relaxed text-gray-600">{artist.profession}</p>
+    )}
+    {artist.link && (
+      <a
+        href={artist.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="artist-link text-md text-gray-400 transition-colors hover:text-gray-600"
+      >
+        {formatWebsiteDisplay(artist.link)}
+      </a>
+    )}
+  </div>
+
+  {images.length > 1 && (
+    <dialog class="gallery-dialog">
+      <div class="gallery-inner">
+        <button class="dialog-close" aria-label="Close gallery">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>
+        </button>
+        <div class="carousel-viewport">
+          <div class="carousel-track">
+            {images.map((src, i) => (
+              <div class="carousel-slide">
+                <img
+                  src={src}
+                  alt={`${artist.name} - Image ${i + 1}`}
+                  loading="lazy"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+        <button class="carousel-prev" aria-label="Previous image">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m15 18-6-6 6-6" />
+          </svg>
+        </button>
+        <button class="carousel-next" aria-label="Next image">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m9 18 6-6-6-6" />
+          </svg>
+        </button>
+      </div>
+    </dialog>
+  )}
+</div>
+
+<style>
+  /* Hover underline on artist link */
+  .artist-card:hover .artist-link {
+    border-bottom: 1px solid rgb(156 163 175);
+  }
+
+  /* Dialog styling */
+  .gallery-dialog {
+    border: none;
+    background: transparent;
+    padding: 0;
+    max-width: none;
+    max-height: none;
+    width: 100vw;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .gallery-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.8);
+  }
+
+  .gallery-dialog[open] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gallery-inner {
+    position: relative;
+    width: 90vw;
+    max-width: 56rem;
+    height: 70vh;
+    max-height: 600px;
+  }
+
+  @media (max-width: 640px) {
+    .gallery-inner {
+      width: 100vw;
+      height: 80vh;
+      max-height: none;
+    }
+  }
+
+  .dialog-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 50;
+    color: white;
+    opacity: 0.7;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+    transition: opacity 0.2s;
+  }
+
+  .dialog-close:hover {
+    opacity: 1;
+  }
+
+  /* Carousel */
+  .carousel-viewport {
+    width: 100%;
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .carousel-viewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  .carousel-track {
+    display: flex;
+    width: 100%;
+    height: 100%;
+  }
+
+  .carousel-slide {
+    flex: 0 0 100%;
+    scroll-snap-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 3rem;
+  }
+
+  @media (max-width: 640px) {
+    .carousel-slide {
+      padding: 0 1rem;
+    }
+  }
+
+  .carousel-slide img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .carousel-prev,
+  .carousel-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    transition: background 0.2s;
+  }
+
+  .carousel-prev:hover,
+  .carousel-next:hover {
+    background: white;
+  }
+
+  .carousel-prev {
+    left: 0.5rem;
+  }
+
+  .carousel-next {
+    right: 0.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .carousel-prev {
+      left: -0.5rem;
+    }
+
+    .carousel-next {
+      right: -0.5rem;
+    }
+  }
+</style>
+
+<script>
+  /** Fixed pixels per transition */
+  const PIXELS_PER_TRANSITION = 400;
+
+  let globalAccumulatedScroll = 0;
+  let lastScrollY = window.scrollY;
+  let abortController: AbortController | undefined;
+
+  function initArtistCards() {
+    abortController?.abort();
+    abortController = new AbortController();
+    const signal = abortController.signal;
+
+    const cards = document.querySelectorAll<HTMLElement>(".artist-card");
+    if (cards.length === 0) return;
+
+    // --- Scroll-based image rotation ---
+    let ticking = false;
+
+    function handleScroll() {
+      const currentScrollY = window.scrollY;
+      const delta = Math.abs(currentScrollY - lastScrollY);
+      lastScrollY = currentScrollY;
+      globalAccumulatedScroll += delta;
+
+      const globalIndex = Math.floor(globalAccumulatedScroll / PIXELS_PER_TRANSITION);
+
+      cards.forEach((card) => {
+        const imageCount = parseInt(card.dataset.imageCount || "0");
+        if (imageCount <= 1) return;
+
+        const offset = parseInt(card.dataset.offset || "0");
+        const imageIndex = (globalIndex + offset) % imageCount;
+        const images = card.querySelectorAll<HTMLImageElement>(".artist-image");
+
+        images.forEach((img, i) => {
+          img.style.opacity = i === imageIndex ? "1" : "0";
+        });
+      });
+    }
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (!ticking) {
+          requestAnimationFrame(() => {
+            handleScroll();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      },
+      { passive: true, signal },
+    );
+
+    // --- Dialog + Carousel ---
+    cards.forEach((card) => {
+      const trigger = card.querySelector<HTMLButtonElement>(".image-trigger");
+      const dialog = card.querySelector<HTMLDialogElement>(".gallery-dialog");
+      if (!trigger || !dialog) return;
+
+      const viewport = dialog.querySelector<HTMLElement>(".carousel-viewport");
+      const prevButton = dialog.querySelector<HTMLButtonElement>(".carousel-prev");
+      const nextButton = dialog.querySelector<HTMLButtonElement>(".carousel-next");
+      const closeButton = dialog.querySelector<HTMLButtonElement>(".dialog-close");
+
+      // Open dialog at current image index
+      trigger.addEventListener(
+        "click",
+        () => {
+          const images = card.querySelectorAll<HTMLImageElement>(".artist-image");
+          let currentIndex = 0;
+          images.forEach((img, i) => {
+            if (img.style.opacity === "1") currentIndex = i;
+          });
+
+          dialog.showModal();
+
+          // Scroll to the current image (instant, no smooth)
+          if (viewport) {
+            const slideWidth = viewport.offsetWidth;
+            viewport.scrollTo({ left: currentIndex * slideWidth, behavior: "instant" });
+          }
+        },
+        { signal },
+      );
+
+      // Close on backdrop click
+      dialog.addEventListener(
+        "click",
+        (e) => {
+          if (e.target === dialog) dialog.close();
+        },
+        { signal },
+      );
+
+      // Close button
+      closeButton?.addEventListener("click", () => dialog.close(), { signal });
+
+      // Carousel navigation
+      function scrollCarousel(direction: number) {
+        if (!viewport) return;
+        viewport.scrollBy({ left: direction * viewport.offsetWidth, behavior: "smooth" });
+      }
+
+      prevButton?.addEventListener("click", () => scrollCarousel(-1), { signal });
+      nextButton?.addEventListener("click", () => scrollCarousel(1), { signal });
+
+      // Keyboard navigation inside dialog
+      dialog.addEventListener(
+        "keydown",
+        (e) => {
+          if (e.key === "ArrowLeft") {
+            e.preventDefault();
+            scrollCarousel(-1);
+          } else if (e.key === "ArrowRight") {
+            e.preventDefault();
+            scrollCarousel(1);
+          }
+        },
+        { signal },
+      );
+    });
+  }
+
+  initArtistCards();
+  document.addEventListener("astro:after-swap", initArtistCards);
+</script>

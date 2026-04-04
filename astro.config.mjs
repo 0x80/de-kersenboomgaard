@@ -1,6 +1,5 @@
 import { defineConfig } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
-import react from "@astrojs/react";
 import compress from "astro-compress";
 import robotsTxt from "astro-robots-txt";
 import sitemap from "@astrojs/sitemap";
@@ -13,5 +12,5 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-  integrations: [react(), compress(), robotsTxt(), sitemap()],
+  integrations: [compress(), robotsTxt(), sitemap()],
 });
