@@ -21,7 +21,8 @@
     "format": "oxfmt",
     "check-lint": "oxlint --ignore-pattern '*.astro'",
     "lint": "oxlint --fix --ignore-pattern '*.astro'",
-    "check-types": "astro check"
+    "check-types": "astro check",
+    "prepare": "husky"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.7",

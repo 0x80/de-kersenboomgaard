@@ -51,7 +51,7 @@ function formatWebsiteDisplay(link: string): string {
             height="120"
             class:list={[
               "artist-image absolute inset-0 h-[120px] w-[120px] border-4 border-white object-cover shadow-[0_2px_8px_rgba(0,0,0,0.15)] transition-opacity duration-300",
-              i === 0 ? "opacity-100" : "opacity-0",
+              i === offset ? "opacity-100" : "opacity-0",
             ]}
             loading="lazy"
           />
@@ -352,7 +352,7 @@ function formatWebsiteDisplay(link: string): string {
           // Scroll to the current image (instant, no smooth)
           if (viewport) {
             const slideWidth = viewport.offsetWidth;
-            viewport.scrollTo({ left: currentIndex * slideWidth, behavior: "instant" });
+            viewport.scrollTo({ left: currentIndex * slideWidth, behavior: "auto" });
           }
         },
         { signal },
