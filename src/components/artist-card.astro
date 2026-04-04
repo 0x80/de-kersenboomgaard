@@ -288,6 +288,19 @@ function formatWebsiteDisplay(link: string): string {
     if (cards.length === 0) return;
 
     // --- Scroll-based image rotation ---
+    // Cache image references per card to avoid querySelectorAll on every scroll
+    const cardData = Array.from(cards)
+      .map((card) => {
+        const imageCount = parseInt(card.dataset.imageCount || "0");
+        if (imageCount <= 1) return null;
+        return {
+          offset: parseInt(card.dataset.offset || "0"),
+          imageCount,
+          images: card.querySelectorAll<HTMLImageElement>(".artist-image"),
+        };
+      })
+      .filter((d) => d !== null);
+
     let ticking = false;
 
     function handleScroll() {
@@ -298,18 +311,12 @@ function formatWebsiteDisplay(link: string): string {
 
       const globalIndex = Math.floor(globalAccumulatedScroll / PIXELS_PER_TRANSITION);
 
-      cards.forEach((card) => {
-        const imageCount = parseInt(card.dataset.imageCount || "0");
-        if (imageCount <= 1) return;
-
-        const offset = parseInt(card.dataset.offset || "0");
+      for (const { offset, imageCount, images } of cardData) {
         const imageIndex = (globalIndex + offset) % imageCount;
-        const images = card.querySelectorAll<HTMLImageElement>(".artist-image");
-
         images.forEach((img, i) => {
           img.style.opacity = i === imageIndex ? "1" : "0";
         });
-      });
+      }
     }
 
     window.addEventListener(
@@ -394,7 +401,7 @@ function formatWebsiteDisplay(link: string): string {
         // Looping requires instant jump then no-op, or just scroll directly
         if (Math.abs(next - current) > 1) {
           // Wrapping around — jump instantly to avoid long scroll
-          scrollToSlide(next, "instant");
+          scrollToSlide(next, "auto");
         } else {
           scrollToSlide(next);
         }
