@@ -61,7 +61,8 @@ async function getArtistImages(
         (file) =>
           file.toLowerCase().endsWith(".jpg") ||
           file.toLowerCase().endsWith(".jpeg") ||
-          file.toLowerCase().endsWith(".png"),
+          file.toLowerCase().endsWith(".png") ||
+          file.toLowerCase().endsWith(".webp"),
       )
       .sort();
 
