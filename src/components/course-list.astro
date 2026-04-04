@@ -58,7 +58,7 @@ const artistsMap = Object.fromEntries(artists.map((a) => [a.id, a]));
             </div>
 
             {course.images.length > 0 && (
-              <div class="course-thumbnails grid grid-cols-4 gap-1.5" data-course={course.slug}>
+              <div class="course-thumbnails grid grid-cols-2 gap-2" data-course={course.slug}>
                 {course.images.map((src, i) => (
                   <button
                     class="course-thumb aspect-square cursor-pointer overflow-hidden bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"

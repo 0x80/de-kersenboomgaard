@@ -171,7 +171,7 @@ export async function getCourses(artists: Artist[]): Promise<Course[]> {
         endMonth: entry.data.end_month,
         content: entry.body?.trim() ?? "",
         houseNumber,
-        images: images.slice(0, 8),
+        images: images.slice(0, 4),
       };
     }),
   );
