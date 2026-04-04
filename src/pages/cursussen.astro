@@ -1,0 +1,33 @@
+---
+import Layout from "../layouts/layout.astro";
+import CourseList from "../components/course-list.astro";
+import { getArtists, getCourses } from "../utils/content";
+
+const artists = await getArtists();
+const courses = await getCourses(artists);
+---
+
+<Layout
+  title="Cursussen & Workshops - Ateliers Kersenboomgaard"
+  description="Cursussen en workshops bij Ateliers Kersenboomgaard in Utrecht."
+>
+  <div class="min-h-screen bg-white">
+    <main class="mx-auto max-w-6xl px-6 py-12 pt-24">
+      <div class="mb-8 text-center">
+        <h1 class="text-3xl font-light text-gray-900">
+          Cursussen & Workshops
+        </h1>
+      </div>
+
+      {courses.length > 0 ? (
+        <CourseList courses={courses} artists={artists} />
+      ) : (
+        <div class="mx-auto max-w-4xl">
+          <p class="text-center text-gray-600">
+            Momenteel zijn er geen cursussen of workshops gepland.
+          </p>
+        </div>
+      )}
+    </main>
+  </div>
+</Layout>

@@ -10,7 +10,7 @@ const { courses, artists } = Astro.props;
 const artistsMap = Object.fromEntries(artists.map((a) => [a.id, a]));
 ---
 
-<div class="mx-auto max-w-4xl space-y-8">
+<div class="mx-auto max-w-5xl space-y-12">
   {
     courses.map((course) => {
       const linkedArtists = course.artistIds
@@ -18,41 +18,333 @@ const artistsMap = Object.fromEntries(artists.map((a) => [a.id, a]));
         .filter((artist): artist is Artist => artist?.name !== undefined);
 
       return (
-        <div class="space-y-3">
-          <h3 class="text-xl font-medium text-gray-900">{course.name}</h3>
-          {linkedArtists.length > 0 && (
-            <p class="text-sm text-gray-600">
-              {linkedArtists.length === 1 ? "docent" : "docenten"}{" "}
-              {linkedArtists.map((artist, index) => (
-                <>
-                  <a
-                    href={`#artist-${artist.id}`}
-                    class="artist-scroll-link bg-gray-100 px-1 py-0.5 text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
+        <article class="course-card border-t border-gray-200 pt-8">
+          <div class:list={[
+            "grid gap-8",
+            course.images.length > 0 ? "grid-cols-1 md:grid-cols-[1fr_280px]" : "grid-cols-1",
+          ]}>
+            <div class="space-y-3">
+              <h3 class="text-xl font-medium text-gray-900">{course.name}</h3>
+              {linkedArtists.length > 0 && (
+                <p class="text-sm text-gray-600">
+                  {linkedArtists.length === 1 ? "docent" : "docenten"}{" "}
+                  {linkedArtists.map((artist, index) => (
+                    <>
+                      <a
+                        href={`/kunstenaars#artist-${artist.id}`}
+                        class="bg-gray-100 px-1 py-0.5 text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
+                      >
+                        {artist.name}
+                      </a>
+                      {index < linkedArtists.length - 1 &&
+                        (index === linkedArtists.length - 2 ? " & " : ", ")}
+                    </>
+                  ))}
+                </p>
+              )}
+              {course.content && (
+                <p class="leading-relaxed text-gray-600">{course.content}</p>
+              )}
+              {course.link && (
+                <a
+                  href={course.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-block bg-gray-100 px-1 py-0.5 text-sm text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
+                >
+                  Meer info &rarr;
+                </a>
+              )}
+            </div>
+
+            {course.images.length > 0 && (
+              <div class="course-thumbnails grid grid-cols-4 gap-1.5" data-course={course.slug}>
+                {course.images.map((src, i) => (
+                  <button
+                    class="course-thumb aspect-square cursor-pointer overflow-hidden bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
+                    data-index={i}
+                    aria-label={`Bekijk afbeelding ${i + 1}`}
                   >
-                    {artist.name}
-                  </a>
-                  {index < linkedArtists.length - 1 &&
-                    (index === linkedArtists.length - 2 ? " & " : ", ")}
-                </>
-              ))}
-            </p>
+                    <img
+                      src={src}
+                      alt={`${course.name} - ${i + 1}`}
+                      class="h-full w-full object-cover transition-transform duration-200 hover:scale-105"
+                      loading="lazy"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {course.images.length > 0 && (
+            <dialog class="course-gallery-dialog" data-course={course.slug}>
+              <div class="gallery-inner">
+                <button class="dialog-close" aria-label="Sluiten">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                  </svg>
+                </button>
+                <div class="carousel-viewport">
+                  <div class="carousel-track">
+                    {course.images.map((src, i) => (
+                      <div class="carousel-slide">
+                        <img
+                          src={src}
+                          alt={`${course.name} - ${i + 1}`}
+                          loading="lazy"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <button class="carousel-prev" aria-label="Vorige">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m15 18-6-6 6-6" />
+                  </svg>
+                </button>
+                <button class="carousel-next" aria-label="Volgende">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m9 18 6-6-6-6" />
+                  </svg>
+                </button>
+              </div>
+            </dialog>
           )}
-          {course.content && (
-            <p class="leading-relaxed text-gray-600">{course.content}</p>
-          )}
-          {course.link && (
-            <a
-              href={course.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-block bg-gray-100 px-1 py-0.5 text-sm text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
-            >
-              Meer info &rarr;
-            </a>
-          )}
-        </div>
+        </article>
       );
     })
   }
 </div>
 
+<style>
+  .course-gallery-dialog {
+    border: none;
+    background: transparent;
+    padding: 0;
+    max-width: none;
+    max-height: none;
+    width: 100vw;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .course-gallery-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.8);
+  }
+
+  .course-gallery-dialog[open] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gallery-inner {
+    position: relative;
+    width: 90vw;
+    max-width: 56rem;
+    height: 70vh;
+    max-height: 600px;
+  }
+
+  @media (max-width: 640px) {
+    .gallery-inner {
+      width: 100vw;
+      height: 80vh;
+      max-height: none;
+    }
+  }
+
+  .dialog-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 50;
+    color: white;
+    opacity: 0.7;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+    transition: opacity 0.2s;
+  }
+
+  .dialog-close:hover {
+    opacity: 1;
+  }
+
+  .carousel-viewport {
+    width: 100%;
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .carousel-viewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  .carousel-track {
+    display: flex;
+    width: 100%;
+    height: 100%;
+  }
+
+  .carousel-slide {
+    flex: 0 0 100%;
+    scroll-snap-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 3rem;
+  }
+
+  @media (max-width: 640px) {
+    .carousel-slide {
+      padding: 0 1rem;
+    }
+  }
+
+  .carousel-slide img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .carousel-prev,
+  .carousel-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    transition: background 0.2s;
+  }
+
+  .carousel-prev:hover,
+  .carousel-next:hover {
+    background: white;
+  }
+
+  .carousel-prev {
+    left: 0.5rem;
+  }
+
+  .carousel-next {
+    right: 0.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .carousel-prev {
+      left: -0.5rem;
+    }
+
+    .carousel-next {
+      right: -0.5rem;
+    }
+  }
+</style>
+
+<script>
+  let courseAbortController: AbortController | undefined;
+
+  function initCourseGalleries() {
+    courseAbortController?.abort();
+    courseAbortController = new AbortController();
+    const signal = courseAbortController.signal;
+
+    const cards = document.querySelectorAll<HTMLElement>(".course-card");
+
+    cards.forEach((card) => {
+      const thumbnails = card.querySelector<HTMLElement>(".course-thumbnails");
+      const dialog = card.querySelector<HTMLDialogElement>(".course-gallery-dialog");
+      if (!thumbnails || !dialog) return;
+
+      const viewport = dialog.querySelector<HTMLElement>(".carousel-viewport");
+      const prevButton = dialog.querySelector<HTMLButtonElement>(".carousel-prev");
+      const nextButton = dialog.querySelector<HTMLButtonElement>(".carousel-next");
+      const closeButton = dialog.querySelector<HTMLButtonElement>(".dialog-close");
+      const slides = dialog.querySelectorAll(".carousel-slide");
+      const slideCount = slides.length;
+
+      // Open dialog at clicked thumbnail index
+      thumbnails.querySelectorAll<HTMLButtonElement>(".course-thumb").forEach((thumb) => {
+        thumb.addEventListener(
+          "click",
+          () => {
+            const index = parseInt(thumb.dataset.index || "0");
+            dialog.showModal();
+            if (viewport) {
+              viewport.scrollTo({ left: index * viewport.offsetWidth, behavior: "auto" });
+            }
+          },
+          { signal },
+        );
+      });
+
+      // Close on backdrop click
+      dialog.addEventListener(
+        "click",
+        (e) => {
+          if (e.target === dialog) dialog.close();
+        },
+        { signal },
+      );
+
+      closeButton?.addEventListener("click", () => dialog.close(), { signal });
+
+      function scrollToSlide(index: number, behavior: ScrollBehavior = "smooth") {
+        if (!viewport || slideCount === 0) return;
+        viewport.scrollTo({ left: index * viewport.offsetWidth, behavior });
+      }
+
+      function getCurrentSlide(): number {
+        if (!viewport || slideCount === 0) return 0;
+        return Math.round(viewport.scrollLeft / viewport.offsetWidth);
+      }
+
+      function scrollCarousel(direction: number) {
+        const current = getCurrentSlide();
+        let next = current + direction;
+        if (next < 0) next = slideCount - 1;
+        if (next >= slideCount) next = 0;
+        scrollToSlide(next, Math.abs(next - current) > 1 ? "auto" : "smooth");
+      }
+
+      prevButton?.addEventListener("click", () => scrollCarousel(-1), { signal });
+      nextButton?.addEventListener("click", () => scrollCarousel(1), { signal });
+
+      dialog.addEventListener(
+        "keydown",
+        (e) => {
+          if (e.key === "ArrowLeft") {
+            e.preventDefault();
+            scrollCarousel(-1);
+          } else if (e.key === "ArrowRight") {
+            e.preventDefault();
+            scrollCarousel(1);
+          }
+        },
+        { signal },
+      );
+    });
+  }
+
+  initCourseGalleries();
+  document.addEventListener("astro:after-swap", initCourseGalleries);
+</script>

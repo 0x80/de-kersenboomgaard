@@ -14,6 +14,7 @@ export interface Artist {
 }
 
 export interface Course {
+  slug: string;
   artistIds: string[];
   name: string;
   link: string;
@@ -21,20 +22,12 @@ export interface Course {
   endMonth?: number;
   content: string;
   houseNumber: number;
-}
-
-export interface AgendaItem {
-  title: string;
-  startDate: string;
-  startTime?: string;
-  endDate?: string;
-  endTime?: string;
-  eventLink: string;
-  content: string;
+  images: string[];
 }
 
 export interface Exposition {
   title: string;
+  slug: string;
   startDate: string;
   startTime?: string;
   endDate?: string;
@@ -47,6 +40,8 @@ export interface Exposition {
   artistIds: string[];
   link?: string;
   content: string;
+  heroImage: string;
+  flyerImage: string;
 }
 
 async function getArtistImages(
@@ -56,15 +51,7 @@ async function getArtistImages(
 
   try {
     const files = await fs.readdir(assetsDir);
-    const imageFiles = files
-      .filter(
-        (file) =>
-          file.toLowerCase().endsWith(".jpg") ||
-          file.toLowerCase().endsWith(".jpeg") ||
-          file.toLowerCase().endsWith(".png") ||
-          file.toLowerCase().endsWith(".webp"),
-      )
-      .sort();
+    const imageFiles = files.filter(isImageFile).sort();
 
     const allImages = imageFiles.map((file) => `/assets/artists/${artistId}/${file}`);
     const image = imageFiles[0] ? `/assets/artists/${artistId}/${imageFiles[0]}` : "";
@@ -73,6 +60,47 @@ async function getArtistImages(
     return { image, flipImage, allImages };
   } catch {
     return { image: "", flipImage: "", allImages: [] };
+  }
+}
+
+const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp"];
+
+function isImageFile(file: string): boolean {
+  return IMAGE_EXTENSIONS.some((ext) => file.toLowerCase().endsWith(ext));
+}
+
+async function getCourseImages(slug: string): Promise<string[]> {
+  const assetsDir = path.join(process.cwd(), "public/assets/courses", slug);
+
+  try {
+    const files = await fs.readdir(assetsDir);
+    return files
+      .filter(isImageFile)
+      .sort()
+      .map((file) => `/assets/courses/${slug}/${file}`);
+  } catch {
+    return [];
+  }
+}
+
+async function getExpositionImages(
+  slug: string,
+): Promise<{ heroImage: string; flyerImage: string }> {
+  const assetsDir = path.join(process.cwd(), "public/assets/expositions", slug);
+
+  try {
+    const files = await fs.readdir(assetsDir);
+    const imageFiles = files.filter(isImageFile).sort();
+
+    const heroFile = imageFiles.find((f) => f.startsWith("hero"));
+    const flyerFile = imageFiles.find((f) => f.startsWith("flyer"));
+
+    const heroImage = heroFile ? `/assets/expositions/${slug}/${heroFile}` : "";
+    const flyerImage = flyerFile ? `/assets/expositions/${slug}/${flyerFile}` : "";
+
+    return { heroImage, flyerImage };
+  } catch {
+    return { heroImage: "", flyerImage: "" };
   }
 }
 
@@ -114,70 +142,90 @@ export async function getCourses(artists: Artist[]): Promise<Course[]> {
   const entries = await getCollection("courses");
   const artistsMap = new Map(artists.map((artist) => [artist.id, artist]));
 
-  const courses = entries.map((entry) => {
-    const artistIds = parseArtistIds(entry.data.artist_ids);
+  const courses = await Promise.all(
+    entries.map(async (entry) => {
+      const artistIds = parseArtistIds(entry.data.artist_ids);
 
-    const courseArtists = artistIds
-      .map((id) => artistsMap.get(id))
-      .filter((artist): artist is Artist => artist !== undefined);
+      const courseArtists = artistIds
+        .map((id) => artistsMap.get(id))
+        .filter((artist): artist is Artist => artist !== undefined);
 
-    const houseNumber =
-      courseArtists.length > 0 ? Math.min(...courseArtists.map((artist) => artist.houseNumber)) : 0;
+      const houseNumber =
+        courseArtists.length > 0
+          ? Math.min(...courseArtists.map((artist) => artist.houseNumber))
+          : 0;
 
-    return {
-      artistIds,
-      name: entry.data.name,
-      link: entry.data.link,
-      startMonth: entry.data.start_month,
-      endMonth: entry.data.end_month,
-      content: entry.body?.trim() ?? "",
-      houseNumber,
-    };
-  });
+      // Load course-specific images, fall back to combined artist images
+      const slug = entry.id.replace(/\.md$/, "");
+      let images = await getCourseImages(slug);
+      if (images.length === 0 && courseArtists.length > 0) {
+        images = courseArtists.flatMap((artist) => artist.allImages);
+      }
+
+      return {
+        slug,
+        artistIds,
+        name: entry.data.name,
+        link: entry.data.link,
+        startMonth: entry.data.start_month,
+        endMonth: entry.data.end_month,
+        content: entry.body?.trim() ?? "",
+        houseNumber,
+        images: images.slice(0, 8),
+      };
+    }),
+  );
 
   return courses
     .filter((course) => course.houseNumber > 0)
     .toSorted((a, b) => a.houseNumber - b.houseNumber);
 }
 
-export async function getAgendaItems(): Promise<AgendaItem[]> {
-  const entries = await getCollection("agenda");
+export async function getExpositions(): Promise<Exposition[]> {
+  const entries = await getCollection("expositions");
 
-  const items = entries.map((entry) => ({
-    title: entry.data.title,
-    startDate: entry.data.start_date,
-    startTime: entry.data.start_time,
-    endDate: entry.data.end_date,
-    endTime: entry.data.end_time,
-    eventLink: entry.data.event_link,
-    content: entry.body?.trim() ?? "",
-  }));
+  const expositions = await Promise.all(
+    entries.map(async (entry) => {
+      const { heroImage, flyerImage } = await getExpositionImages(entry.data.slug);
 
-  return items.toSorted(
+      return {
+        title: entry.data.title,
+        slug: entry.data.slug,
+        startDate: entry.data.start_date,
+        startTime: entry.data.start_time,
+        endDate: entry.data.end_date,
+        endTime: entry.data.end_time,
+        location: entry.data.location,
+        address: entry.data.address,
+        curator: entry.data.curator,
+        openingEventTime: entry.data.opening_event_time,
+        openingEventDescription: entry.data.opening_event_description,
+        artistIds: parseArtistIds(entry.data.artist_ids),
+        link: entry.data.link,
+        content: entry.body?.trim() ?? "",
+        heroImage,
+        flyerImage,
+      };
+    }),
+  );
+
+  return expositions.toSorted(
     (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime(),
   );
 }
 
-export async function getExpositions(): Promise<Exposition[]> {
-  const entries = await getCollection("expositions");
+export function getUpcomingExpositions(expositions: Exposition[]): Exposition[] {
+  const now = new Date();
+  return expositions.filter((expo) => {
+    const endDate = expo.endDate ? new Date(expo.endDate) : new Date(expo.startDate);
+    return endDate >= now;
+  });
+}
 
-  const items = entries.map((entry) => ({
-    title: entry.data.title,
-    startDate: entry.data.start_date,
-    startTime: entry.data.start_time,
-    endDate: entry.data.end_date,
-    endTime: entry.data.end_time,
-    location: entry.data.location,
-    address: entry.data.address,
-    curator: entry.data.curator,
-    openingEventTime: entry.data.opening_event_time,
-    openingEventDescription: entry.data.opening_event_description,
-    artistIds: parseArtistIds(entry.data.artist_ids),
-    link: entry.data.link,
-    content: entry.body?.trim() ?? "",
-  }));
-
-  return items.toSorted(
-    (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime(),
-  );
+export function getPastExpositions(expositions: Exposition[]): Exposition[] {
+  const now = new Date();
+  return expositions.filter((expo) => {
+    const endDate = expo.endDate ? new Date(expo.endDate) : new Date(expo.startDate);
+    return endDate < now;
+  });
 }

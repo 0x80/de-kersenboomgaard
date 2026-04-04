@@ -1,0 +1,213 @@
+---
+import Layout from "../../layouts/layout.astro";
+import { getArtists, getExpositions } from "../../utils/content";
+import { formatDateRange, formatDutchDate, parseTimeFormat } from "../../utils/date-format";
+import type { Artist, Exposition } from "../../utils/content";
+
+export async function getStaticPaths() {
+  const expositions = await getExpositions();
+  const artists = await getArtists();
+
+  return expositions.map((expo) => ({
+    params: { slug: expo.slug },
+    props: { exposition: expo, artists },
+  }));
+}
+
+interface Props {
+  exposition: Exposition;
+  artists: Artist[];
+}
+
+const { exposition: expo, artists } = Astro.props;
+const artistsMap = Object.fromEntries(artists.map((a) => [a.id, a]));
+const linkedArtists = expo.artistIds
+  .map((id) => artistsMap[id])
+  .filter((artist): artist is Artist => artist?.name !== undefined);
+---
+
+<Layout
+  title={`${expo.title} - Ateliers Kersenboomgaard`}
+  description={expo.content?.slice(0, 160) || `${expo.title} bij Ateliers Kersenboomgaard`}
+  ogImage={expo.heroImage || undefined}
+>
+  <div class="min-h-screen bg-white">
+    <!-- Mobile: full-width hero, then text below -->
+    <div class="lg:hidden">
+      {expo.flyerImage && (
+        <div class="w-full pt-20">
+          <img
+            src={expo.flyerImage}
+            alt={expo.title}
+            class="w-full h-auto"
+            loading="eager"
+          />
+        </div>
+      )}
+
+      <div class="px-6 py-12">
+        <h1 class="text-2xl font-medium text-gray-900 mb-8">{expo.title}</h1>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-6 mb-12 text-sm">
+          <div>
+            <h2 class="text-xs uppercase tracking-widest text-gray-400 mb-2">Data</h2>
+            <p class="text-gray-700">{formatDateRange(expo.startDate, expo.endDate, expo.startTime, expo.endTime)}</p>
+          </div>
+
+          {expo.openingEventTime && (
+            <div>
+              <h2 class="text-xs uppercase tracking-widest text-gray-400 mb-2">Opening</h2>
+              <p class="text-gray-700">
+                {formatDutchDate(expo.startDate)}, {parseTimeFormat(String(expo.openingEventTime))}
+              </p>
+              {expo.openingEventDescription && (
+                <p class="text-gray-500 mt-1">{expo.openingEventDescription}</p>
+              )}
+            </div>
+          )}
+
+          <div>
+            <h2 class="text-xs uppercase tracking-widest text-gray-400 mb-2">Locatie</h2>
+            <p class="text-gray-700">{expo.location}</p>
+            <p class="text-gray-500 mt-1">{expo.address}</p>
+          </div>
+
+          {linkedArtists.length > 0 && (
+            <div>
+              <h2 class="text-xs uppercase tracking-widest text-gray-400 mb-2">Kunstenaars</h2>
+              <ul>
+                {linkedArtists.map((artist) => (
+                  <li>
+                    {artist.link ? (
+                      <a
+                        href={artist.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-gray-700 hover:text-black hover:shadow-[0_1px_0_0_#374151]"
+                      >
+                        {artist.name}
+                      </a>
+                    ) : (
+                      <span class="text-gray-700">{artist.name}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        {expo.content && (
+          <div class="leading-relaxed text-gray-600 space-y-4">
+            {expo.content.split("\n\n").map((paragraph) => (
+              <p>{paragraph}</p>
+            ))}
+          </div>
+        )}
+
+        {expo.link && (
+          <p class="mt-8 text-sm">
+            <a
+              href={expo.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="bg-gray-100 px-2 py-1 text-gray-900 transition-all hover:text-black hover:shadow-[0_3px_0_0_#374151]"
+            >
+              Meer info
+            </a>
+          </p>
+        )}
+      </div>
+    </div>
+
+    <!-- Desktop: two-column layout -->
+    <div class="hidden lg:block mx-auto max-w-6xl px-6 py-12 pt-24">
+      <div class="grid grid-cols-2 gap-12 items-start">
+        <div>
+          <h1 class="text-2xl font-medium text-gray-900 mb-8">{expo.title}</h1>
+
+          <div class="space-y-6 mb-12 text-sm">
+            <div>
+              <h2 class="text-xs uppercase tracking-widest text-gray-400 mb-2">Data</h2>
+              <p class="text-gray-700">{formatDateRange(expo.startDate, expo.endDate, expo.startTime, expo.endTime)}</p>
+            </div>
+
+            {expo.openingEventTime && (
+              <div>
+                <h2 class="text-xs uppercase tracking-widest text-gray-400 mb-2">Opening</h2>
+                <p class="text-gray-700">
+                  {formatDutchDate(expo.startDate)}, {parseTimeFormat(String(expo.openingEventTime))}
+                </p>
+                {expo.openingEventDescription && (
+                  <p class="text-gray-500 mt-1">{expo.openingEventDescription}</p>
+                )}
+              </div>
+            )}
+
+            <div>
+              <h2 class="text-xs uppercase tracking-widest text-gray-400 mb-2">Locatie</h2>
+              <p class="text-gray-700">{expo.location}</p>
+              <p class="text-gray-500 mt-1">{expo.address}</p>
+            </div>
+
+            {linkedArtists.length > 0 && (
+              <div>
+                <h2 class="text-xs uppercase tracking-widest text-gray-400 mb-2">Kunstenaars</h2>
+                <ul>
+                  {linkedArtists.map((artist) => (
+                    <li>
+                      {artist.link ? (
+                        <a
+                          href={artist.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="text-gray-700 hover:text-black hover:shadow-[0_1px_0_0_#374151]"
+                        >
+                          {artist.name}
+                        </a>
+                      ) : (
+                        <span class="text-gray-700">{artist.name}</span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+
+          {expo.content && (
+            <div class="leading-relaxed text-gray-600 space-y-4">
+              {expo.content.split("\n\n").map((paragraph) => (
+                <p>{paragraph}</p>
+              ))}
+            </div>
+          )}
+
+          {expo.link && (
+            <p class="mt-8 text-sm">
+              <a
+                href={expo.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="bg-gray-100 px-2 py-1 text-gray-900 transition-all hover:text-black hover:shadow-[0_3px_0_0_#374151]"
+              >
+                Meer info
+              </a>
+            </p>
+          )}
+        </div>
+
+        {expo.flyerImage && (
+          <div>
+            <img
+              src={expo.flyerImage}
+              alt={expo.title}
+              class="w-full h-auto"
+              loading="eager"
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</Layout>

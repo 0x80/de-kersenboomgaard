@@ -1,0 +1,107 @@
+---
+import Layout from "../../layouts/layout.astro";
+import { getExpositions, getUpcomingExpositions, getPastExpositions } from "../../utils/content";
+import { formatDateRange, formatDutchDate, parseTimeFormat } from "../../utils/date-format";
+
+const expositions = await getExpositions();
+const upcoming = getUpcomingExpositions(expositions);
+const past = getPastExpositions(expositions);
+---
+
+<Layout
+  title="Exposities - Ateliers Kersenboomgaard"
+  description="Exposities en voorstellingen bij Ateliers Kersenboomgaard in Utrecht."
+>
+  <div class="min-h-screen bg-white">
+    <main class="mx-auto max-w-6xl px-6 py-12 pt-24">
+      <div class="mb-8 text-center">
+        <h1 class="text-3xl font-light text-gray-900">
+          Exposities & Voorstellingen
+        </h1>
+      </div>
+
+      {upcoming.length > 0 && (
+        <section class="mx-auto max-w-4xl mb-16">
+          <h2 class="text-xs uppercase tracking-widest text-gray-400 mb-6">Aankomend</h2>
+          <div class="space-y-12">
+            {upcoming.map((expo) => (
+              <a href={`/exposities/${expo.slug}`} class="block group">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                  <div>
+                    <h3 class="text-xl font-medium text-gray-900 group-hover:text-gray-600 transition-colors">
+                      {expo.title}
+                    </h3>
+                    <p class="mt-2 text-sm text-gray-500">
+                      {formatDateRange(expo.startDate, expo.endDate, expo.startTime, expo.endTime)}
+                    </p>
+                    <p class="text-sm text-gray-500">
+                      {expo.location}, {expo.address}
+                    </p>
+                    {expo.openingEventTime && (
+                      <p class="mt-2 text-xs text-gray-400">
+                        Opening: {formatDutchDate(expo.startDate)}, {parseTimeFormat(String(expo.openingEventTime))}
+                      </p>
+                    )}
+                  </div>
+                  {expo.heroImage && (
+                    <div class="overflow-hidden">
+                      <img
+                        src={expo.heroImage}
+                        alt={expo.title}
+                        class="w-full h-auto group-hover:scale-[1.02] transition-transform duration-500"
+                        loading="lazy"
+                      />
+                    </div>
+                  )}
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {past.length > 0 && (
+        <section class="mx-auto max-w-4xl">
+          <h2 class="text-xs uppercase tracking-widest text-gray-400 mb-6">Afgelopen</h2>
+          <div class="space-y-12">
+            {past.map((expo) => (
+              <a href={`/exposities/${expo.slug}`} class="block group">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                  <div>
+                    <h3 class="text-xl font-medium text-gray-900 group-hover:text-gray-600 transition-colors">
+                      {expo.title}
+                    </h3>
+                    <p class="mt-2 text-sm text-gray-500">
+                      {formatDateRange(expo.startDate, expo.endDate, expo.startTime, expo.endTime)}
+                    </p>
+                    <p class="text-sm text-gray-500">
+                      {expo.location}, {expo.address}
+                    </p>
+                  </div>
+                  {expo.heroImage && (
+                    <div class="overflow-hidden">
+                      <img
+                        src={expo.heroImage}
+                        alt={expo.title}
+                        class="w-full h-auto group-hover:scale-[1.02] transition-transform duration-500"
+                        loading="lazy"
+                      />
+                    </div>
+                  )}
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {expositions.length === 0 && (
+        <div class="mx-auto max-w-4xl">
+          <p class="text-center text-gray-600">
+            Momenteel zijn er geen exposities of voorstellingen gepland.
+          </p>
+        </div>
+      )}
+    </main>
+  </div>
+</Layout>

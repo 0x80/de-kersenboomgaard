@@ -1,184 +1,229 @@
 ---
 import Layout from "../layouts/layout.astro";
-import SectionHeader from "../components/section-header.astro";
-import ArtistCard from "../components/artist-card.astro";
-import AgendaList from "../components/agenda-list.astro";
-import CourseList from "../components/course-list.astro";
-import ExpositionList from "../components/exposition-list.astro";
-import { getArtists, getCourses, getAgendaItems, getExpositions } from "../utils/content";
+import { getArtists, getCourses, getExpositions, getUpcomingExpositions } from "../utils/content";
 import { getSEOData, generateStructuredData } from "../utils/seo";
+import { formatDateRange, formatDutchDate, parseTimeFormat } from "../utils/date-format";
+import type { Artist } from "../utils/content";
 
 const artists = await getArtists();
 const courses = await getCourses(artists);
-const agendaItems = await getAgendaItems();
 const expositions = await getExpositions();
+const upcomingExpositions = getUpcomingExpositions(expositions);
 
 const seo = getSEOData(artists, courses);
 const structuredData = generateStructuredData(artists, courses);
+
+const artistsMap = Object.fromEntries(artists.map((a) => [a.id, a]));
+
+const pageLinks = [
+  { href: "/kunstenaars", label: "Kunstenaars", description: "Ontdek de kunstenaars, makers en creatievelingen" },
+  { href: "/cursussen", label: "Cursussen & Workshops", description: "Creatieve cursussen en workshops" },
+  { href: "/over-ons", label: "Over ons", description: "Over Ateliers Kersenboomgaard" },
+  { href: "/contact", label: "Contact", description: "Neem contact met ons op" },
+];
 ---
 
 <Layout title={seo.title} description={seo.description} keywords={seo.keywords}>
-  <!-- Structured Data for SEO -->
   <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData.organization)} />
   <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData.localBusiness)} />
-  {structuredData.persons.map((person) => (
-    <script is:inline type="application/ld+json" set:html={JSON.stringify(person)} />
-  ))}
-  {structuredData.courses.map((course) => (
-    <script is:inline type="application/ld+json" set:html={JSON.stringify(course)} />
-  ))}
 
-  <div class="min-h-screen bg-white" style="scroll-behavior: smooth;">
-    <main class="mx-auto max-w-6xl px-6 py-12 pt-24">
-      <div class="mb-8">
-        <SectionHeader id="artists">
-          Kunstenaars, Makers & Creatievelingen
-        </SectionHeader>
-      </div>
+  <div class="min-h-screen bg-white">
+    <main>
+      {upcomingExpositions.length > 0 && (
+        upcomingExpositions.map((expo) => {
+          const linkedArtists = expo.artistIds
+            .map((id) => artistsMap[id])
+            .filter((artist): artist is Artist => artist?.name !== undefined);
 
-      <!-- Artists Grid -->
-      <div class="mx-auto grid max-w-4xl grid-cols-1 gap-8 md:grid-cols-2">
-        {artists.map((artist) => (
-          <ArtistCard artist={artist} />
-        ))}
-      </div>
+          return (
+            <>
+              {/* Mobile: flyer on top, text below */}
+              <div class="lg:hidden">
+                {expo.flyerImage && (
+                  <div class="w-full pt-20">
+                    <img
+                      src={expo.flyerImage}
+                      alt={expo.title}
+                      class="w-full h-auto"
+                      loading="eager"
+                    />
+                  </div>
+                )}
 
-      <!-- Expositions Section -->
-      <div class="mt-16 mb-8">
-        <SectionHeader id="expositions">
-          Exposities & Voorstellingen
-        </SectionHeader>
-      </div>
-      {expositions.length > 0 ? (
-        <ExpositionList expositions={expositions} artists={artists} />
-      ) : (
-        <div class="mx-auto max-w-4xl">
-          <p class="text-center text-gray-600">
-            Momenteel zijn er geen exposities of voorstellingen gepland.
-          </p>
-        </div>
+                <div class="px-6 py-12">
+                  <h2 class="text-2xl font-medium text-gray-900 mb-8">{expo.title}</h2>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-6 mb-12 text-sm">
+                    <div>
+                      <h3 class="text-xs uppercase tracking-widest text-gray-400 mb-2">Data</h3>
+                      <p class="text-gray-700">{formatDateRange(expo.startDate, expo.endDate, expo.startTime, expo.endTime)}</p>
+                    </div>
+
+                    {expo.openingEventTime && (
+                      <div>
+                        <h3 class="text-xs uppercase tracking-widest text-gray-400 mb-2">Opening</h3>
+                        <p class="text-gray-700">
+                          {formatDutchDate(expo.startDate)}, {parseTimeFormat(String(expo.openingEventTime))}
+                        </p>
+                        {expo.openingEventDescription && (
+                          <p class="text-gray-500 mt-1">{expo.openingEventDescription}</p>
+                        )}
+                      </div>
+                    )}
+
+                    <div>
+                      <h3 class="text-xs uppercase tracking-widest text-gray-400 mb-2">Locatie</h3>
+                      <p class="text-gray-700">{expo.location}</p>
+                      <p class="text-gray-500 mt-1">{expo.address}</p>
+                    </div>
+
+                    {linkedArtists.length > 0 && (
+                      <div>
+                        <h3 class="text-xs uppercase tracking-widest text-gray-400 mb-2">Kunstenaars</h3>
+                        <ul>
+                          {linkedArtists.map((artist) => (
+                            <li>
+                              {artist.link ? (
+                                <a href={artist.link} target="_blank" rel="noopener noreferrer" class="text-gray-700 hover:text-black hover:shadow-[0_1px_0_0_#374151]">{artist.name}</a>
+                              ) : (
+                                <span class="text-gray-700">{artist.name}</span>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+
+                  {expo.content && (
+                    <div class="leading-relaxed text-gray-600 space-y-4">
+                      {expo.content.split("\n\n").map((paragraph) => (
+                        <p>{paragraph}</p>
+                      ))}
+                    </div>
+                  )}
+
+                  {expo.link && (
+                    <p class="mt-8 text-sm">
+                      <a href={expo.link} target="_blank" rel="noopener noreferrer" class="bg-gray-100 px-2 py-1 text-gray-900 transition-all hover:text-black hover:shadow-[0_3px_0_0_#374151]">
+                        Meer info
+                      </a>
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Desktop: two-column layout */}
+              <div class="hidden lg:block mx-auto max-w-6xl px-6 py-12 pt-24">
+                <div class="grid grid-cols-2 gap-12 items-start">
+                  <div>
+                    <h2 class="text-2xl font-medium text-gray-900 mb-8">{expo.title}</h2>
+
+                    <div class="space-y-6 mb-12 text-sm">
+                      <div>
+                        <h3 class="text-xs uppercase tracking-widest text-gray-400 mb-2">Data</h3>
+                        <p class="text-gray-700">{formatDateRange(expo.startDate, expo.endDate, expo.startTime, expo.endTime)}</p>
+                      </div>
+
+                      {expo.openingEventTime && (
+                        <div>
+                          <h3 class="text-xs uppercase tracking-widest text-gray-400 mb-2">Opening</h3>
+                          <p class="text-gray-700">
+                            {formatDutchDate(expo.startDate)}, {parseTimeFormat(String(expo.openingEventTime))}
+                          </p>
+                          {expo.openingEventDescription && (
+                            <p class="text-gray-500 mt-1">{expo.openingEventDescription}</p>
+                          )}
+                        </div>
+                      )}
+
+                      <div>
+                        <h3 class="text-xs uppercase tracking-widest text-gray-400 mb-2">Locatie</h3>
+                        <p class="text-gray-700">{expo.location}</p>
+                        <p class="text-gray-500 mt-1">{expo.address}</p>
+                      </div>
+
+                      {linkedArtists.length > 0 && (
+                        <div>
+                          <h3 class="text-xs uppercase tracking-widest text-gray-400 mb-2">Kunstenaars</h3>
+                          <ul>
+                            {linkedArtists.map((artist) => (
+                              <li>
+                                {artist.link ? (
+                                  <a href={artist.link} target="_blank" rel="noopener noreferrer" class="text-gray-700 hover:text-black hover:shadow-[0_1px_0_0_#374151]">{artist.name}</a>
+                                ) : (
+                                  <span class="text-gray-700">{artist.name}</span>
+                                )}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+
+                    {expo.content && (
+                      <div class="leading-relaxed text-gray-600 space-y-4">
+                        {expo.content.split("\n\n").map((paragraph) => (
+                          <p>{paragraph}</p>
+                        ))}
+                      </div>
+                    )}
+
+                    {expo.link && (
+                      <p class="mt-8 text-sm">
+                        <a href={expo.link} target="_blank" rel="noopener noreferrer" class="bg-gray-100 px-2 py-1 text-gray-900 transition-all hover:text-black hover:shadow-[0_3px_0_0_#374151]">
+                          Meer info
+                        </a>
+                      </p>
+                    )}
+                  </div>
+
+                  {expo.flyerImage && (
+                    <div>
+                      <img
+                        src={expo.flyerImage}
+                        alt={expo.title}
+                        class="w-full h-auto"
+                        loading="eager"
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
+          );
+        })
       )}
 
-      <!-- Courses Section -->
-      {courses.length > 0 && (
-        <>
-          <div class="mt-16 mb-8">
-            <SectionHeader id="courses">
-              Cursussen & Workshops
-            </SectionHeader>
-          </div>
-
-          <CourseList courses={courses} artists={artists} />
-        </>
-      )}
-
-      <!-- Agenda Section -->
-      {agendaItems.length > 0 && (
-        <>
-          <div class="mt-16 mb-8">
-            <SectionHeader id="agenda">Agenda</SectionHeader>
-          </div>
-
-          <AgendaList agendaItems={agendaItems} />
-        </>
-      )}
-
-      <!-- Over ons Section -->
-      <div class="mt-16 mb-8">
-        <SectionHeader id="over-ons">Over Ons</SectionHeader>
-      </div>
-
-      <div class="mx-auto max-w-4xl">
-        <div class="space-y-6 leading-relaxed text-gray-700">
-          <p>
-            Ateliers Kersenboomgaard is gelegen rond een oude
-            kersenboomgaard in het Utrechtse stadsdeel Leidsche Rijn. Hier
-            wonen en werken meer dan veertig kunstenaars verdeeld over
-            dertig atelierwoningen; een uniek project voor professionele
-            creatief ondernemers. Het palet van aanwezige disciplines is
-            even kleurrijk als uitgebreid. Schrijvers en schilders, theater
-            en dans, multimedia en gemengde technieken. Van ambachtelijk
-            handwerk tot industrieel design.
-          </p>
-          <p>
-            De atelierwoningen zijn verdeeld over 3 identieke gebouwen,
-            gelegen rond een oude hoogstam kersenboomgaard, eens onderdeel
-            van het groene buitengebied ten westen van Utrecht en straks
-            gelegen in het hart van Leidsche Rijn, vlak bij station
-            Terwijde.
-          </p>
-          <p>
-            Dit project is een initiatief van{" "}
-            <a
-              href="https://deplaatsmaker.nl/"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="bg-gray-100 px-1 py-0.5 text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
-            >
-              De Plaatsmaker
-            </a>
-            ,{" "}
-            <a
-              href="https://www.portaal.nl"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="bg-gray-100 px-1 py-0.5 text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
-            >
-              Portaal
-            </a>{" "}
-            en{" "}
-            <a
-              href="https://www.utrecht.nl"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="bg-gray-100 px-1 py-0.5 text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
-            >
-              Gemeente Utrecht
-            </a>
-            .
-          </p>
-        </div>
-      </div>
-
-      <!-- Contact Section -->
-      <div class="mt-16 mb-8">
-        <SectionHeader id="contact">Contact</SectionHeader>
-      </div>
-
-      <div class="mx-auto max-w-4xl">
-        <div class="space-y-2 text-center text-gray-700">
-          <p class="font-medium text-gray-900">
+      {upcomingExpositions.length === 0 && (
+        <div class="mx-auto max-w-6xl px-6 py-16 pt-24 text-center">
+          <h2 class="text-2xl font-light text-gray-900">
             Ateliers Kersenboomgaard
+          </h2>
+          <p class="mt-4 text-gray-600">
+            Kunstenaarscommunity in Utrecht met {artists.length}+ kunstenaars, makers en creatievelingen.
           </p>
-          <p>Emmy van Lokhorststraat 2 - 60</p>
-          <p>3544HM Utrecht</p>
-          <p>Nederland</p>
         </div>
-      </div>
+      )}
 
-      <!-- Facebook Section -->
-      <div class="mt-16 mb-8 text-center">
-        <div class="mx-auto max-w-4xl">
-          <a
-            href="https://www.facebook.com/atelierskersenboomgaard/"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center space-x-3 text-gray-700 transition-colors hover:text-gray-900"
-          >
-            <svg
-              class="h-6 w-6"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
-                clip-rule="evenodd"
-              />
-            </svg>
-            <span>Volg ons op Facebook</span>
-          </a>
+      {/* Page navigation links */}
+      <div class="mx-auto max-w-6xl px-6 py-12">
+        <div class="border-t border-gray-200 pt-12">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {pageLinks.map((link) => (
+              <a
+                href={link.href}
+                class="group block"
+              >
+                <h3 class="text-sm font-medium text-gray-900 group-hover:text-gray-600 transition-colors">
+                  {link.label}
+                </h3>
+                <p class="mt-1 text-xs text-gray-400">
+                  {link.description}
+                </p>
+              </a>
+            ))}
+          </div>
         </div>
       </div>
     </main>
