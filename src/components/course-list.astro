@@ -1,0 +1,58 @@
+---
+import type { Artist, Course } from "../utils/content";
+
+interface Props {
+  courses: Course[];
+  artists: Artist[];
+}
+
+const { courses, artists } = Astro.props;
+const artistsMap = Object.fromEntries(artists.map((a) => [a.id, a]));
+---
+
+<div class="mx-auto max-w-4xl space-y-8">
+  {
+    courses.map((course) => {
+      const linkedArtists = course.artistIds
+        .map((id) => artistsMap[id])
+        .filter((artist): artist is Artist => artist?.name !== undefined);
+
+      return (
+        <div class="space-y-3">
+          <h3 class="text-xl font-medium text-gray-900">{course.name}</h3>
+          {linkedArtists.length > 0 && (
+            <p class="text-sm text-gray-600">
+              {linkedArtists.length === 1 ? "docent" : "docenten"}{" "}
+              {linkedArtists.map((artist, index) => (
+                <>
+                  <a
+                    href={`#artist-${artist.id}`}
+                    class="artist-scroll-link bg-gray-100 px-1 py-0.5 text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
+                  >
+                    {artist.name}
+                  </a>
+                  {index < linkedArtists.length - 1 &&
+                    (index === linkedArtists.length - 2 ? " & " : ", ")}
+                </>
+              ))}
+            </p>
+          )}
+          {course.content && (
+            <p class="leading-relaxed text-gray-600">{course.content}</p>
+          )}
+          {course.link && (
+            <a
+              href={course.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-block bg-gray-100 px-1 py-0.5 text-sm text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
+            >
+              Meer info &rarr;
+            </a>
+          )}
+        </div>
+      );
+    })
+  }
+</div>
+
