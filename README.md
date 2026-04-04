@@ -157,7 +157,7 @@ Multiple paragraphs are supported, but markdown formatting is not rendered.
 - **Multiple Courses per Artist**: Artists can have multiple courses by creating separate course files
 - **Automatic Artist Linking**: Courses link to artist profiles automatically
 - **Smart Display**: Shows "docent" for single instructor, "docenten" for multiple instructors
-- **Flexible Format**: Supports single artist, comma-separated string, or array format
+- **Flexible Format**: Supports single artist ID or comma-separated IDs
 - **Sorting**: Courses display in house number order of the first linked artist
 - **Plain Text Content**: Course descriptions are displayed as plain text (markdown is not rendered)
 
@@ -199,7 +199,7 @@ Multiple paragraphs supported.
 - **Location Details**: Full venue and address information
 - **Curator Information**: Curator name and details
 - **Automatic Sorting**: Expositions display by date (most recent first)
-- **Flexible Artist Format**: Supports single artist, comma-separated string, or array format
+- **Flexible Artist Format**: Supports single artist ID or comma-separated IDs
 
 ### Time Format (Same as Agenda)
 
