@@ -363,7 +363,7 @@ function formatWebsiteDisplay(link: string): string {
           // Scroll to the current image (instant, no smooth)
           if (viewport) {
             const slideWidth = viewport.offsetWidth;
-            viewport.scrollTo({ left: currentIndex * slideWidth, behavior: "auto" });
+            viewport.scrollTo({ left: currentIndex * slideWidth, behavior: "instant" });
           }
         },
         { signal },
@@ -405,7 +405,7 @@ function formatWebsiteDisplay(link: string): string {
         // Looping requires instant jump then no-op, or just scroll directly
         if (Math.abs(next - current) > 1) {
           // Wrapping around — jump instantly to avoid long scroll
-          scrollToSlide(next, "auto");
+          scrollToSlide(next, "instant");
         } else {
           scrollToSlide(next);
         }

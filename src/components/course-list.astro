@@ -291,7 +291,7 @@ const artistsMap = Object.fromEntries(artists.map((a) => [a.id, a]));
             dialog.showModal();
             if (viewport) {
               requestAnimationFrame(() => {
-                viewport.scrollTo({ left: index * viewport.offsetWidth, behavior: "auto" });
+                viewport.scrollTo({ left: index * viewport.offsetWidth, behavior: "instant" });
               });
             }
           },
@@ -325,7 +325,7 @@ const artistsMap = Object.fromEntries(artists.map((a) => [a.id, a]));
         let next = current + direction;
         if (next < 0) next = slideCount - 1;
         if (next >= slideCount) next = 0;
-        scrollToSlide(next, Math.abs(next - current) > 1 ? "auto" : "smooth");
+        scrollToSlide(next, Math.abs(next - current) > 1 ? "instant" : "smooth");
       }
 
       prevButton?.addEventListener("click", () => scrollCarousel(-1), { signal });
