@@ -29,7 +29,7 @@ const linkedArtists = expo.artistIds
 <Layout
   title={`${expo.title} - Ateliers Kersenboomgaard`}
   description={expo.content?.slice(0, 160) || `${expo.title} bij Ateliers Kersenboomgaard`}
-  ogImage={expo.heroImage || undefined}
+  ogImage={expo.flyerImage || expo.heroImage || undefined}
 >
   <div class="min-h-screen bg-white">
     <!-- Mobile: full-width hero, then text below -->
