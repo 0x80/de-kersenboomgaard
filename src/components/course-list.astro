@@ -40,14 +40,16 @@ const artistsMap = Object.fromEntries(artists.map((a) => [a.id, a]));
           {course.content && (
             <p class="leading-relaxed text-gray-600">{course.content}</p>
           )}
-          <a
-            href={course.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-block bg-gray-100 px-1 py-0.5 text-sm text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
-          >
-            Meer info &rarr;
-          </a>
+          {course.link && (
+            <a
+              href={course.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-block bg-gray-100 px-1 py-0.5 text-sm text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
+            >
+              Meer info &rarr;
+            </a>
+          )}
         </div>
       );
     })

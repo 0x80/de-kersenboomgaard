@@ -18,14 +18,16 @@ const { agendaItems } = Astro.props;
           {formatDateRange(item.startDate, item.endDate, item.startTime, item.endTime)}
         </p>
         {item.content && <p class="leading-relaxed text-gray-600">{item.content}</p>}
-        <a
-          href={item.eventLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-block bg-gray-100 px-1 py-0.5 text-sm text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
-        >
-          Meer info &rarr;
-        </a>
+        {item.eventLink && (
+          <a
+            href={item.eventLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-block bg-gray-100 px-1 py-0.5 text-sm text-gray-900 hover:text-black hover:shadow-[0_3px_0_0_#374151]"
+          >
+            Meer info &rarr;
+          </a>
+        )}
       </div>
     ))
   }
