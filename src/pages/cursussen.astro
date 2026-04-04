@@ -2,15 +2,21 @@
 import Layout from "../layouts/layout.astro";
 import CourseList from "../components/course-list.astro";
 import { getArtists, getCourses } from "../utils/content";
+import { generateStructuredData } from "../utils/seo";
 
 const artists = await getArtists();
 const courses = await getCourses(artists);
+const structuredData = generateStructuredData(artists, courses);
 ---
 
 <Layout
   title="Cursussen & Workshops - Ateliers Kersenboomgaard"
   description="Cursussen en workshops bij Ateliers Kersenboomgaard in Utrecht."
 >
+  {structuredData.courses.map((course) => (
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(course)} />
+  ))}
+
   <div class="min-h-screen bg-white">
     <main class="mx-auto max-w-6xl px-6 py-12 pt-24">
       <div class="mb-8 text-center">

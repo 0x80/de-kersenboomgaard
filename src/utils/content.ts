@@ -214,10 +214,16 @@ export async function getExpositions(): Promise<Exposition[]> {
   );
 }
 
+function getEndOfDay(dateString: string): Date {
+  const date = new Date(dateString);
+  date.setUTCHours(23, 59, 59, 999);
+  return date;
+}
+
 export function getUpcomingExpositions(expositions: Exposition[]): Exposition[] {
   const now = new Date();
   return expositions.filter((expo) => {
-    const endDate = expo.endDate ? new Date(expo.endDate) : new Date(expo.startDate);
+    const endDate = getEndOfDay(expo.endDate ?? expo.startDate);
     return endDate >= now;
   });
 }
@@ -225,7 +231,7 @@ export function getUpcomingExpositions(expositions: Exposition[]): Exposition[] 
 export function getPastExpositions(expositions: Exposition[]): Exposition[] {
   const now = new Date();
   return expositions.filter((expo) => {
-    const endDate = expo.endDate ? new Date(expo.endDate) : new Date(expo.startDate);
+    const endDate = getEndOfDay(expo.endDate ?? expo.startDate);
     return endDate < now;
   });
 }
