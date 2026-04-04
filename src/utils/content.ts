@@ -222,10 +222,12 @@ function getEndOfDay(dateString: string): Date {
 
 export function getUpcomingExpositions(expositions: Exposition[]): Exposition[] {
   const now = new Date();
-  return expositions.filter((expo) => {
-    const endDate = getEndOfDay(expo.endDate ?? expo.startDate);
-    return endDate >= now;
-  });
+  return expositions
+    .filter((expo) => {
+      const endDate = getEndOfDay(expo.endDate ?? expo.startDate);
+      return endDate >= now;
+    })
+    .toSorted((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
 }
 
 export function getPastExpositions(expositions: Exposition[]): Exposition[] {

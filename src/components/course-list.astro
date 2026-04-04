@@ -290,7 +290,9 @@ const artistsMap = Object.fromEntries(artists.map((a) => [a.id, a]));
             const index = parseInt(thumb.dataset.index || "0");
             dialog.showModal();
             if (viewport) {
-              viewport.scrollTo({ left: index * viewport.offsetWidth, behavior: "auto" });
+              requestAnimationFrame(() => {
+                viewport.scrollTo({ left: index * viewport.offsetWidth, behavior: "auto" });
+              });
             }
           },
           { signal },
