@@ -40,14 +40,12 @@ pnpm check-types  # Run astro check
 
 ### Core Framework
 
-- **Astro 6** - Static site generator with islands architecture
-- **React 19** - Used selectively for interactive components (image carousel)
+- **Astro 6** - Static site generator, zero framework JS shipped to the browser
 - **TypeScript** - Type safety and better developer experience
 
 ### Styling & UI
 
 - **Tailwind CSS 4** - Utility-first CSS framework
-- **Lucide React** - Icon library (used in React islands)
 
 ### Content Management
 
@@ -75,18 +73,13 @@ pnpm check-types  # Run astro check
 │   │   ├── agenda-list.astro      # Agenda display
 │   │   ├── course-list.astro      # Course display
 │   │   ├── exposition-list.astro  # Exposition display
-│   │   ├── artist-card.tsx        # Artist card (React island)
-│   │   └── ui/                    # React UI components (carousel, dialog)
-│   ├── hooks/
-│   │   └── use-scroll-based-images.ts  # Scroll-synced image rotation
+│   │   └── artist-card.astro       # Artist card (native dialog + CSS carousel)
 │   ├── styles/
 │   │   └── global.css             # Tailwind CSS global styles
 │   ├── utils/
 │   │   ├── content.ts             # Content loading & types
 │   │   ├── seo.ts                 # SEO metadata & structured data
-│   │   ├── date-format.ts         # Dutch date formatting
-│   │   ├── cn.ts                  # Class name utility
-│   │   └── generate-slug.ts       # Slug generation
+│   │   └── date-format.ts         # Dutch date formatting
 │   └── content.config.ts          # Astro Content Collection schemas
 ├── content/                       # Content management (markdown files)
 │   ├── artists/             # Artist profiles
@@ -305,7 +298,7 @@ Relevant files: `src/utils/seo.ts`, `src/layouts/layout.astro`, `src/pages/index
 ### Component Patterns
 
 - **Astro components** by default for all static content
-- **React islands** (`client:load`) only for interactive features (image carousel)
+- Native browser APIs for interactivity (native `<dialog>`, CSS `scroll-snap` carousel, vanilla JS)
 - Vanilla JS `<script>` tags for simple interactivity (scroll behavior, navigation)
 
 ## Deployment
