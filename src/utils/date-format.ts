@@ -15,9 +15,9 @@ const DUTCH_MONTHS = [
 
 export function formatDutchDate(dateString: string): string {
   const date = new Date(dateString);
-  const day = date.getDate();
-  const month = DUTCH_MONTHS[date.getMonth()];
-  const year = date.getFullYear();
+  const day = date.getUTCDate();
+  const month = DUTCH_MONTHS[date.getUTCMonth()];
+  const year = date.getUTCFullYear();
   return `${day} ${month} ${year}`;
 }
 
@@ -44,12 +44,12 @@ export function formatDateRange(
   let dateStr = formatDutchDate(startDate);
 
   if (end && end.getTime() !== start.getTime()) {
-    const startDay = start.getDate();
-    const endDay = end.getDate();
-    const startMonth = DUTCH_MONTHS[start.getMonth()];
-    const endMonth = DUTCH_MONTHS[end.getMonth()];
-    const startYear = start.getFullYear();
-    const endYear = end.getFullYear();
+    const startDay = start.getUTCDate();
+    const endDay = end.getUTCDate();
+    const startMonth = DUTCH_MONTHS[start.getUTCMonth()];
+    const endMonth = DUTCH_MONTHS[end.getUTCMonth()];
+    const startYear = start.getUTCFullYear();
+    const endYear = end.getUTCFullYear();
 
     if (startYear === endYear && startMonth === endMonth) {
       dateStr = `${startDay} - ${endDay} ${startMonth} ${startYear}`;

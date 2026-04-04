@@ -9,7 +9,7 @@ import { getArtists, getCourses, getAgendaItems, getExpositions } from "../utils
 import { getSEOData, generateStructuredData } from "../utils/seo";
 
 const artists = await getArtists();
-const courses = await getCourses();
+const courses = await getCourses(artists);
 const agendaItems = await getAgendaItems();
 const expositions = await getExpositions();
 

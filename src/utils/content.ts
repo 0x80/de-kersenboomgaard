@@ -109,9 +109,8 @@ export async function getArtists(): Promise<Artist[]> {
   return artists.toSorted((a, b) => a.houseNumber - b.houseNumber);
 }
 
-export async function getCourses(): Promise<Course[]> {
+export async function getCourses(artists: Artist[]): Promise<Course[]> {
   const entries = await getCollection("courses");
-  const artists = await getArtists();
   const artistsMap = new Map(artists.map((artist) => [artist.id, artist]));
 
   const courses = entries.map((entry) => {
