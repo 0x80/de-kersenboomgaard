@@ -370,10 +370,34 @@ function formatWebsiteDisplay(link: string): string {
       // Close button
       closeButton?.addEventListener("click", () => dialog.close(), { signal });
 
-      // Carousel navigation
+      // Carousel navigation with looping
+      const slides = viewport?.querySelectorAll(".carousel-slide") ?? [];
+      const slideCount = slides.length;
+
+      function scrollToSlide(index: number, behavior: ScrollBehavior = "smooth") {
+        if (!viewport || slideCount === 0) return;
+        const slideWidth = viewport.offsetWidth;
+        viewport.scrollTo({ left: index * slideWidth, behavior });
+      }
+
+      function getCurrentSlide(): number {
+        if (!viewport || slideCount === 0) return 0;
+        const slideWidth = viewport.offsetWidth;
+        return Math.round(viewport.scrollLeft / slideWidth);
+      }
+
       function scrollCarousel(direction: number) {
-        if (!viewport) return;
-        viewport.scrollBy({ left: direction * viewport.offsetWidth, behavior: "smooth" });
+        const current = getCurrentSlide();
+        let next = current + direction;
+        if (next < 0) next = slideCount - 1;
+        if (next >= slideCount) next = 0;
+        // Looping requires instant jump then no-op, or just scroll directly
+        if (Math.abs(next - current) > 1) {
+          // Wrapping around — jump instantly to avoid long scroll
+          scrollToSlide(next, "instant");
+        } else {
+          scrollToSlide(next);
+        }
       }
 
       prevButton?.addEventListener("click", () => scrollCarousel(-1), { signal });
