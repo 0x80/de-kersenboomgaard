@@ -1,12 +1,13 @@
 ---
 const navigationItems = [
-  { href: "#artists", label: "Bewoners" },
-  { href: "#expositions", label: "Exposities" },
-  { href: "#courses", label: "Cursussen" },
-  { href: "#agenda", label: "Agenda" },
-  { href: "#over-ons", label: "Over ons" },
-  { href: "#contact", label: "Contact" },
+  { href: "/kunstenaars", label: "Kunstenaars" },
+  { href: "/exposities", label: "Exposities" },
+  { href: "/cursussen", label: "Cursussen" },
+  { href: "/over-ons", label: "Over ons" },
+  { href: "/contact", label: "Contact" },
 ];
+
+const currentPath = Astro.url.pathname;
 ---
 
 <header
@@ -15,21 +16,27 @@ const navigationItems = [
 >
   <div class="mx-auto max-w-6xl px-6 py-4">
     <div class="flex items-center justify-between">
-      <h1 class="text-lg font-medium text-gray-900">
+      <a href="/" class="text-lg font-medium text-gray-900 hover:text-black">
         Ateliers Kersenboomgaard
-      </h1>
+      </a>
 
       <!-- Desktop Navigation -->
       <nav class="hidden space-x-2 md:flex">
         {
-          navigationItems.map((item) => (
-            <a
-              href={item.href}
-              class="px-2 py-2 text-sm tracking-wide text-gray-600 transition-colors hover:text-black hover:shadow-[0_3px_0_0_#374151] focus:text-black focus:shadow-[0_3px_0_0_#374151] focus:outline-none"
-            >
-              {item.label}
-            </a>
-          ))
+          navigationItems.map((item) => {
+            const isActive = currentPath === item.href || currentPath.startsWith(item.href + "/");
+            return (
+              <a
+                href={item.href}
+                class:list={[
+                  "px-2 py-2 text-sm tracking-wide transition-colors hover:text-black hover:shadow-[0_3px_0_0_#374151] focus:text-black focus:shadow-[0_3px_0_0_#374151] focus:outline-none",
+                  isActive ? "text-black shadow-[0_3px_0_0_#374151]" : "text-gray-600",
+                ]}
+              >
+                {item.label}
+              </a>
+            );
+          })
         }
       </nav>
 
@@ -113,7 +120,6 @@ const navigationItems = [
     let isOpen = false;
     let isVisible = true;
     let lastScrollY = 0;
-    let isAutoScrolling = false;
 
     function setMenuOpen(open: boolean) {
       isOpen = open;
@@ -131,14 +137,6 @@ const navigationItems = [
       link.addEventListener("click", () => setMenuOpen(false), { signal }),
     );
 
-    // Keep nav visible during programmatic scrolls (nav link clicks)
-    document.querySelectorAll('a[href^="#"]').forEach((link) => {
-      link.addEventListener("click", () => {
-        isAutoScrolling = true;
-        setTimeout(() => { isAutoScrolling = false; }, 1000);
-      }, { signal });
-    });
-
     let ticking = false;
     function handleScroll() {
       const currentScrollY = window.scrollY;
@@ -150,7 +148,7 @@ const navigationItems = [
         isVisible = true;
       } else if (scrollingUp) {
         isVisible = true;
-      } else if (scrollingDown && !isOpen && !isAutoScrolling) {
+      } else if (scrollingDown && !isOpen) {
         isVisible = false;
       }
 

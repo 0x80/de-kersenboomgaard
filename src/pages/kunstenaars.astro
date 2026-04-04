@@ -1,0 +1,34 @@
+---
+import Layout from "../layouts/layout.astro";
+import ArtistCard from "../components/artist-card.astro";
+import { getArtists } from "../utils/content";
+import { generateStructuredData } from "../utils/seo";
+
+const artists = await getArtists();
+const structuredData = generateStructuredData(artists, []);
+---
+
+<Layout
+  title="Kunstenaars - Ateliers Kersenboomgaard"
+  description="Ontdek de kunstenaars, makers en creatievelingen van Ateliers Kersenboomgaard in Utrecht."
+>
+  {structuredData.persons.map((person) => (
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(person)} />
+  ))}
+
+  <div class="bg-white">
+    <main class="mx-auto max-w-6xl px-6 py-12 pt-24">
+      <div class="mb-8 text-center">
+        <h1 class="text-3xl font-light text-gray-900">
+          Kunstenaars, Makers & Creatievelingen
+        </h1>
+      </div>
+
+      <div class="mx-auto grid max-w-4xl grid-cols-1 gap-8 md:grid-cols-2">
+        {artists.map((artist) => (
+          <ArtistCard artist={artist} />
+        ))}
+      </div>
+    </main>
+  </div>
+</Layout>

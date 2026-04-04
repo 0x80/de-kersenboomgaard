@@ -3,6 +3,7 @@ import { ClientRouter } from "astro:transitions";
 import Analytics from "@vercel/analytics/astro";
 import SpeedInsights from "@vercel/speed-insights/astro";
 import Navigation from "../components/navigation.astro";
+import Footer from "../components/footer.astro";
 import "../styles/global.css";
 
 interface Props {
@@ -12,7 +13,7 @@ interface Props {
   ogImage?: string;
 }
 
-const { title, description, keywords, ogImage = "/assets/artists/max-kisman/image1.jpg" } = Astro.props;
+const { title, description, keywords, ogImage = "/assets/site/og-default.jpg" } = Astro.props;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 ---
 
@@ -39,9 +40,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={new URL(ogImage, Astro.site).href} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="De Kersenboomgaard - Kunstenaars & Ateliers Utrecht" />
+    <meta property="og:image:alt" content={title} />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -65,9 +64,12 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 
     <ClientRouter />
   </head>
-  <body>
+  <body class="flex min-h-screen flex-col">
     <Navigation />
-    <slot />
+    <div class="flex-1">
+      <slot />
+    </div>
+    <Footer />
     <Analytics />
     <SpeedInsights />
   </body>

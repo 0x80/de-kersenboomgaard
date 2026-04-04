@@ -24,22 +24,11 @@ const courses = defineCollection({
   }),
 });
 
-const agenda = defineCollection({
-  loader: glob({ pattern: "*.md", base: "./content/agenda" }),
-  schema: z.object({
-    title: z.string(),
-    start_date: z.coerce.string(),
-    start_time: z.string().optional(),
-    end_date: z.coerce.string().optional(),
-    end_time: z.coerce.string().optional(),
-    event_link: z.string().default(""),
-  }),
-});
-
 const expositions = defineCollection({
   loader: glob({ pattern: "*.md", base: "./content/expositions" }),
   schema: z.object({
     title: z.string(),
+    slug: z.string(),
     start_date: z.coerce.string(),
     start_time: z.string().optional(),
     end_date: z.coerce.string().optional(),
@@ -54,4 +43,4 @@ const expositions = defineCollection({
   }),
 });
 
-export const collections = { artists, courses, agenda, expositions };
+export const collections = { artists, courses, expositions };
