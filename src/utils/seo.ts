@@ -132,7 +132,7 @@ export function generateStructuredData(artists: Artist[], courses: Course[]) {
       },
       ...(artist.link && { url: artist.link }),
       ...(artist.image && {
-        image: { "@type": "ImageObject", url: artist.image },
+        image: { "@type": "ImageObject", url: artist.image.src },
       }),
     }));
 

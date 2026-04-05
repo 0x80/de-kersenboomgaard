@@ -59,12 +59,20 @@ function formatWebsiteDisplay(link: string): string {
           />
         ))}
       </button>
-    ) : (
+    ) : images.length === 1 ? (
       <Image
         src={images[0]}
         alt={artist.name}
         width={240}
         height={240}
+        class="h-[120px] w-[120px] border-4 border-white object-cover shadow-[0_2px_8px_rgba(0,0,0,0.15)]"
+      />
+    ) : (
+      <img
+        src="/placeholder.svg"
+        alt={artist.name}
+        width="120"
+        height="120"
         class="h-[120px] w-[120px] border-4 border-white object-cover shadow-[0_2px_8px_rgba(0,0,0,0.15)]"
       />
     )}
