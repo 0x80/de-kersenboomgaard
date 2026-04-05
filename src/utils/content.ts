@@ -1,15 +1,33 @@
 import { getCollection } from "astro:content";
-import fs from "node:fs/promises";
-import path from "node:path";
+import type { ImageMetadata } from "astro";
+
+// Discover all content images at build time
+const allContentImages = import.meta.glob<{ default: ImageMetadata }>(
+  "/content/**/*.{jpg,jpeg,png,webp}",
+  { eager: true },
+);
+
+const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp"];
+
+function isImagePath(filePath: string): boolean {
+  return IMAGE_EXTENSIONS.some((ext) => filePath.toLowerCase().endsWith(ext));
+}
+
+function getImagesForPath(prefix: string): ImageMetadata[] {
+  return Object.entries(allContentImages)
+    .filter(([path]) => path.startsWith(prefix) && isImagePath(path))
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([, module]) => module.default);
+}
 
 export interface Artist {
   id: string;
   name: string;
   profession: string;
   link: string;
-  image: string;
-  flipImage: string;
-  allImages: string[];
+  image: ImageMetadata | null;
+  flipImage: ImageMetadata | null;
+  allImages: ImageMetadata[];
   houseNumber: number;
 }
 
@@ -22,7 +40,7 @@ export interface Course {
   endMonth?: number;
   content: string;
   houseNumber: number;
-  images: string[];
+  images: ImageMetadata[];
 }
 
 export interface Exposition {
@@ -40,68 +58,46 @@ export interface Exposition {
   artistIds: string[];
   link?: string;
   content: string;
-  heroImage: string;
-  flyerImage: string;
+  heroImage: ImageMetadata | null;
+  flyerImage: ImageMetadata | null;
 }
 
-async function getArtistImages(
-  artistId: string,
-): Promise<{ image: string; flipImage: string; allImages: string[] }> {
-  const assetsDir = path.join(process.cwd(), "public/assets/artists", artistId);
+function getArtistImages(artistId: string): {
+  image: ImageMetadata | null;
+  flipImage: ImageMetadata | null;
+  allImages: ImageMetadata[];
+} {
+  const images = getImagesForPath(`/content/artists/${artistId}/`);
+  return {
+    image: images[0] ?? null,
+    flipImage: images[1] ?? images[0] ?? null,
+    allImages: images,
+  };
+}
 
-  try {
-    const files = await fs.readdir(assetsDir);
-    const imageFiles = files.filter(isImageFile).sort();
+function getCourseImages(slug: string): ImageMetadata[] {
+  return getImagesForPath(`/content/courses/${slug}/`);
+}
 
-    const allImages = imageFiles.map((file) => `/assets/artists/${artistId}/${file}`);
-    const image = imageFiles[0] ? `/assets/artists/${artistId}/${imageFiles[0]}` : "";
-    const flipImage = imageFiles[1] ? `/assets/artists/${artistId}/${imageFiles[1]}` : image;
+function getExpositionImages(slug: string): {
+  heroImage: ImageMetadata | null;
+  flyerImage: ImageMetadata | null;
+} {
+  const prefix = `/content/expositions/${slug}/`;
+  const entries = Object.entries(allContentImages)
+    .filter(([path]) => path.startsWith(prefix) && isImagePath(path))
+    .sort(([a], [b]) => a.localeCompare(b));
 
-    return { image, flipImage, allImages };
-  } catch {
-    return { image: "", flipImage: "", allImages: [] };
+  let heroImage: ImageMetadata | null = null;
+  let flyerImage: ImageMetadata | null = null;
+
+  for (const [imagePath, module] of entries) {
+    const filename = imagePath.slice(prefix.length).toLowerCase();
+    if (filename.startsWith("hero")) heroImage = module.default;
+    if (filename.startsWith("flyer")) flyerImage = module.default;
   }
-}
 
-const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp"];
-
-function isImageFile(file: string): boolean {
-  return IMAGE_EXTENSIONS.some((ext) => file.toLowerCase().endsWith(ext));
-}
-
-async function getCourseImages(slug: string): Promise<string[]> {
-  const assetsDir = path.join(process.cwd(), "public/assets/courses", slug);
-
-  try {
-    const files = await fs.readdir(assetsDir);
-    return files
-      .filter(isImageFile)
-      .sort()
-      .map((file) => `/assets/courses/${slug}/${file}`);
-  } catch {
-    return [];
-  }
-}
-
-async function getExpositionImages(
-  slug: string,
-): Promise<{ heroImage: string; flyerImage: string }> {
-  const assetsDir = path.join(process.cwd(), "public/assets/expositions", slug);
-
-  try {
-    const files = await fs.readdir(assetsDir);
-    const imageFiles = files.filter(isImageFile).sort();
-
-    const heroFile = imageFiles.find((f) => f.startsWith("hero"));
-    const flyerFile = imageFiles.find((f) => f.startsWith("flyer"));
-
-    const heroImage = heroFile ? `/assets/expositions/${slug}/${heroFile}` : "";
-    const flyerImage = flyerFile ? `/assets/expositions/${slug}/${flyerFile}` : "";
-
-    return { heroImage, flyerImage };
-  } catch {
-    return { heroImage: "", flyerImage: "" };
-  }
+  return { heroImage, flyerImage };
 }
 
 function parseArtistIds(value: string): string[] {
@@ -118,22 +114,20 @@ function parseArtistIds(value: string): string[] {
 export async function getArtists(): Promise<Artist[]> {
   const entries = await getCollection("artists");
 
-  const artists = await Promise.all(
-    entries.map(async (entry) => {
-      const { image, flipImage, allImages } = await getArtistImages(entry.data.id);
+  const artists = entries.map((entry) => {
+    const { image, flipImage, allImages } = getArtistImages(entry.data.id);
 
-      return {
-        id: entry.data.id,
-        name: entry.data.name,
-        profession: entry.data.profession,
-        link: entry.data.link,
-        image,
-        flipImage,
-        allImages,
-        houseNumber: entry.data.house_number,
-      };
-    }),
-  );
+    return {
+      id: entry.data.id,
+      name: entry.data.name,
+      profession: entry.data.profession,
+      link: entry.data.link,
+      image,
+      flipImage,
+      allImages,
+      houseNumber: entry.data.house_number,
+    };
+  });
 
   return artists.toSorted((a, b) => a.houseNumber - b.houseNumber);
 }
@@ -143,39 +137,34 @@ export async function getCourses(artists: Artist[]): Promise<Course[]> {
   const entries = allEntries.filter((entry) => !entry.data.disabled);
   const artistsMap = new Map(artists.map((artist) => [artist.id, artist]));
 
-  const courses = await Promise.all(
-    entries.map(async (entry) => {
-      const artistIds = parseArtistIds(entry.data.artist_ids);
+  const courses = entries.map((entry) => {
+    const artistIds = parseArtistIds(entry.data.artist_ids);
 
-      const courseArtists = artistIds
-        .map((id) => artistsMap.get(id))
-        .filter((artist): artist is Artist => artist !== undefined);
+    const courseArtists = artistIds
+      .map((id) => artistsMap.get(id))
+      .filter((artist): artist is Artist => artist !== undefined);
 
-      const houseNumber =
-        courseArtists.length > 0
-          ? Math.min(...courseArtists.map((artist) => artist.houseNumber))
-          : 0;
+    const houseNumber =
+      courseArtists.length > 0 ? Math.min(...courseArtists.map((artist) => artist.houseNumber)) : 0;
 
-      // Load course-specific images, fall back to combined artist images
-      const slug = entry.id.replace(/\.md$/, "");
-      let images = await getCourseImages(slug);
-      if (images.length === 0 && courseArtists.length > 0) {
-        images = courseArtists.flatMap((artist) => artist.allImages);
-      }
+    const slug = entry.data.slug;
+    let images = getCourseImages(slug);
+    if (images.length === 0 && courseArtists.length > 0) {
+      images = courseArtists.flatMap((artist) => artist.allImages);
+    }
 
-      return {
-        slug,
-        artistIds,
-        name: entry.data.name,
-        link: entry.data.link,
-        startMonth: entry.data.start_month,
-        endMonth: entry.data.end_month,
-        content: entry.body?.trim() ?? "",
-        houseNumber,
-        images: images.slice(0, 4),
-      };
-    }),
-  );
+    return {
+      slug,
+      artistIds,
+      name: entry.data.name,
+      link: entry.data.link,
+      startMonth: entry.data.start_month,
+      endMonth: entry.data.end_month,
+      content: entry.body?.trim() ?? "",
+      houseNumber,
+      images: images.slice(0, 4),
+    };
+  });
 
   return courses
     .filter((course) => course.houseNumber > 0)
@@ -185,30 +174,28 @@ export async function getCourses(artists: Artist[]): Promise<Course[]> {
 export async function getExpositions(): Promise<Exposition[]> {
   const entries = await getCollection("expositions");
 
-  const expositions = await Promise.all(
-    entries.map(async (entry) => {
-      const { heroImage, flyerImage } = await getExpositionImages(entry.data.slug);
+  const expositions = entries.map((entry) => {
+    const { heroImage, flyerImage } = getExpositionImages(entry.data.slug);
 
-      return {
-        title: entry.data.title,
-        slug: entry.data.slug,
-        startDate: entry.data.start_date,
-        startTime: entry.data.start_time,
-        endDate: entry.data.end_date,
-        endTime: entry.data.end_time,
-        location: entry.data.location,
-        address: entry.data.address,
-        curator: entry.data.curator,
-        openingEventTime: entry.data.opening_event_time,
-        openingEventDescription: entry.data.opening_event_description,
-        artistIds: parseArtistIds(entry.data.artist_ids),
-        link: entry.data.link,
-        content: entry.body?.trim() ?? "",
-        heroImage,
-        flyerImage,
-      };
-    }),
-  );
+    return {
+      title: entry.data.title,
+      slug: entry.data.slug,
+      startDate: entry.data.start_date,
+      startTime: entry.data.start_time,
+      endDate: entry.data.end_date,
+      endTime: entry.data.end_time,
+      location: entry.data.location,
+      address: entry.data.address,
+      curator: entry.data.curator,
+      openingEventTime: entry.data.opening_event_time,
+      openingEventDescription: entry.data.opening_event_description,
+      artistIds: parseArtistIds(entry.data.artist_ids),
+      link: entry.data.link,
+      content: entry.body?.trim() ?? "",
+      heroImage,
+      flyerImage,
+    };
+  });
 
   return expositions.toSorted(
     (a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime(),

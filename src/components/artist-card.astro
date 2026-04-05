@@ -1,4 +1,6 @@
 ---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
 import type { Artist } from "../utils/content";
 
 interface Props {
@@ -7,10 +9,10 @@ interface Props {
 
 const { artist } = Astro.props;
 
-const images =
+const images: ImageMetadata[] =
   artist.allImages.length > 0
     ? artist.allImages
-    : [artist.image, artist.flipImage].filter(Boolean);
+    : [artist.image, artist.flipImage].filter((img): img is ImageMetadata => img !== null);
 
 const offset = images.length > 1 ? Math.floor(Math.random() * images.length) : 0;
 
@@ -43,12 +45,12 @@ function formatWebsiteDisplay(link: string): string {
         class="image-trigger relative h-[120px] w-[120px] cursor-pointer bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2"
         aria-label={`View all images of ${artist.name}`}
       >
-        {images.map((src, i) => (
-          <img
-            src={src}
+        {images.map((image, i) => (
+          <Image
+            src={image}
             alt={artist.name}
-            width="120"
-            height="120"
+            width={240}
+            height={240}
             class:list={[
               "artist-image absolute inset-0 h-[120px] w-[120px] border-4 border-white object-cover shadow-[0_2px_8px_rgba(0,0,0,0.15)] transition-opacity duration-300",
               i === offset ? "opacity-100" : "opacity-0",
@@ -57,9 +59,17 @@ function formatWebsiteDisplay(link: string): string {
           />
         ))}
       </button>
+    ) : images.length === 1 ? (
+      <Image
+        src={images[0]}
+        alt={artist.name}
+        width={240}
+        height={240}
+        class="h-[120px] w-[120px] border-4 border-white object-cover shadow-[0_2px_8px_rgba(0,0,0,0.15)]"
+      />
     ) : (
       <img
-        src={images[0] || "/placeholder.svg"}
+        src="/placeholder.svg"
         alt={artist.name}
         width="120"
         height="120"
@@ -96,11 +106,13 @@ function formatWebsiteDisplay(link: string): string {
         </button>
         <div class="carousel-viewport">
           <div class="carousel-track">
-            {images.map((src, i) => (
+            {images.map((image, i) => (
               <div class="carousel-slide">
-                <img
-                  src={src}
+                <Image
+                  src={image}
                   alt={`${artist.name} - Image ${i + 1}`}
+                  widths={[640, 960, 1280]}
+                  sizes="(max-width: 640px) 100vw, 56rem"
                   loading="lazy"
                 />
               </div>

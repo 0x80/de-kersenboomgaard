@@ -4,10 +4,10 @@
 
 All content in this repository related to artists, including but not limited to:
 
-- Artist images and artwork (`public/assets/artists/`)
+- Artist images and artwork (`content/artists/`)
 - Artist profiles and biographical information (`content/artists/`)
-- Course descriptions and materials (`content/courses/`)
-- Event information and promotional materials (`content/agenda/`)
+- Course descriptions and images (`content/courses/`)
+- Exhibition information and promotional materials (`content/expositions/`)
 - Any other creative or personal content
 
 **IS PROTECTED BY COPYRIGHT** and remains the exclusive property of the respective artists and creators.

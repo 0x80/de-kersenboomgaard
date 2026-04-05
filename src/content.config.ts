@@ -3,7 +3,7 @@ import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 
 const artists = defineCollection({
-  loader: glob({ pattern: "*.md", base: "./content/artists" }),
+  loader: glob({ pattern: "**/*.md", base: "./content/artists" }),
   schema: z.object({
     id: z.string(),
     name: z.string(),
@@ -14,8 +14,9 @@ const artists = defineCollection({
 });
 
 const courses = defineCollection({
-  loader: glob({ pattern: "*.md", base: "./content/courses" }),
+  loader: glob({ pattern: "**/*.md", base: "./content/courses" }),
   schema: z.object({
+    slug: z.string(),
     artist_ids: z.string().default(""),
     name: z.string(),
     link: z.string().default(""),
@@ -26,7 +27,7 @@ const courses = defineCollection({
 });
 
 const expositions = defineCollection({
-  loader: glob({ pattern: "*.md", base: "./content/expositions" }),
+  loader: glob({ pattern: "**/*.md", base: "./content/expositions" }),
   schema: z.object({
     title: z.string(),
     slug: z.string(),

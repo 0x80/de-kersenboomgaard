@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import Layout from "../layouts/layout.astro";
 import { getArtists, getCourses, getExpositions, getUpcomingExpositions } from "../utils/content";
 import { getSEOData, generateStructuredData } from "../utils/seo";
@@ -42,9 +43,11 @@ const pageLinks = [
               <div class="lg:hidden pt-20">
                 {expo.flyerImage && (
                   <div class="w-full">
-                    <img
+                    <Image
                       src={expo.flyerImage}
                       alt={expo.title}
+                      widths={[640, 960, 1280]}
+                      sizes="100vw"
                       class="w-full h-auto"
                       loading="eager"
                     />
@@ -181,9 +184,11 @@ const pageLinks = [
 
                   {expo.flyerImage && (
                     <div>
-                      <img
+                      <Image
                         src={expo.flyerImage}
                         alt={expo.title}
+                        widths={[640, 960]}
+                        sizes="50vw"
                         class="w-full h-auto"
                         loading="eager"
                       />
