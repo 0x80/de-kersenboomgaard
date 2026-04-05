@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import type { Artist, Course } from "../utils/content";
 
 interface Props {
@@ -71,15 +72,17 @@ const artistsMap = Object.fromEntries(artists.map((a) => [a.id, a]));
 
             {course.images.length > 0 && (
               <div class="course-thumbnails grid grid-cols-2 gap-2" data-course={course.slug}>
-                {course.images.map((src, i) => (
+                {course.images.map((image, i) => (
                   <button
                     class="course-thumb aspect-square cursor-pointer overflow-hidden bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
                     data-index={i}
                     aria-label={`Bekijk afbeelding ${i + 1}`}
                   >
-                    <img
-                      src={src}
+                    <Image
+                      src={image}
                       alt={`${course.name} - ${i + 1}`}
+                      width={280}
+                      height={280}
                       class="h-full w-full object-cover transition-transform duration-200 hover:scale-105"
                       loading="lazy"
                     />
@@ -100,11 +103,13 @@ const artistsMap = Object.fromEntries(artists.map((a) => [a.id, a]));
                 </button>
                 <div class="carousel-viewport">
                   <div class="carousel-track">
-                    {course.images.map((src, i) => (
+                    {course.images.map((image, i) => (
                       <div class="carousel-slide">
-                        <img
-                          src={src}
+                        <Image
+                          src={image}
                           alt={`${course.name} - ${i + 1}`}
+                          widths={[640, 960, 1280]}
+                          sizes="(max-width: 640px) 100vw, 56rem"
                           loading="lazy"
                         />
                       </div>

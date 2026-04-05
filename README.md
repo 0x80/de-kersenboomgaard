@@ -81,13 +81,21 @@ pnpm check-types  # Run astro check
 │   │   ├── seo.ts                 # SEO metadata & structured data
 │   │   └── date-format.ts         # Dutch date formatting
 │   └── content.config.ts          # Astro Content Collection schemas
-├── content/                       # Content management (markdown files)
-│   ├── artists/             # Artist profiles
-│   ├── courses/             # Course information
-│   ├── expositions/         # Exhibition listings
-│   └── agenda/              # Event listings
+├── content/                       # Content and assets (co-located)
+│   ├── artists/             # Artist profiles and images
+│   │   └── {artist-id}/     # Folder per artist
+│   │       ├── {artist-id}.md
+│   │       └── *.jpg/jpeg/png/webp
+│   ├── courses/             # Course information and images
+│   │   └── {slug}/          # Folder per course
+│   │       ├── {slug}.md
+│   │       └── *.jpg/jpeg/png/webp
+│   └── expositions/         # Exhibition listings and images
+│       └── {slug}/          # Folder per exposition
+│           ├── {slug}.md
+│           └── hero.*/flyer.*
 ├── public/
-│   └── assets/              # Artist images organized by ID
+│   └── assets/site/         # Site-level assets (OG images, etc.)
 └── package.json
 ```
 
@@ -95,16 +103,14 @@ pnpm check-types  # Run astro check
 
 ### Adding a New Artist
 
-1. **Create Artist Profile**: Add a new markdown file in `content/artists/`
-   - Filename format: `{house_number}-{artist-name}.md` (recommended for organization)
-   - Example: `42-jane-doe.md`
-   - Note: Filename doesn't affect functionality - artists are sorted by `house_number` field
+1. **Create Artist Folder**: Create a new folder in `content/artists/` named after the artist ID
+   - Example: `content/artists/jane-doe/`
 
-2. **Artist Frontmatter Structure**:
+2. **Add Artist Markdown**: Create `jane-doe.md` inside the folder with frontmatter:
 
 ```yaml
 ---
-id: jane-doe # Unique identifier (used for images)
+id: jane-doe # Unique identifier (must match folder name)
 name: Jane Doe # Display name
 profession: Painter & Sculptor # What they do
 link: https://www.janedoe.com # Website (fully qualified URL)
@@ -112,18 +118,19 @@ house_number: 42 # House number (determines display order)
 ---
 ```
 
-3. **Add Artist Images**: Create folder `public/assets/artists/jane-doe/`
+3. **Add Artist Images**: Place images directly in the artist folder (`content/artists/jane-doe/`)
    - Add any number of images (no limit)
    - Images are sorted alphabetically by filename
    - Each page load starts at a random image
    - All images cycle through as users scroll (synchronized across all artists)
    - Clicking an image opens a carousel to browse all images
-   - Supported formats: `.jpg`, `.jpeg`, `.png`
+   - Supported formats: `.jpg`, `.jpeg`, `.png`, `.webp`
+   - Images are automatically optimized at build time
 
 ### Editing via GitHub UI
 
-1. Navigate to `content/artists/` in the GitHub repository
-2. Click "Add file" → "Create new file" or edit existing file
+1. Navigate to the artist folder in `content/artists/` in the GitHub repository
+2. Edit the `.md` file or upload new images
 3. Use the frontmatter structure above
 4. Commit changes directly to main branch
 5. Website updates automatically via deployment
@@ -132,15 +139,14 @@ house_number: 42 # House number (determines display order)
 
 ### Adding a Course
 
-1. **Create Course File**: Add markdown file in `content/courses/`
-   - Filename format: `{artist_house_number}-{course-name}.md` (recommended for organization)
-   - Example: `42-pottery-workshop.md`
-   - Note: Filename doesn't affect functionality - courses are sorted by linked artist's `house_number`
+1. **Create Course Folder**: Create a new folder in `content/courses/` with a slug name
+   - Example: `content/courses/pottery-workshop/`
 
-2. **Course Frontmatter Structure**:
+2. **Add Course Markdown**: Create `pottery-workshop.md` inside the folder with frontmatter:
 
 ```yaml
 ---
+slug: pottery-workshop # Must match folder name
 artist_ids: jane-doe,john-smith # Instructor IDs (comma-separated, links to artist profiles)
 name: Pottery Workshop # Course title
 start_month: 3 # Start month (1-12)
@@ -150,6 +156,10 @@ link: https://www.janedoe.com/courses # Registration/info link
 Course description goes here as plain text.
 Multiple paragraphs are supported, but markdown formatting is not rendered.
 ```
+
+3. **Add Course Images** (optional): Place images directly in the course folder
+   - If no course images are provided, artist images are used as fallback
+   - Supported formats: `.jpg`, `.jpeg`, `.png`, `.webp`
 
 ### Course Features
 
@@ -165,11 +175,16 @@ Multiple paragraphs are supported, but markdown formatting is not rendered.
 
 ### Adding Expositions
 
-1. **Create Exposition File**: Add markdown file in `content/expositions/`
-   - Filename format: `expo-YYYY-season.md` or descriptive name
-   - Example: `expo-2024-spring.md`, `expo-winter-showcase.md`
+1. **Create Exposition Folder**: Create a new folder in `content/expositions/` using the slug
+   - Example: `content/expositions/lente-2024/`
 
-2. **Exposition Frontmatter Structure**:
+2. **Add Exposition Markdown**: Create `lente-2024.md` inside the folder with frontmatter:
+
+3. **Add Images** (optional): Place `hero.*` and/or `flyer.*` images in the folder
+   - `hero.*` — used in listings
+   - `flyer.*` — used on the detail page and homepage
+
+4. **Exposition Frontmatter Structure**:
 
 ```yaml
 ---
@@ -253,33 +268,42 @@ Event description in markdown format.
 
 ### Image Organization
 
+Images are co-located with their content in the `content/` directory:
+
 ```
-public/assets/artists/
-├── artist-id/
-│   ├── image1.jpg             # Any filename works
-│   ├── image2.png             # Images sorted alphabetically
-│   ├── image3.jpeg            # All images used in scroll cycle
-│   └── any-name.jpg           # Filename doesn't matter
+content/artists/artist-id/
+├── artist-id.md               # Artist profile
+├── image1.jpg                 # Any filename works
+├── image2.png                 # Images sorted alphabetically
+└── any-name.jpg               # Filename doesn't matter
+
+content/courses/course-slug/
+├── course-slug.md             # Course info
+└── image1.jpg                 # Optional course-specific images
+
+content/expositions/expo-slug/
+├── expo-slug.md               # Exposition info
+├── hero.jpeg                  # Used in listings
+└── flyer.jpeg                 # Used on detail page
 ```
 
 ### Image Guidelines
 
-- **Folder Naming**: Use artist ID as folder name (matches `id` in artist frontmatter)
-- **File Naming**: Image filenames don't matter - any name works
-- **Formats**: JPG, JPEG, PNG supported
+- **Co-located**: Images live alongside their markdown files in the same folder
+- **Auto-optimized**: Astro automatically converts images to WebP/AVIF and generates responsive srcsets at build time
+- **File Naming**: Image filenames don't matter for artists/courses (they sort alphabetically). For expositions, use `hero.*` and `flyer.*` prefixes.
+- **Formats**: JPG, JPEG, PNG, WebP supported
 - **No Limit**: Add as many images as you want per artist
 - **Display Order**: Images are sorted alphabetically by filename
 - **Random Start**: Each page load begins at a random image per artist
 - **Scroll-Based Cycling**: Images cycle through as users scroll (synchronized across all artists)
 - **Full Access**: Clicking any artist image opens a carousel to browse all their images
-- **Fallbacks**: Missing images handled gracefully with placeholders
 
 ### Adding Images via GitHub
 
-1. Navigate to `public/assets/artists/` in repository
-2. Create new folder with artist ID name
-3. Upload images with any filenames
-4. Images will automatically display in alphabetical order during scroll
+1. Navigate to the relevant content folder (e.g., `content/artists/jane-doe/`)
+2. Upload images with any filenames
+3. Images will automatically display in alphabetical order during scroll
 
 ## SEO
 
@@ -475,10 +499,10 @@ https://de-kersenboomgaard-git-[branch-name]-[username].vercel.app
 
 ### Common Tasks
 
-- **Add Artist**: Copy existing artist file, update all fields, add images
-- **Update Course**: Edit course file, changes reflect immediately after deployment
-- **Schedule Event**: Add to agenda folder with proper date formatting
-- **Update Images**: Add/replace files in artist folders with any filenames (they'll sort alphabetically)
+- **Add Artist**: Copy an existing artist folder, update all fields, add images
+- **Update Course**: Edit course markdown, changes reflect immediately after deployment
+- **Add Exposition**: Create folder in `content/expositions/` with markdown and images
+- **Update Images**: Add/replace image files in content folders (they sort alphabetically)
 
 ## License and Copyright
 
@@ -497,10 +521,10 @@ The source code, configuration files, and technical components are licensed unde
 
 All artist-related content is protected by copyright and **NOT** covered by the MIT license:
 
-- **Artist images and artwork** (`public/assets/artists/`)
+- **Artist images and artwork** (`content/artists/`)
 - **Artist profiles and information** (`content/artists/`)
-- **Course descriptions** (`content/courses/`)
-- **Event materials** (`content/agenda/`)
+- **Course descriptions and images** (`content/courses/`)
+- **Exhibition materials** (`content/expositions/`)
 
 #### You MAY NOT:
 
@@ -538,7 +562,7 @@ For full details, see [`LICENSE`](LICENSE) and [`CONTENT_LICENSE`](CONTENT_LICEN
 
 ### Common Issues
 
-- **Images not showing**: Check file paths and naming conventions
+- **Images not showing**: Check that images are in the correct content folder alongside the markdown file
 - **Content not updating**: Verify frontmatter syntax (YAML format)
 - **Build errors**: Check for missing required fields in frontmatter
 - **Dates not formatting**: Ensure date format is YYYY-MM-DD

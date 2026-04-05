@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import Layout from "../../layouts/layout.astro";
 import { getArtists, getExpositions } from "../../utils/content";
 import { formatDateRange, formatDutchDate, parseTimeFormat } from "../../utils/date-format";
@@ -29,16 +30,18 @@ const linkedArtists = expo.artistIds
 <Layout
   title={`${expo.title} - Ateliers Kersenboomgaard`}
   description={expo.content?.slice(0, 160) || `${expo.title} bij Ateliers Kersenboomgaard`}
-  ogImage={expo.flyerImage || expo.heroImage || undefined}
+  ogImage={expo.flyerImage?.src || expo.heroImage?.src || undefined}
 >
   <div class="bg-white">
     <!-- Mobile: full-width hero, then text below -->
     <div class="lg:hidden pt-20">
       {expo.flyerImage && (
         <div class="w-full">
-          <img
+          <Image
             src={expo.flyerImage}
             alt={expo.title}
+            widths={[640, 960, 1280]}
+            sizes="100vw"
             class="w-full h-auto"
             loading="eager"
           />
@@ -199,9 +202,11 @@ const linkedArtists = expo.artistIds
 
         {expo.flyerImage && (
           <div>
-            <img
+            <Image
               src={expo.flyerImage}
               alt={expo.title}
+              widths={[640, 960]}
+              sizes="50vw"
               class="w-full h-auto"
               loading="eager"
             />
