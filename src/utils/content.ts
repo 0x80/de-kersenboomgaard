@@ -145,9 +145,7 @@ export async function getCourses(artists: Artist[]): Promise<Course[]> {
       .filter((artist): artist is Artist => artist !== undefined);
 
     const houseNumber =
-      courseArtists.length > 0
-        ? Math.min(...courseArtists.map((artist) => artist.houseNumber))
-        : 0;
+      courseArtists.length > 0 ? Math.min(...courseArtists.map((artist) => artist.houseNumber)) : 0;
 
     const slug = entry.data.slug;
     let images = getCourseImages(slug);
