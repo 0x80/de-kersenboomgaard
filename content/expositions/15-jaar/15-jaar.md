@@ -11,7 +11,7 @@ curator: ""
 opening_event_time: h12m00
 opening_event_description: Toegang gratis
 artist_ids: ""
-link: https://www.facebook.com/atelierskersenboomgaard/
+link: ""
 ---
 
 In 2026 bestaan de Ateliers Kersenboomgaard 15 jaar en dat gaan we groots vieren! Op zaterdag 30 en zondag 31 mei openen we de deuren voor een weekend vol kunst, muziek en lekker eten.
