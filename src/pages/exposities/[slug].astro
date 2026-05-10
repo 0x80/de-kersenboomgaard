@@ -1,5 +1,6 @@
 ---
 import { Image } from "astro:assets";
+import { getCollection, render } from "astro:content";
 import Layout from "../../layouts/layout.astro";
 import { getArtists, getExpositions } from "../../utils/content";
 import { formatDateRange, formatDutchDate, parseTimeFormat } from "../../utils/date-format";
@@ -25,6 +26,11 @@ const artistsMap = Object.fromEntries(artists.map((a) => [a.id, a]));
 const linkedArtists = expo.artistIds
   .map((id) => artistsMap[id])
   .filter((artist): artist is Artist => artist?.name !== undefined);
+
+const entries = await getCollection("expositions");
+const entry = entries.find((e) => e.data.slug === expo.slug);
+const { Content } = entry ? await render(entry) : { Content: null };
+const hasBody = Boolean(entry?.body?.trim());
 ---
 
 <Layout
@@ -100,11 +106,9 @@ const linkedArtists = expo.artistIds
           )}
         </div>
 
-        {expo.content && (
-          <div class="leading-relaxed text-gray-600 space-y-4">
-            {expo.content.split("\n\n").map((paragraph) => (
-              <p>{paragraph}</p>
-            ))}
+        {hasBody && Content && (
+          <div class="prose-content leading-relaxed text-gray-600">
+            <Content />
           </div>
         )}
 
@@ -216,3 +220,44 @@ const linkedArtists = expo.artistIds
     </div>
   </div>
 </Layout>
+
+<style is:global>
+  .prose-content > * + * {
+    margin-top: 1rem;
+  }
+  .prose-content h2 {
+    margin-top: 2rem;
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: var(--color-gray-900);
+  }
+  .prose-content h3 {
+    margin-top: 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-gray-800);
+  }
+  .prose-content ul {
+    list-style: disc;
+    padding-left: 1.25rem;
+  }
+  .prose-content ol {
+    list-style: decimal;
+    padding-left: 1.25rem;
+  }
+  .prose-content li + li {
+    margin-top: 0.25rem;
+  }
+  .prose-content strong {
+    font-weight: 600;
+    color: var(--color-gray-800);
+  }
+  .prose-content a {
+    color: var(--color-gray-900);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .prose-content a:hover {
+    color: black;
+  }
+</style>
