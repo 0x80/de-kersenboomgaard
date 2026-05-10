@@ -16,13 +16,6 @@ link: ""
 
 In 2026 bestaan de Ateliers Kersenboomgaard 15 jaar en dat gaan we groots vieren! Op zaterdag 30 en zondag 31 mei openen we de deuren voor een weekend vol kunst, muziek en lekker eten. Toegang is gratis.
 
-## Vrijdag 29 mei — Bewoners only (Hal 2)
-
-- 17:00 — Aanvang
-- 17:30 — Diner door Berend en Asia, toetje door Winneke en Elma
-- 19:00 — Stukje geschiedenis door Jeroen, Jurgen en Hinke
-- 20:30 — Pubquiz door Kevin en Anke
-
 ## Zaterdag 30 mei (12:00 – 20:00)
 
 ### Tuin

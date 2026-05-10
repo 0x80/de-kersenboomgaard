@@ -1,5 +1,7 @@
 ---
 import { Image } from "astro:assets";
+import { getCollection, render } from "astro:content";
+import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 import Layout from "../layouts/layout.astro";
 import { getArtists, getCourses, getExpositions, getUpcomingExpositions } from "../utils/content";
 import { getSEOData, generateStructuredData } from "../utils/seo";
@@ -10,6 +12,15 @@ const artists = await getArtists();
 const courses = await getCourses(artists);
 const expositions = await getExpositions();
 const upcomingExpositions = getUpcomingExpositions(expositions);
+
+const expoEntries = await getCollection("expositions");
+const expoContentBySlug = new Map<string, AstroComponentFactory>();
+for (const entry of expoEntries) {
+  if (entry.body?.trim()) {
+    const { Content } = await render(entry);
+    expoContentBySlug.set(entry.data.slug, Content);
+  }
+}
 
 const seo = getSEOData(artists, courses);
 const structuredData = generateStructuredData(artists, courses);
@@ -36,6 +47,7 @@ const pageLinks = [
           const linkedArtists = expo.artistIds
             .map((id) => artistsMap[id])
             .filter((artist): artist is Artist => artist?.name !== undefined);
+          const ExpoContent = expoContentBySlug.get(expo.slug);
 
           return (
             <>
@@ -99,11 +111,9 @@ const pageLinks = [
                     )}
                   </div>
 
-                  {expo.content && (
-                    <div class="leading-relaxed text-gray-600 space-y-4">
-                      {expo.content.split("\n\n").map((paragraph) => (
-                        <p>{paragraph}</p>
-                      ))}
+                  {ExpoContent && (
+                    <div class="prose-content leading-relaxed text-gray-600">
+                      <ExpoContent />
                     </div>
                   )}
 
@@ -165,11 +175,9 @@ const pageLinks = [
                       )}
                     </div>
 
-                    {expo.content && (
-                      <div class="leading-relaxed text-gray-600 space-y-4">
-                        {expo.content.split("\n\n").map((paragraph) => (
-                          <p>{paragraph}</p>
-                        ))}
+                    {ExpoContent && (
+                      <div class="prose-content leading-relaxed text-gray-600">
+                        <ExpoContent />
                       </div>
                     )}
 
