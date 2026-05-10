@@ -13,7 +13,8 @@ const expositions = await getExpositions();
 const upcomingExpositions = getUpcomingExpositions(expositions);
 
 type ExpoContentComponent = Awaited<ReturnType<typeof render>>["Content"];
-const expoEntries = await getCollection("expositions");
+const upcomingSlugs = new Set(upcomingExpositions.map((expo) => expo.slug));
+const expoEntries = await getCollection("expositions", (entry) => upcomingSlugs.has(entry.data.slug));
 const expoContentBySlug = new Map<string, ExpoContentComponent>();
 for (const entry of expoEntries) {
   if (entry.body?.trim()) {

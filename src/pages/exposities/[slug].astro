@@ -6,31 +6,39 @@ import { getArtists, getExpositions } from "../../utils/content";
 import { formatDateRange, formatDutchDate, parseTimeFormat } from "../../utils/date-format";
 import type { Artist, Exposition } from "../../utils/content";
 
+type ExpoContentComponent = Awaited<ReturnType<typeof render>>["Content"];
+
 export async function getStaticPaths() {
   const expositions = await getExpositions();
   const artists = await getArtists();
+  const entries = await getCollection("expositions");
+  const entriesBySlug = new Map(entries.map((entry) => [entry.data.slug, entry]));
 
-  return expositions.map((expo) => ({
-    params: { slug: expo.slug },
-    props: { exposition: expo, artists },
-  }));
+  return Promise.all(
+    expositions.map(async (expo) => {
+      const entry = entriesBySlug.get(expo.slug);
+      const Content: ExpoContentComponent | null = entry?.body?.trim()
+        ? (await render(entry)).Content
+        : null;
+      return {
+        params: { slug: expo.slug },
+        props: { exposition: expo, artists, Content },
+      };
+    }),
+  );
 }
 
 interface Props {
   exposition: Exposition;
   artists: Artist[];
+  Content: ExpoContentComponent | null;
 }
 
-const { exposition: expo, artists } = Astro.props;
+const { exposition: expo, artists, Content } = Astro.props;
 const artistsMap = Object.fromEntries(artists.map((a) => [a.id, a]));
 const linkedArtists = expo.artistIds
   .map((id) => artistsMap[id])
   .filter((artist): artist is Artist => artist?.name !== undefined);
-
-const entries = await getCollection("expositions");
-const entry = entries.find((e) => e.data.slug === expo.slug);
-const { Content } = entry ? await render(entry) : { Content: null };
-const hasBody = Boolean(entry?.body?.trim());
 ---
 
 <Layout
@@ -106,7 +114,7 @@ const hasBody = Boolean(entry?.body?.trim());
           )}
         </div>
 
-        {hasBody && Content && (
+        {Content && (
           <div class="prose-content leading-relaxed text-gray-600">
             <Content />
           </div>
@@ -182,7 +190,7 @@ const hasBody = Boolean(entry?.body?.trim());
             )}
           </div>
 
-          {hasBody && Content && (
+          {Content && (
             <div class="prose-content leading-relaxed text-gray-600">
               <Content />
             </div>
