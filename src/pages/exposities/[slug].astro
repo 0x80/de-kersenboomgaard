@@ -182,11 +182,9 @@ const hasBody = Boolean(entry?.body?.trim());
             )}
           </div>
 
-          {expo.content && (
-            <div class="leading-relaxed text-gray-600 space-y-4">
-              {expo.content.split("\n\n").map((paragraph) => (
-                <p>{paragraph}</p>
-              ))}
+          {hasBody && Content && (
+            <div class="prose-content leading-relaxed text-gray-600">
+              <Content />
             </div>
           )}
 

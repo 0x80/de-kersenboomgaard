@@ -1,6 +1,6 @@
 ---
 artist_ids: nanette-smeets
-name:  Vormgeven aan Verlies
+name: Vormgeven aan Verlies
 link: https://inktvogel.nl/workshops/index.html
 slug: vormgeven-aan-verlies
 ---
