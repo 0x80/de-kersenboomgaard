@@ -57,6 +57,6 @@ In 2026 bestaan de Ateliers Kersenboomgaard 15 jaar en dat gaan we groots vieren
 ### Hal 3
 
 - 12:00 – 16:00 — Expositie
-- 15:30 — ~~Thijs' Synthesizer Magic~~ (afgelast)
+- 15:30 — Thijs' Synthesizer Magic
 
 Programma onder voorbehoud.
